@@ -1,5 +1,7 @@
 package fr.maxlego08.items.api.configurations;
 
+import fr.maxlego08.items.ItemsPlugin;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.potion.PotionEffect;
@@ -9,14 +11,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record Food(boolean enable, int nutrition, int saturation, boolean canAlwaysEat, int eatSeconds,
-                   List<FoodEffect> effects) {
+                   List<FoodEffect> effects, String usingConvertsTo) {
 
     public void addEffect(FoodEffect effect) {
         this.effects.add(effect);
     }
 
 
-    public void applyToItemMeta(ItemMeta itemMeta) {
+    public void applyToItemMeta(ItemMeta itemMeta, Player player, ItemsPlugin plugin) {
 
         FoodComponent foodComponent = itemMeta.getFood();
 
@@ -31,6 +33,10 @@ public record Food(boolean enable, int nutrition, int saturation, boolean canAlw
         }).collect(Collectors.toList());
 
         foodComponent.setEffects(foodEffects);
+
+        if (this.usingConvertsTo != null) {
+            plugin.getItemManager().getItem(this.usingConvertsTo).ifPresent(item -> foodComponent.setUsingConvertsTo(item.build(player, 1)));
+        }
 
         itemMeta.setFood(foodComponent);
     }

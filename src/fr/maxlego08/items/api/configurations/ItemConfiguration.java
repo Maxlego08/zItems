@@ -4,7 +4,10 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
@@ -36,14 +39,15 @@ public class ItemConfiguration {
     private final boolean enchantmentGlint;
     private final List<ItemEnchantment> enchantments;
     private final boolean enchantmentShowInTooltip;
+    private final List<AttributeConfiguration> attributes;
+    private final boolean attributeShowInTooltip;
     private Food food;
-    private boolean attributeShowInTooltip;
 
     public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration) {
 
         this.itemType = ItemType.valueOf(configuration.getString("type", "CLASSIC").toUpperCase());
         this.material = Material.getMaterial(configuration.getString("material", "IRON_SWORD").toUpperCase());
-        this.maxStackSize = between(configuration.getInt("max-stack-size", 1), 1, 99); // between 1 and 99 (inclusive)
+        this.maxStackSize = between(configuration.getInt("max-stack-size", 0), 0, 99); // between 1 and 99 (inclusive)
         this.displayName = configuration.getString("display-name");
         this.itemName = configuration.getString("item-name");
         this.lore = configuration.getStringList("lore");
@@ -69,7 +73,7 @@ public class ItemConfiguration {
         Enchantments enchantments = plugin.getEnchantments();
         for (Map<?, ?> enchantmentMap : enchantmentList) {
             String enchantmentAsString = (String) enchantmentMap.get("enchantment");
-            int level = (int) enchantmentMap.get("level");
+            int level = ((Number) enchantmentMap.get("level")).intValue();
             var optional = enchantments.getEnchantments(enchantmentAsString.toLowerCase());
             if (optional.isPresent()) {
                 var enchantment = optional.get().enchantment();
@@ -86,20 +90,31 @@ public class ItemConfiguration {
             int saturation = configuration.getInt("food.saturation", 0);
             boolean canAlwaysEat = configuration.getBoolean("food.can-always-eat", false);
             int eatSeconds = configuration.getInt("food.eat-seconds", 0);
-            this.food = new Food(enable, nutrition, saturation, canAlwaysEat, eatSeconds, new ArrayList<>());
+            String usingConvertsTo = configuration.getString("food.using-converts-to", null);
+            this.food = new Food(enable, nutrition, saturation, canAlwaysEat, eatSeconds, new ArrayList<>(), usingConvertsTo);
 
             List<Map<?, ?>> effectsList = configuration.getMapList("food.effects");
             for (Map<?, ?> effectMap : effectsList) {
                 String effectType = (String) effectMap.get("type");
-                double probability = (double) effectMap.get("probability");
-                int amplifier = (int) effectMap.get("amplifier");
-                int duration = (int) effectMap.get("duration");
+                double probability = ((Number) effectMap.get("probability")).doubleValue();
+                int amplifier = ((Number) effectMap.get("amplifier")).intValue();
+                int duration = ((Number) effectMap.get("duration")).intValue();
                 boolean showParticles = (boolean) effectMap.get("show-particles");
                 boolean showIcon = (boolean) effectMap.get("show-icon");
                 boolean ambient = (boolean) effectMap.get("ambient");
                 this.food.addEffect(new FoodEffect(effectType, (float) probability, amplifier, duration, showParticles, showIcon, ambient));
             }
         }
+
+        this.attributeShowInTooltip = configuration.getBoolean("attribute.show-in-tooltip", true);
+        this.attributes = configuration.getMapList("attribute.attributes").stream().map(map -> {
+            Attribute attribute = Attribute.valueOf(((String) map.get("attribute")).toUpperCase());
+            AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(((String) map.get("operation")).toUpperCase());
+            double amount = ((Number) map.get("amount")).doubleValue();
+            EquipmentSlotGroup slot = map.containsKey("slot") ? EquipmentSlotGroup.getByName((String) map.get("slot")) : EquipmentSlotGroup.ANY;
+
+            return new AttributeConfiguration(attribute, operation, amount, slot);
+        }).toList();
     }
 
     public Material getMaterial() {
@@ -219,5 +234,9 @@ public class ItemConfiguration {
                 else itemStack.addUnsafeEnchantment(enchantment, level);
             }
         });
+    }
+
+    public List<AttributeConfiguration> getAttributes() {
+        return attributes;
     }
 }

@@ -5,12 +5,16 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.configurations.Food;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.zcore.utils.ZUtils;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
+
+import java.util.UUID;
 
 public class ZItem extends ZUtils implements Item {
 
@@ -43,13 +47,15 @@ public class ZItem extends ZUtils implements Item {
 
         if (itemMeta != null) {
 
-            itemMeta.setMaxStackSize(this.configuration.getMaxStackSize());
+            if (this.configuration.getMaxStackSize() > 0) {
+                itemMeta.setMaxStackSize(this.configuration.getMaxStackSize());
+            }
 
             this.applyNames(itemMeta, player);
             this.applyFood(itemMeta, player);
 
             if (itemMeta instanceof Damageable damageable) {
-                damageable.setMaxDamage(this.configuration.getMaxDamage());
+                if (this.configuration.getMaxDamage() > 0) damageable.setMaxDamage(this.configuration.getMaxDamage());
                 damageable.setDamage(this.configuration.getDamage());
                 damageable.setUnbreakable(this.configuration.isUnbreakableEnabled());
 
@@ -80,6 +86,12 @@ public class ZItem extends ZUtils implements Item {
 
             itemMeta.setEnchantmentGlintOverride(this.configuration.isEnchantmentGlint());
 
+            this.configuration.getAttributes().forEach(attributeConfiguration -> itemMeta.addAttributeModifier(attributeConfiguration.attribute(), new AttributeModifier(NamespacedKey.fromString(UUID.randomUUID().toString()), attributeConfiguration.amount(), attributeConfiguration.operation(), attributeConfiguration.slot())));
+
+            if (!this.configuration.isAttributeShowInTooltip()) {
+                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            }
+
             itemStack.setItemMeta(itemMeta);
         } else {
             plugin.getLogger().severe("ItemMeta is null !");
@@ -108,9 +120,8 @@ public class ZItem extends ZUtils implements Item {
     private void applyFood(ItemMeta itemMeta, Player player) {
 
         Food food = this.configuration.getFood();
-        System.out.println("enable: " + food.enable());
-        if (!food.enable()) return;
+        if (food == null || !food.enable()) return;
 
-        food.applyToItemMeta(itemMeta);
+        food.applyToItemMeta(itemMeta, player, this.plugin);
     }
 }

@@ -161,7 +161,7 @@ tool:
 # All items can be given Modifiers which affect various Attributes of the player/mob which wears or holds them.
 attribute:
   attributes:
-    - attribute: ARMOR
+    - attribute: GENERIC_ARMOR
       operation: add_number
       amount: 1.0
       slot: mainhand
