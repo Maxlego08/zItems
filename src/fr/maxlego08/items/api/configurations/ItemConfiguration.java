@@ -1,8 +1,12 @@
 package fr.maxlego08.items.api.configurations;
 
+import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.ItemType;
+import fr.maxlego08.items.api.enchantments.Enchantments;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +39,7 @@ public class ItemConfiguration {
     private Food food;
     private boolean attributeShowInTooltip;
 
-    public ItemConfiguration(YamlConfiguration configuration) {
+    public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration) {
 
         this.itemType = ItemType.valueOf(configuration.getString("type", "CLASSIC").toUpperCase());
         this.material = Material.getMaterial(configuration.getString("material", "IRON_SWORD").toUpperCase());
@@ -62,21 +66,27 @@ public class ItemConfiguration {
         // Load enchantments
         this.enchantments = new ArrayList<>();
         List<Map<?, ?>> enchantmentList = configuration.getMapList("enchantment.enchantments");
+        Enchantments enchantments = plugin.getEnchantments();
         for (Map<?, ?> enchantmentMap : enchantmentList) {
-            String type = (String) enchantmentMap.get("type");
-            /*Enchantment enchantment = Registry.ENCHANTMENT.get(NamespacedKey.minecraft(type));
+            String enchantmentAsString = (String) enchantmentMap.get("enchantment");
             int level = (int) enchantmentMap.get("level");
-            this.enchantments.add(new ItemEnchantment(enchantment, level));*/
+            var optional = enchantments.getEnchantments(enchantmentAsString.toLowerCase());
+            if (optional.isPresent()) {
+                var enchantment = optional.get().enchantment();
+                this.enchantments.add(new ItemEnchantment(enchantment, level));
+            } else {
+                plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found !");
+            }
         }
 
         // Load food
         if (configuration.contains("food")) {
+            boolean enable = configuration.getBoolean("food.enable", false);
             int nutrition = configuration.getInt("food.nutrition", 0);
             int saturation = configuration.getInt("food.saturation", 0);
-            boolean isMeat = configuration.getBoolean("food.is-meat", false);
             boolean canAlwaysEat = configuration.getBoolean("food.can-always-eat", false);
             int eatSeconds = configuration.getInt("food.eat-seconds", 0);
-            this.food = new Food(nutrition, saturation, isMeat, canAlwaysEat, eatSeconds, new ArrayList<>());
+            this.food = new Food(enable, nutrition, saturation, canAlwaysEat, eatSeconds, new ArrayList<>());
 
             List<Map<?, ?>> effectsList = configuration.getMapList("food.effects");
             for (Map<?, ?> effectMap : effectsList) {
@@ -87,7 +97,7 @@ public class ItemConfiguration {
                 boolean showParticles = (boolean) effectMap.get("show-particles");
                 boolean showIcon = (boolean) effectMap.get("show-icon");
                 boolean ambient = (boolean) effectMap.get("ambient");
-                this.food.addEffect(new FoodEffect(effectType, probability, amplifier, duration, showParticles, showIcon, ambient));
+                this.food.addEffect(new FoodEffect(effectType, (float) probability, amplifier, duration, showParticles, showIcon, ambient));
             }
         }
     }
@@ -190,5 +200,24 @@ public class ItemConfiguration {
 
     public ItemType getItemType() {
         return itemType;
+    }
+
+    public void enchant(ItemStack itemStack) {
+
+        this.enchantments.forEach(itemEnchantment -> {
+
+            var enchantment = itemEnchantment.enchantment();
+            var level = itemEnchantment.level();
+
+            if (itemStack.getType() == Material.ENCHANTED_BOOK) {
+                var enchantmentStorageMeta = (EnchantmentStorageMeta) itemStack.getItemMeta();
+                if (level == 0) enchantmentStorageMeta.removeStoredEnchant(enchantment);
+                else enchantmentStorageMeta.addStoredEnchant(enchantment, level, true);
+                itemStack.setItemMeta(enchantmentStorageMeta);
+            } else {
+                if (level == 0) itemStack.removeEnchantment(enchantment);
+                else itemStack.addUnsafeEnchantment(enchantment, level);
+            }
+        });
     }
 }
