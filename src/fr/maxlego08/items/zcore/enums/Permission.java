@@ -2,7 +2,9 @@ package fr.maxlego08.items.zcore.enums;
 
 public enum Permission {
 
-    ZITEMS_USE, ZITEMS_RELOAD,
+    ZITEMS_USE,
+    ZITEMS_RELOAD,
+    ZITEMS_GIVE,
 
     ;
 

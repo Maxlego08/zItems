@@ -1,6 +1,6 @@
 name: zItems
 author: Maxlego08
-main: fr.maxlego08.items.ItemPlugin
+main: fr.maxlego08.items.ItemsPlugin
 website: https://groupez.dev
 description: Custom items
 version: 1.0.0

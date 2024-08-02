@@ -37,8 +37,8 @@ recipes:
 
 
 
-# Custom name override for an item. This can be changed or removed in an anvil. They are styled with italics by default but you can turn italics off. They can show labels where applicable (for example: banner markers, names in item frames). The custom name will take priority over item-name.
-custom-name: '&6&lExample Item'
+# Display name override for an item. This can be changed or removed in an anvil. They are styled with italics by default but you can turn italics off. They can show labels where applicable (for example: banner markers, names in item frames). The custom name will take priority over item-name.
+display-name: '&6&lExample Item'
 
 # When present, replaces default item name with contained chat component. It does not take priority over custom_name if both are set. An item-name can't be changed or removed in an anvil. item-name is not styled with italics. item-name does not show labels where applicable (for example: banner markers, names in item frames)
 item-name: 'Example Item'

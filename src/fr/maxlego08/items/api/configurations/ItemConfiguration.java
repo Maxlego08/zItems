@@ -1,8 +1,8 @@
 package fr.maxlego08.items.api.configurations;
 
+import fr.maxlego08.items.api.ItemType;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,10 @@ import java.util.Map;
 
 public class ItemConfiguration {
 
+    private final ItemType itemType;
     private final Material material;
     private final int maxStackSize;
-    private final String customName;
+    private final String displayName;
     private final String itemName;
     private final List<String> lore;
     private final int maxDamage;
@@ -34,33 +35,33 @@ public class ItemConfiguration {
     private Food food;
     private boolean attributeShowInTooltip;
 
-    public ItemConfiguration(JavaPlugin plugin) {
-        FileConfiguration config = plugin.getConfig();
+    public ItemConfiguration(YamlConfiguration configuration) {
 
-        this.material = Material.getMaterial(config.getString("material", "IRON_SWORD").toUpperCase());
-        this.maxStackSize = between(config.getInt("max-stack-size", 1), 1, 99); // between 1 and 99 (inclusive)
-        this.customName = config.getString("custom-name");
-        this.itemName = config.getString("item-name");
-        this.lore = config.getStringList("lore");
-        this.maxDamage = config.getInt("max-damage", 0);
-        this.damage = config.getInt("damage", 0);
-        this.repairCost = config.getInt("repair-cost", 0);
-        this.unbreakableEnabled = config.getBoolean("unbreakable.enabled", false);
-        this.unbreakableShowInTooltip = config.getBoolean("unbreakable.show-in-tooltip", true);
-        this.fireResistant = config.getBoolean("fire-resistant", false);
-        this.customModelData = config.getInt("custom-model-data", 0);
-        this.hideTooltip = config.getBoolean("hide-tooltip", false);
-        this.hideAdditionalTooltip = config.getBoolean("hide-additional-tooltip", false);
-        this.canPlaceOnBlocks = config.getStringList("can-place-on.blocks");
-        this.canPlaceOnShowInTooltip = config.getBoolean("can-place-on.show-in-tooltip", true);
-        this.canBreakBlocks = config.getStringList("can-break.blocks");
-        this.canBreakShowInTooltip = config.getBoolean("can-break.show-in-tooltip", true);
-        this.enchantmentGlint = config.getBoolean("enchantment.glint", false);
-        this.enchantmentShowInTooltip = config.getBoolean("enchantment.show-in-tooltip", true);
+        this.itemType = ItemType.valueOf(configuration.getString("type", "CLASSIC").toUpperCase());
+        this.material = Material.getMaterial(configuration.getString("material", "IRON_SWORD").toUpperCase());
+        this.maxStackSize = between(configuration.getInt("max-stack-size", 1), 1, 99); // between 1 and 99 (inclusive)
+        this.displayName = configuration.getString("display-name");
+        this.itemName = configuration.getString("item-name");
+        this.lore = configuration.getStringList("lore");
+        this.maxDamage = configuration.getInt("max-damage", 0);
+        this.damage = configuration.getInt("damage", 0);
+        this.repairCost = configuration.getInt("repair-cost", 0);
+        this.unbreakableEnabled = configuration.getBoolean("unbreakable.enabled", false);
+        this.unbreakableShowInTooltip = configuration.getBoolean("unbreakable.show-in-tooltip", true);
+        this.fireResistant = configuration.getBoolean("fire-resistant", false);
+        this.customModelData = configuration.getInt("custom-model-data", 0);
+        this.hideTooltip = configuration.getBoolean("hide-tooltip", false);
+        this.hideAdditionalTooltip = configuration.getBoolean("hide-additional-tooltip", false);
+        this.canPlaceOnBlocks = configuration.getStringList("can-place-on.blocks");
+        this.canPlaceOnShowInTooltip = configuration.getBoolean("can-place-on.show-in-tooltip", true);
+        this.canBreakBlocks = configuration.getStringList("can-break.blocks");
+        this.canBreakShowInTooltip = configuration.getBoolean("can-break.show-in-tooltip", true);
+        this.enchantmentGlint = configuration.getBoolean("enchantment.glint", false);
+        this.enchantmentShowInTooltip = configuration.getBoolean("enchantment.show-in-tooltip", true);
 
         // Load enchantments
         this.enchantments = new ArrayList<>();
-        List<Map<?, ?>> enchantmentList = config.getMapList("enchantment.enchantments");
+        List<Map<?, ?>> enchantmentList = configuration.getMapList("enchantment.enchantments");
         for (Map<?, ?> enchantmentMap : enchantmentList) {
             String type = (String) enchantmentMap.get("type");
             /*Enchantment enchantment = Registry.ENCHANTMENT.get(NamespacedKey.minecraft(type));
@@ -69,15 +70,15 @@ public class ItemConfiguration {
         }
 
         // Load food
-        if (config.contains("food")) {
-            int nutrition = config.getInt("food.nutrition", 0);
-            int saturation = config.getInt("food.saturation", 0);
-            boolean isMeat = config.getBoolean("food.is-meat", false);
-            boolean canAlwaysEat = config.getBoolean("food.can-always-eat", false);
-            int eatSeconds = config.getInt("food.eat-seconds", 0);
+        if (configuration.contains("food")) {
+            int nutrition = configuration.getInt("food.nutrition", 0);
+            int saturation = configuration.getInt("food.saturation", 0);
+            boolean isMeat = configuration.getBoolean("food.is-meat", false);
+            boolean canAlwaysEat = configuration.getBoolean("food.can-always-eat", false);
+            int eatSeconds = configuration.getInt("food.eat-seconds", 0);
             this.food = new Food(nutrition, saturation, isMeat, canAlwaysEat, eatSeconds, new ArrayList<>());
 
-            List<Map<?, ?>> effectsList = config.getMapList("food.effects");
+            List<Map<?, ?>> effectsList = configuration.getMapList("food.effects");
             for (Map<?, ?> effectMap : effectsList) {
                 String effectType = (String) effectMap.get("type");
                 double probability = (double) effectMap.get("probability");
@@ -99,8 +100,8 @@ public class ItemConfiguration {
         return maxStackSize;
     }
 
-    public String getCustomName() {
-        return customName;
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getItemName() {
@@ -185,5 +186,9 @@ public class ItemConfiguration {
 
     private int between(int value, int min, int max) {
         return value > max ? max : Math.max(value, min);
+    }
+
+    public ItemType getItemType() {
+        return itemType;
     }
 }

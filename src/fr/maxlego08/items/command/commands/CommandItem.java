@@ -2,25 +2,21 @@ package fr.maxlego08.items.command.commands;
 
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.command.VCommand;
-import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.enums.Permission;
 import fr.maxlego08.items.zcore.utils.commands.CommandType;
 
-public class CommandItemsReload extends VCommand {
+public class CommandItem extends VCommand {
 
-	public CommandItemsReload(ItemsPlugin plugin) {
+	public CommandItem(ItemsPlugin plugin) {
 		super(plugin);
-		this.setPermission(Permission.ZITEMS_RELOAD);
-		this.addSubCommand("reload", "rl");
-		this.setDescription(Message.DESCRIPTION_RELOAD);
+		this.setPermission(Permission.ZITEMS_USE);
+		this.addSubCommand(new CommandItemReload(plugin));
+		this.addSubCommand(new CommandItemGive(plugin));
 	}
 
 	@Override
 	protected CommandType perform(ItemsPlugin plugin) {
-		
-		plugin.reloadFiles();
-		message(sender, Message.RELOAD);
-		
+		syntaxMessage();
 		return CommandType.SUCCESS;
 	}
 

@@ -8,6 +8,8 @@ public interface Item {
 
     ItemConfiguration getConfiguration();
 
-    ItemStack build(Player player);
+    String getName();
+
+    ItemStack build(Player player, int amount);
 
 }

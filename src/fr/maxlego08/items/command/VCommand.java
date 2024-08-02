@@ -439,16 +439,33 @@ public abstract class VCommand extends Arguments {
      * @return the generated syntax.
      */
     private String generateDefaultSyntax(String syntax) {
-        boolean update = syntax.isEmpty();
 
-        StringBuilder syntaxBuilder = new StringBuilder();
-        if (update) {
-            appendRequiredArguments(syntaxBuilder);
-            appendOptionalArguments(syntaxBuilder);
-            syntax = syntaxBuilder.toString().trim();
+        String tmpString = subCommands.get(0);
+
+        boolean update = syntax.equals("");
+
+        if (requireArgs.size() != 0 && update) {
+            for (String requireArg : requireArgs) {
+                requireArg = "<" + requireArg + ">";
+                syntax += " " + requireArg;
+            }
+        }
+        if (optionalArgs.size() != 0 && update) {
+            StringBuilder syntaxBuilder = new StringBuilder(syntax);
+            for (String optionalArg : optionalArgs) {
+                optionalArg = "[<" + optionalArg + ">]";
+                syntaxBuilder.append(" ").append(optionalArg);
+            }
+            syntax = syntaxBuilder.toString();
         }
 
-        return parent == null ? "/" + subCommands.get(0) + " " + syntax : parent.generateDefaultSyntax(" " + subCommands.get(0) + syntax);
+        tmpString += syntax;
+
+        if (parent == null) {
+            return "/" + tmpString;
+        }
+
+        return parent.generateDefaultSyntax(" " + tmpString);
     }
 
     private void appendRequiredArguments(StringBuilder syntaxBuilder) {

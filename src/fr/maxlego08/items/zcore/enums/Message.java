@@ -10,10 +10,10 @@ import java.util.Map;
 
 public enum Message {
 
-    PREFIX("§8(§6zItems§8) "),
+    PREFIX("&8(&6zItems&8) "),
 
-    INVENTORY_CLONE_NULL("§cThe inventory clone is null!"),
-    INVENTORY_OPEN_ERROR("§cAn error occurred with the opening of the inventory §6%id%§c."),
+    INVENTORY_CLONE_NULL("&cThe inventory clone is null!"),
+    INVENTORY_OPEN_ERROR("&cAn error occurred with the opening of the inventory &6%id%&c."),
     TIME_DAY("%02d %day% %02d %hour% %02d %minute% %02d %second%"),
     TIME_HOUR("%02d %hour% %02d minute(s) %02d %second%"),
     TIME_MINUTE("%02d %minute% %02d %second%"),
@@ -27,17 +27,20 @@ public enum Message {
 
     FORMAT_DAY("d"), FORMAT_DAYS("days"),
 
-    COMMAND_SYNTAXE_ERROR("§cYou must execute the command like this§7: §a%syntax%"),
-    COMMAND_NO_PERMISSION("§cYou do not have permission to run this command."),
-    COMMAND_NO_CONSOLE("§cOnly one player can execute this command."),
-    COMMAND_NO_ARG("§cImpossible to find the command with its arguments."),
-    COMMAND_SYNTAXE_HELP("§f%syntax% §7» §7%description%"),
+    COMMAND_SYNTAXE_ERROR("&cYou must execute the command like this&7: &a%syntax%"),
+    COMMAND_NO_PERMISSION("&cYou do not have permission to run this command."),
+    COMMAND_NO_CONSOLE("&cOnly one player can execute this command."),
+    COMMAND_NO_ARG("&cImpossible to find the command with its arguments."),
+    COMMAND_SYNTAXE_HELP("&f%syntax% &7» &7%description%"),
 
-    RELOAD("§aYou have just reloaded the configuration files."),
+    RELOAD("&aYou have just reloaded the configuration files."),
 
     DESCRIPTION_RELOAD("Reload configuration files"),
+    DESCRIPTION_GIVE("Give an item"),
 
-    ;
+    ITEM_NOT_FOUND("&cImpossible to find the item &f%name%&c."),
+
+    ITEM_GIVE("&aYou just gave &7x%amount% &b%name% to the player &f%player%&a.");
 
     private List<String> messages;
     private String message;
@@ -53,7 +56,6 @@ public enum Message {
      */
     Message(String message) {
         this.message = message;
-        this.use = true;
     }
 
     /**

@@ -1,7 +1,8 @@
 package fr.maxlego08.items;
 
 import fr.maxlego08.items.api.ItemComponent;
-import fr.maxlego08.items.command.commands.CommandItems;
+import fr.maxlego08.items.api.ItemManager;
+import fr.maxlego08.items.command.commands.CommandItem;
 import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
@@ -11,6 +12,7 @@ import fr.maxlego08.items.zcore.ZPlugin;
 
 public class ItemsPlugin extends ZPlugin {
 
+    private final ItemManager itemManager = new ZItemManager(this);
     private ItemComponent itemComponent;
 
     @Override
@@ -23,10 +25,11 @@ public class ItemsPlugin extends ZPlugin {
 
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
 
-        this.registerCommand("zitems", new CommandItems(this), "items", "zit");
+        this.registerCommand("zitems", new CommandItem(this), "items", "zit");
 
         this.addSave(Config.getInstance());
         this.addSave(new MessageLoader(this));
+        this.itemManager.loadItems();
 
         this.loadFiles();
 
@@ -45,5 +48,9 @@ public class ItemsPlugin extends ZPlugin {
 
     public ItemComponent getItemComponent() {
         return itemComponent;
+    }
+
+    public ItemManager getItemManager() {
+        return itemManager;
     }
 }
