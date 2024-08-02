@@ -1,0 +1,171 @@
+material: iron_sword
+
+# Overrides the default maximum stack size of this item. Choose a number between 1 and 99. max-stack-size must be 1 if max-damage is set.
+max-stack-size: 2
+
+# https://minecraft.wiki/w/Recipe
+recipes:
+  - type: blasting
+    category: blocks
+    group: example
+    ingredient: # List or string
+      - itsmyitem:example
+      - minecraft:example_2
+    cookingtime: 100
+    experience: 10
+  - type: crafting_shaped
+    category: building
+    pattern:
+      - " A "
+      - "A1A"
+      - " A "
+    key:
+      1: minecraft:emerald # List or string
+      A: # List or string
+        - minecraft:stone
+        - minecraft:andesite
+        - minecraft:granite
+  - type: crafting_shapeless
+    category: redstone
+    ingredients:
+      - ingredient: # List
+          - minecraft:emerald
+          - minecraft:diamond
+      - minecraft:stone
+      - minecraft:andesite
+      - minecraft:granite
+
+
+
+# Custom name override for an item. This can be changed or removed in an anvil. They are styled with italics by default but you can turn italics off. They can show labels where applicable (for example: banner markers, names in item frames). The custom name will take priority over item-name.
+custom-name: '&6&lExample Item'
+
+# When present, replaces default item name with contained chat component. It does not take priority over custom_name if both are set. An item-name can't be changed or removed in an anvil. item-name is not styled with italics. item-name does not show labels where applicable (for example: banner markers, names in item frames)
+item-name: 'Example Item'
+
+# The Lore for the item. Text can be displayed on multiple lines. By default, lore is purple and in italics.
+lore:
+  - '&7This is an example item.'
+  - '&7It is used for demonstration purposes.'
+
+# Controls the maximum amount of damage an item can take. If not present, the item cannot be damaged. For this to work, you need to make this item a tool if it is not already and then set it's initial damage (usually 0). max-stack-size must be 1 if max-damage is set.
+max-damage: 2567
+
+# The absolute amount of damage or use this item has taken.
+damage: 20
+
+# Number of enchantment levels to add to the base level cost when repairing, combining, or renaming this item with an Anvil.
+repair-cost: 10
+
+unbreakable:
+  # Tools, armor and weapons set with this won't lose durability when used.
+  enabled: false
+  # If False, an 'Unbreakable' line will not be included in the tooltip. Default is True.
+  show-in-tooltip: true
+
+# If true, this item will not burn in fire
+fire-resistant: true
+
+# The item model property identifier.
+custom-model-data: 1234
+
+# If present, it will completely hide whole item tooltip (that includes item name). The tooltip will be still visible and searchable in creative mode.
+hide-tooltip: true
+
+# If True, disables 'additional' tooltip part which comes from the item type.
+hide-additional-tooltip: true
+
+# Determines which blocks that blocks with this tag can be placed against in adventure mode.
+can-place-on:
+  blocks:
+    - minecraft:stone
+    - minecraft:cobblestone
+    - tag:badlands_terracotta
+  # If False, the 'Can be placed on' line will not be included in the tooltip. Default is True.
+
+  show-in-tooltip: true
+
+# The only blocks this item may break when used by a player in adventure mode.
+can-break:
+  blocks:
+    - minecraft:stone
+    - minecraft:cobblestone
+  # If False, the 'Can break' line will not be included in the tooltip. Default is True.
+  show-in-tooltip: true
+
+enchantment:
+  glint: true
+  enchantments:
+    - type: minecraft:damage_all
+      level: 1
+    - type: minecraft:durability
+      level: 1
+  # If False, no enchantments will be shown in the item tooltip. Default is True.
+  show-in-tooltip: true
+
+# You can use this to make any item edible. You must set both nutrition and saturation_modifier to make it work.
+food:
+  # Non-negative integer, number of food points to restore when eaten. This field must be set along with saturation.
+  nutrition: 10
+  # Amount of saturation to restore when eaten. This field must be set along with nutrition.
+  saturation: 10
+  # Set to true so wolves can eat it.
+  is-meat: true
+  # If true, this food can be eaten even if not hungry
+  can-always-eat: true
+  # The number of seconds that it takes to eat this food item.
+  eat-seconds: 1
+  # Use this control to set the effects and probablity for the effect to be applied when the food is eaten.
+  effects:
+    - type: ABSORPTION
+      # Set the proabability of this effect between 0 and 1.
+      probability: 0.5
+      # The amplifier of the effect. Set to at least 0 along with the duration to enable the effect.
+      amplifier: 1
+      # The duration of the effect in ticks. Set to -1 to make the effect permanent.
+      duration: 10
+      # Particles are displayed by default.
+      show-particles: true
+      # Set if the effect icon is to be shown.
+      show-icon: true
+      # Whether or not this is an effect provided by a beacon and therefore should be less intrusive on the screen. Optional, and defaults to off.
+      ambient: true
+  # When this food item is eaten, it converts to this item.
+  using-converts-to: itsmyitem:example_item
+
+# The item can be set to play in a jukebox.
+jukebox-playable:
+  # The namespaced song the item will play. For example: minecraft:precipice
+  song: minecraft:precipice
+  # If false, the name of the song will not be shown in the tooltip for the item.
+  show-in-tooltip: true
+
+# Options avaiable to make this item behave like a tool. Or it can be used to change behavior of normal tools.
+tool:
+  # Overrides the mining speed if no rules match. (default: 1.0)
+  default-mining-speed: 1.0
+  # Non-negative integer for the amount of durability to remove each time a block is mined with this tool.
+  damage-per-block: 1.0
+  # Add a set of rules for this tool.
+  rules:
+    - blocks:
+        - minecraft:stone
+        - minecraft:cobblestone
+      # Overrides the mining speed if present and matched. Optional.
+      speed: 2.0
+      # Optional. Overrides whether this tool is considered 'correct' if present and matched. When set to true, it will cause the block to mine at its most efficient speed, and drop items if the targeted block requires that.
+      correct-for-drops: true
+
+# All items can be given Modifiers which affect various Attributes of the player/mob which wears or holds them.
+attribute:
+  attributes:
+    - attribute: ARMOR
+      operation: add_number
+      amount: 1.0
+      slot: mainhand
+    - attribute: GENERIC_ATTACK_SPEED
+      operation: add_number
+      amount: 1.0
+      slot: mainhand
+  # If False. The attributes will not show on the item tooltip. Default is True.
+  show-in-tooltip: true

@@ -1,8 +1,8 @@
-name: TemplatePlugin
+name: zItems
 author: Maxlego08
-main: fr.maxlego08.template.Template
+main: fr.maxlego08.items.ItemPlugin
 website: https://groupez.dev
-description: Default plugin developed by GroupeZ
+description: Custom items
 version: 1.0.0
-api-version: 1.13
+api-version: 1.21
 commands:
