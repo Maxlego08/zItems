@@ -5,6 +5,7 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.trim.TrimHelper;
+import org.bukkit.Axis;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -14,9 +15,14 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.AnaloguePowerable;
+import org.bukkit.block.data.Attachable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.Orientable;
 import org.bukkit.block.data.Waterlogged;
+import org.bukkit.block.data.type.Bamboo;
+import org.bukkit.block.data.type.Sapling;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Axolotl;
@@ -223,10 +229,24 @@ public class ItemConfiguration {
                     waterlogged.setWaterlogged(configuration.getBoolean("block-data-meta.waterlogged"));
                 }
 
+                if (blockData instanceof Attachable attachable) {
+                    attachable.setAttached(configuration.getBoolean("block-data-meta.attached"));
+                }
+
+                if (blockData instanceof Openable openable) {
+                    openable.setOpen(configuration.getBoolean("block-data-meta.open"));
+                }
+
                 if (blockData instanceof Ageable ageable) {
                     if (configuration.getString("block-data-meta.age", "").equalsIgnoreCase("max")) {
                         ageable.setAge(ageable.getMaximumAge());
                     } else ageable.setAge(configuration.getInt("block-data-meta.age", 0));
+                }
+
+                if (blockData instanceof Sapling sapling) {
+                    if (configuration.getString("block-data-meta.stage", "").equalsIgnoreCase("max")) {
+                        sapling.setStage(sapling.getMaximumStage());
+                    } else sapling.setStage(configuration.getInt("block-data-meta.stage", 0));
                 }
 
                 if (blockData instanceof AnaloguePowerable analoguePowerable) {
@@ -234,6 +254,22 @@ public class ItemConfiguration {
                         analoguePowerable.setPower(analoguePowerable.getMaximumPower());
                     } else analoguePowerable.setPower(configuration.getInt("block-data-meta.power", 0));
                 }
+
+                if (blockData instanceof Bamboo bamboo) {
+                    String leaves = configuration.getString("block-data-meta.bamboo-leaves");
+                    if (leaves != null) bamboo.setLeaves(Bamboo.Leaves.valueOf(leaves.toUpperCase()));
+                }
+
+                if (blockData instanceof Orientable orientable) {
+                    String axisAsString = configuration.getString("block-data-meta.axis");
+                    if (axisAsString != null) {
+                        Axis axis = Axis.valueOf(axisAsString.toUpperCase());
+                        if (orientable.getAxes().contains(axis)) {
+                            orientable.setAxis(axis);
+                        }
+                    }
+                }
+
 
             } catch (Exception exception) {
                 plugin.getLogger().severe("Invalid block data or material configuration in " + fileName);
