@@ -41,3 +41,65 @@ block-data-meta:
   # Some blocks such as the portal block may not be able to be placed in all orientations.
   # X, Y, Z
   axis: X
+
+  # Represents the level of honey contained in a bee nest or beehive.
+  honey-level: 0
+
+  # Represents if the block is powered by redstone.
+  powered: false
+
+  # Represents which half of a two block tall material this block is.
+  # TOP, BOTTOM
+  half: TOP
+
+  # Represents if brewing stand has a bottle in the slot.
+  bottles:
+    0: false
+    1: false
+    2: false
+
+  # Represents how far uncovered by brush the block is.
+  dusted: 0
+
+  # Represents if a force will be applied on entities moving through this block.
+  drag: false
+
+  # Represents how many bites have been eat on cake
+  # More the value is big more the cake is eaten
+  bites: 0
+
+  # Represents if the block is light up
+  lit: false
+
+  # Represents if the campfire is a signal fire and make more smoke
+  signal-fire: false
+
+  # Represents how many candle on the block
+  candles: 1
+
+  # Represents if cave plant have berries
+  berries: false
+
+  # Represents if the chest is a single or the part of the double chest
+  # SINGLE, LEFT, RIGHT
+  chest-type: SINGLE
+
+  # Represents if Command block is conditional
+  conditional: false
+
+  # Represents the mode of the comparator
+  # COMPARE, SUBTRACT
+  comparator-mode: COMPARE
+
+  # Represents if crafter is crafting
+  crafter-crafting: false
+
+  # Represents if crafter is triggered
+  crafter-triggered: false
+
+  # Represents the orientation of the crafter
+  # DOWN_EAST, DOWN_NORTH, DOWN_SOUTH, DOWN_WEST, UP_EAST, UP_NORTH, UP_SOUTH, UP_WEST, WEST_UP, EAST_UP, NORTH_UP, SOUTH_UP
+  crafter-orientation: DOWN_NORTH
+
+  # Represents if the daylight detector is inverted
+  inverted: false

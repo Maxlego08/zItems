@@ -13,16 +13,9 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.AnaloguePowerable;
-import org.bukkit.block.data.Attachable;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.Openable;
-import org.bukkit.block.data.Orientable;
-import org.bukkit.block.data.Waterlogged;
-import org.bukkit.block.data.type.Bamboo;
-import org.bukkit.block.data.type.Sapling;
+import org.bukkit.block.data.*;
+import org.bukkit.block.data.type.*;
+import org.bukkit.command.Command;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Axolotl;
@@ -268,6 +261,106 @@ public class ItemConfiguration {
                             orientable.setAxis(axis);
                         }
                     }
+                }
+
+                if(blockData instanceof Beehive beehive) {
+                    int honeyLevel = configuration.getInt("block-data-meta.honey-level", 0);
+                    if(honeyLevel < 0 || honeyLevel > beehive.getMaximumHoneyLevel()) {
+                        throw new IllegalArgumentException("Honey level must be between 0 and " + beehive.getMaximumHoneyLevel());
+                    }
+                    beehive.setHoneyLevel(honeyLevel);
+                }
+
+                if(blockData instanceof Powerable powerable) {
+                    powerable.setPowered(configuration.getBoolean("block-data-meta.powered", false));
+                }
+
+                if(blockData instanceof Bisected bisected) {
+                    String halfAsString = configuration.getString("block-data-meta.half");
+                    if(halfAsString != null) {
+                        bisected.setHalf(Bisected.Half.valueOf(halfAsString.toUpperCase()));
+                    }
+                }
+
+                if(blockData instanceof BrewingStand brewingStand) {
+                    List<Map<?,?>> bottles = configuration.getMapList("block-data-meta.bottles");
+                    for (int i = 0; i < bottles.size(); i++) {
+                        Map<?,?> bottle = bottles.get(i);
+                        brewingStand.setBottle(i, (boolean) bottle.get(i));
+                    }
+                }
+
+                if(blockData instanceof Brushable brushable) {
+                    int dusted = configuration.getInt("block-data-meta.dusted", 0);
+                    if(dusted < 0 || dusted > brushable.getMaximumDusted()) {
+                        throw new IllegalArgumentException("Dusted must be between 0 and " + brushable.getMaximumDusted());
+                    }
+                    brushable.setDusted(dusted);
+                }
+
+                if(blockData instanceof BubbleColumn bubbleColumn) {
+                    bubbleColumn.setDrag(configuration.getBoolean("block-data-meta.drag", false));
+                }
+
+                if(blockData instanceof Cake cake) {
+                    int bites = configuration.getInt("block-data-meta.bites", 0);
+                    if(bites < 0 || bites > cake.getMaximumBites()) {
+                        throw new IllegalArgumentException("Bites must be between 0 and " + cake.getMaximumBites());
+                    }
+                    cake.setBites(bites);
+                }
+
+                if(blockData instanceof Lightable lightable) {
+                    lightable.setLit(configuration.getBoolean("block-data-meta.lit", false));
+                }
+
+                if(blockData instanceof Campfire campfire) {
+                    campfire.setSignalFire(configuration.getBoolean("block-data-meta.signal-fire", false));
+                }
+
+                if(blockData instanceof Candle candle) {
+                    int candles = configuration.getInt("block-data-meta.candles", 1);
+                    if(candles < 1 || candles > candle.getMaximumCandles()) {
+                        throw new IllegalArgumentException("Candles must be between 1 and " + candle.getMaximumCandles());
+                    }
+                    candle.setCandles(candles);
+                }
+
+                if(blockData instanceof CaveVinesPlant caveVinesPlant) {
+                    caveVinesPlant.setBerries(configuration.getBoolean("block-data-meta.berries", false));
+                }
+
+                if(blockData instanceof Chest chest) {
+                    String typeAsString = configuration.getString("block-data-meta.chest-type");
+                    if(typeAsString != null) {
+                        chest.setType(Chest.Type.valueOf(typeAsString.toUpperCase()));
+                    }
+                }
+
+                if(blockData instanceof CommandBlock commandBlock) {
+                    commandBlock.setConditional(configuration.getBoolean("block-data-meta.conditional", false));
+                }
+
+                if(blockData instanceof Comparator comparator) {
+                    String modeAsString = configuration.getString("block-data-meta.comparator-mode");
+                    if(modeAsString != null) {
+                        comparator.setMode(Comparator.Mode.valueOf(modeAsString.toUpperCase()));
+                    }
+                }
+
+                if (blockData instanceof Crafter crafter) {
+                    boolean crafting = configuration.getBoolean("block-data-meta.crafter-crafting", false);
+                    boolean triggered = configuration.getBoolean("block-data-meta.crafter-triggered", false);
+                    String orientationAsString = configuration.getString("block-data-meta.crafter-orientation");
+                    if(orientationAsString != null) {
+                        crafter.setOrientation(Crafter.Orientation.valueOf(orientationAsString.toUpperCase()));
+                    }
+                    crafter.setCrafting(crafting);
+                    crafter.setTriggered(triggered);
+                }
+
+                if(blockData instanceof DaylightDetector daylightDetector) {
+                    daylightDetector.setInverted(configuration.getBoolean("block-data-meta.inverted", false));
                 }
 
 
