@@ -1,7 +1,9 @@
 package fr.maxlego08.items;
 
+import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
+import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.command.commands.CommandItem;
 import fr.maxlego08.items.components.PaperComponent;
@@ -66,5 +68,9 @@ public class ItemsPlugin extends ZPlugin {
 
     public TrimHelper getTrimHelper() {
         return trimHelper;
+    }
+
+    public Item createItem(String name, ItemConfiguration itemConfiguration) {
+        return new ZItem(this, name, itemConfiguration);
     }
 }

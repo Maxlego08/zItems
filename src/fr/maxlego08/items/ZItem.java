@@ -42,7 +42,12 @@ public class ZItem extends ZUtils implements Item {
     public ItemStack build(Player player, int amount) {
 
         ItemStack itemStack = new ItemStack(this.configuration.getMaterial());
+
         itemStack.setAmount(amount);
+        if (this.configuration.getAmount() > 0) {
+            itemStack.setAmount(this.configuration.getAmount());
+        }
+
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (itemMeta != null) {
@@ -58,6 +63,7 @@ public class ZItem extends ZUtils implements Item {
             this.configuration.applyAxolotlBucket(itemMeta);
             this.configuration.applyBanner(itemMeta);
             this.configuration.applyBlockDataMeta(itemMeta);
+            this.configuration.applyBlockState(itemMeta, player);
 
             if (itemMeta instanceof Damageable damageable) {
                 if (this.configuration.getMaxDamage() > 0) damageable.setMaxDamage(this.configuration.getMaxDamage());
