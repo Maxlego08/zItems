@@ -57,8 +57,7 @@ damage: 20
 # Number of enchantment levels to add to the base level cost when repairing, combining, or renaming this item with an Anvil.
 repair-cost: 10
 
-unbreakable:
-  # Tools, armor and weapons set with this won't lose durability when used.
+unbreakable: # Tools, armor and weapons set with this won't lose durability when used.
   enabled: false
   # If False, an 'Unbreakable' line will not be included in the tooltip. Default is True.
   show-in-tooltip: true
@@ -136,15 +135,13 @@ food:
   using-converts-to: example_food
 
 # The item can be set to play in a jukebox.
-jukebox-playable:
-  # The namespaced song the item will play. For example, minecraft:precipice
+jukebox-playable: # The namespaced song the item will play. For example, minecraft:precipice
   song: minecraft:precipice
   # If false, the name of the song will not be shown in the tooltip for the item.
   show-in-tooltip: true
 
 # Options available to make this item behave like a tool. Or it can be used to change the behavior of normal tools.
-tool:
-  # Overrides the mining speed if no rules match. (default: 1.0)
+tool: # Overrides the mining speed if no rules match. (default: 1.0)
   default-mining-speed: 1.0
   # Non-negative integer for the amount of durability to remove each time a block is mined with this tool.
   damage-per-block: 1.0
@@ -462,3 +459,24 @@ block-data-meta:
   wall-height:
     NORTH: false
 
+# Allows defining the content of a block with the state block
+# More informations here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/BlockState.html
+block-state-meta:
+
+  enable: false
+
+  # Allows defining the contents of a container (Chest, Barrel, Dropper etc.)
+  # More informations here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/Container.html
+  #
+  # To define items in the container, you must key the slot to use and then the content of the slot
+  container:
+    0: # Slot 0
+      custom-item: "custom_seed" # Allows using the configuration of another item
+      amount: 5 # The Number of times you want the custom item will take over the amount defined in the other configuration
+    1: # Slot 1
+      # You can define an item as you will do in a configuration file, the same elements are available
+      material: DIAMOND
+      amount: 16
+    5: # Slot 5
+      material: STONE
+      display-name: "<rainbow>Heyy"
