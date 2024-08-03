@@ -1,0 +1,43 @@
+material: WHEAT_SEEDS
+
+block-data-meta:
+  enable: true
+  material: WHEAT
+
+  # Only for directional block
+  # NORTH, EAST, SOUTH, WEST, UP, DOWN
+  block-face: NORTH
+
+  # Only for water logged block
+  # true or false
+  waterlogged: false
+
+  # Only for ageable block
+  # You can use "max" to define the max age of the block
+  age: 3
+
+  # Represents the redstone power level currently being emitted or transmitted via this block. May not be over 9000 or the maximum power (usually 15).
+  # You can use "max" to define the max power of the block
+  power: 15
+
+  # Denotes whether a tripwire hook or string forms a complete tripwire circuit and is ready to trigger.
+  # Updating the property on a tripwire hook will change the texture to indicate a connected string,
+  # but will not have any effect when used on the tripwire string itself.
+  # It may however still be used to check whether the string forms a circuit.
+  attached: false
+
+  # Represents the size of the leaves on this bamboo block.
+  # NONE, SMALL, LARGE
+  bamboo-leaves: NONE
+
+  # Represents the growth stage of a sapling. When the sapling reaches maximum stage it will attempt to grow into a tree as the next stage.
+  # You can use "max" to define the max stage of the block
+  stage: 0
+
+  # Denotes whether this block is currently opened.
+  open: false
+
+  # Represents the axis along whilst this block is oriented.
+  # Some blocks such as the portal block may not be able to be placed in all orientations.
+  # X, Y, Z
+  axis: X
