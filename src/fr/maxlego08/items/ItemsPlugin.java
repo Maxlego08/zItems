@@ -10,10 +10,12 @@ import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
+import fr.maxlego08.items.trim.TrimHelper;
 import fr.maxlego08.items.zcore.ZPlugin;
 
 public class ItemsPlugin extends ZPlugin {
 
+    private final TrimHelper trimHelper = new TrimHelper();
     private final ItemManager itemManager = new ZItemManager(this);
     private final Enchantments enchantments = new ZEnchantments();
     private ItemComponent itemComponent;
@@ -60,5 +62,9 @@ public class ItemsPlugin extends ZPlugin {
 
     public Enchantments getEnchantments() {
         return enchantments;
+    }
+
+    public TrimHelper getTrimHelper() {
+        return trimHelper;
     }
 }

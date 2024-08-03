@@ -171,3 +171,11 @@ attribute:
       slot: mainhand
   # If False. The attributes will not show on the item tooltip. Default is True.
   show-in-tooltip: true
+
+# Only work for armors!
+trim:
+  enable: false
+  # QUARTZ, IRON, NETHERITE, REDSTONE, COPPER; GOLD; EMERALD, DIAMOND, LAPIS, AMETHYST
+  material: QUARTZ
+  # SENTRY, DUNE, COAST, WILD, WARD, EYE, VEX, TIDE, SNOUT, RIB, SPIRE, WAYFINDER, SHAPER, SILENCE, RAISER, HOST
+  pattern: DUNE

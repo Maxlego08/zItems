@@ -3,6 +3,7 @@ package fr.maxlego08.items.api.configurations;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
+import fr.maxlego08.items.trim.TrimHelper;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -10,6 +11,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +44,10 @@ public class ItemConfiguration {
     private final boolean enchantmentShowInTooltip;
     private final List<AttributeConfiguration> attributes;
     private final boolean attributeShowInTooltip;
+    private final TrimConfiguration trimConfiguration;
     private Food food;
 
-    public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration) {
+    public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String fileName) {
 
         this.itemType = ItemType.valueOf(configuration.getString("type", "CLASSIC").toUpperCase());
         this.material = Material.getMaterial(configuration.getString("material", "IRON_SWORD").toUpperCase());
@@ -115,6 +119,24 @@ public class ItemConfiguration {
 
             return new AttributeConfiguration(attribute, operation, amount, slot);
         }).toList();
+
+        boolean enableTrim = configuration.getBoolean("trim.enable", false);
+        if (enableTrim) {
+            TrimHelper trimHelper = plugin.getTrimHelper();
+            TrimPattern trimPattern = trimHelper.getTrimPatterns().get(configuration.getString("trim.pattern", "").toLowerCase());
+            if (trimPattern == null) {
+                enableTrim = false;
+                plugin.getLogger().severe("Trim pattern " + configuration.getString("trim.pattern", "") + " was not found for item " + fileName);
+            }
+            TrimMaterial trimMaterial = trimHelper.getTrimMaterials().get(configuration.getString("trim.material", "").toLowerCase());
+            if (trimMaterial == null) {
+                enableTrim = false;
+                plugin.getLogger().severe("Trim material " + configuration.getString("trim.material", "") + " was not found for item " + fileName);
+            }
+            this.trimConfiguration = new TrimConfiguration(enableTrim, trimMaterial, trimPattern);
+
+        } else this.trimConfiguration = new TrimConfiguration(false, null, null);
+
     }
 
     public Material getMaterial() {
@@ -234,6 +256,10 @@ public class ItemConfiguration {
                 else itemStack.addUnsafeEnchantment(enchantment, level);
             }
         });
+    }
+
+    public TrimConfiguration getTrimConfiguration() {
+        return trimConfiguration;
     }
 
     public List<AttributeConfiguration> getAttributes() {

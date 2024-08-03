@@ -10,9 +10,11 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
 
 import java.util.UUID;
 
@@ -53,6 +55,7 @@ public class ZItem extends ZUtils implements Item {
 
             this.applyNames(itemMeta, player);
             this.applyFood(itemMeta, player);
+            this.applyTrim(itemMeta);
 
             if (itemMeta instanceof Damageable damageable) {
                 if (this.configuration.getMaxDamage() > 0) damageable.setMaxDamage(this.configuration.getMaxDamage());
@@ -123,5 +126,11 @@ public class ZItem extends ZUtils implements Item {
         if (food == null || !food.enable()) return;
 
         food.applyToItemMeta(itemMeta, player, this.plugin);
+    }
+
+    private void applyTrim(ItemMeta itemMeta) {
+        if (itemMeta instanceof ArmorMeta armorMeta && this.configuration.getTrimConfiguration().enable()) {
+            armorMeta.setTrim(new ArmorTrim(this.configuration.getTrimConfiguration().material(), this.configuration.getTrimConfiguration().pattern()));
+        }
     }
 }
