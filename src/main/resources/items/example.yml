@@ -179,3 +179,29 @@ trim:
   material: QUARTZ
   # SENTRY, DUNE, COAST, WILD, WARD, EYE, VEX, TIDE, SNOUT, RIB, SPIRE, WAYFINDER, SHAPER, SILENCE, RAISER, HOST
   pattern: DUNE
+
+armor-stand:
+  enable: false
+  invisible: true
+  no_base_plate: false
+  show_arms: true
+  small: false
+  marker: true
+
+axolotl-bucket:
+  enable: false
+  variant: BLUE
+
+banner-meta:
+  enable: false
+  patterns:
+    - color: BLACK
+      pattern: STRIPE_DOWNRIGHT
+    - color: RED
+      pattern: STRIPE_DOWNLEFT
+
+block-data-meta:
+  enable: true
+  material: STONE
+  block_data: "minecraft:stone[variant=granite]"
+

@@ -17,7 +17,7 @@ public class CommandItemGive extends VCommand {
         this.addSubCommand("give", "g");
         this.setDescription(Message.DESCRIPTION_GIVE);
         this.addRequireArg("item", (a, b) -> plugin.getItemManager().getItemNames());
-        this.addRequireArg("player");
+        this.addOptionalArg("player");
         this.addOptionalArg("amount", (a, b) -> Arrays.asList("1", "8", "16", "32", "48", "68"));
     }
 
@@ -25,8 +25,10 @@ public class CommandItemGive extends VCommand {
     protected CommandType perform(ItemsPlugin plugin) {
 
         String itemName = this.argAsString(0);
-        Player player = this.argAsPlayer(1);
+        Player player = this.argAsPlayer(1, this.player);
         int amount = this.argAsInteger(2, 1);
+
+        if (player == null) return CommandType.SYNTAX_ERROR;
 
         plugin.getItemManager().giveItem(sender, player, itemName, amount);
 

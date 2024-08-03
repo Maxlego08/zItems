@@ -1,18 +1,37 @@
 package fr.maxlego08.items.api.configurations;
 
+import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.trim.TrimHelper;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.AnaloguePowerable;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Waterlogged;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Axolotl;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.AxolotlBucketMeta;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockDataMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +64,14 @@ public class ItemConfiguration {
     private final List<AttributeConfiguration> attributes;
     private final boolean attributeShowInTooltip;
     private final TrimConfiguration trimConfiguration;
+    private final ArmorStandConfig armorStandConfig;
+    private AxolotlBucketConfiguration axolotlBucketConfiguration;
+    private BannerMetaConfiguration bannerMetaConfiguration;
+    private BlockDataMetaConfiguration blockDataMetaConfiguration;
     private Food food;
 
     public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String fileName) {
+        AxolotlBucketConfiguration axolotlBucketConfiguration;
 
         this.itemType = ItemType.valueOf(configuration.getString("type", "CLASSIC").toUpperCase());
         this.material = Material.getMaterial(configuration.getString("material", "IRON_SWORD").toUpperCase());
@@ -137,6 +161,93 @@ public class ItemConfiguration {
 
         } else this.trimConfiguration = new TrimConfiguration(false, null, null);
 
+        this.armorStandConfig = new ArmorStandConfig(configuration.getBoolean("armor-stand.enable"), configuration.getBoolean("armor-stand.invisible"), configuration.getBoolean("armor-stand.no_base_plate"), configuration.getBoolean("armor-stand.show_arms"), configuration.getBoolean("armor-stand.small"), configuration.getBoolean("armor-stand.marker"));
+
+        this.loadAxolotl(plugin, configuration, fileName);
+        this.loadBanner(plugin, configuration, fileName);
+        this.loadBlockDataMeta(plugin, configuration, fileName);
+    }
+
+    private void loadAxolotl(ItemsPlugin plugin, YamlConfiguration configuration, String fileName) {
+        boolean enableAxolotl = configuration.getBoolean("axolotl-bucket.enable", false);
+        if (enableAxolotl) {
+            try {
+                this.axolotlBucketConfiguration = new AxolotlBucketConfiguration(true, Axolotl.Variant.valueOf(configuration.getString("axolotl-bucket.variant")));
+            } catch (Exception ignored) {
+                plugin.getLogger().severe("Axolotl variant " + configuration.getString("axolotl-bucket.variant", "") + " was not found for item " + fileName);
+                this.axolotlBucketConfiguration = new AxolotlBucketConfiguration(false, null);
+            }
+        } else this.axolotlBucketConfiguration = new AxolotlBucketConfiguration(false, null);
+    }
+
+    private void loadBanner(ItemsPlugin plugin, YamlConfiguration configuration, String fileName) {
+        boolean enableBannerMeta = configuration.getBoolean("banner-meta.enable", false);
+        List<Pattern> patterns = new ArrayList<>();
+
+        if (enableBannerMeta) {
+            List<?> patternsList = configuration.getList("banner-meta.patterns");
+            if (patternsList != null) {
+                for (Object obj : patternsList) {
+                    if (obj instanceof ConfigurationSection patternSection) {
+                        try {
+                            DyeColor color = DyeColor.valueOf(patternSection.getString("color"));
+                            PatternType patternType = PatternType.valueOf(patternSection.getString("pattern"));
+                            patterns.add(new Pattern(color, patternType));
+                        } catch (Exception e) {
+                            plugin.getLogger().severe("Invalid pattern configuration in " + fileName + ": " + patternSection);
+                        }
+                    }
+                }
+            }
+            this.bannerMetaConfiguration = new BannerMetaConfiguration(true, patterns);
+        } else {
+            this.bannerMetaConfiguration = new BannerMetaConfiguration(false, null);
+        }
+    }
+
+    private void loadBlockDataMeta(Plugin plugin, YamlConfiguration configuration, String fileName) {
+        boolean enableBlockDataMeta = configuration.getBoolean("block-data-meta.enable", false);
+        BlockData blockData = null;
+
+        if (enableBlockDataMeta) {
+            try {
+                Material material = Material.valueOf(configuration.getString("block-data-meta.material"));
+                blockData = plugin.getServer().createBlockData(material);
+
+                if (blockData instanceof Directional directional) {
+                    String face = configuration.getString("block-data-meta.block-face");
+                    if (face != null) directional.setFacing(BlockFace.valueOf(face.toUpperCase()));
+                }
+
+                if (blockData instanceof Waterlogged waterlogged) {
+                    waterlogged.setWaterlogged(configuration.getBoolean("block-data-meta.waterlogged"));
+                }
+
+                if (blockData instanceof Ageable ageable) {
+                    if (configuration.getString("block-data-meta.age", "").equalsIgnoreCase("max")) {
+                        ageable.setAge(ageable.getMaximumAge());
+                    } else ageable.setAge(configuration.getInt("block-data-meta.age", 0));
+                }
+
+                if (blockData instanceof AnaloguePowerable analoguePowerable) {
+                    if (configuration.getString("block-data-meta.power", "").equalsIgnoreCase("max")) {
+                        analoguePowerable.setPower(analoguePowerable.getMaximumPower());
+                    } else analoguePowerable.setPower(configuration.getInt("block-data-meta.power", 0));
+                }
+
+            } catch (Exception exception) {
+                plugin.getLogger().severe("Invalid block data or material configuration in " + fileName);
+                exception.printStackTrace();
+                enableBlockDataMeta = false;
+            }
+            this.blockDataMetaConfiguration = new BlockDataMetaConfiguration(enableBlockDataMeta, blockData);
+        } else {
+            this.blockDataMetaConfiguration = new BlockDataMetaConfiguration(false, null);
+        }
+    }
+
+    public BlockDataMetaConfiguration getBlockDataMetaConfiguration() {
+        return blockDataMetaConfiguration;
     }
 
     public Material getMaterial() {
@@ -264,5 +375,43 @@ public class ItemConfiguration {
 
     public List<AttributeConfiguration> getAttributes() {
         return attributes;
+    }
+
+    public ArmorStandConfig getArmorStandConfig() {
+        return armorStandConfig;
+    }
+
+    public void applyArmorStand(ItemMeta itemMeta) {
+        if (itemMeta instanceof ArmorStandMeta armorStandMeta && this.armorStandConfig.enable()) {
+            armorStandMeta.setInvisible(this.armorStandConfig.invisible());
+            armorStandMeta.setNoBasePlate(this.armorStandConfig.noBasePlate());
+            armorStandMeta.setShowArms(this.armorStandConfig.showArms());
+            armorStandMeta.setSmall(this.armorStandConfig.small());
+            armorStandMeta.setMarker(this.armorStandConfig.marker());
+        }
+    }
+
+    public void applyTrim(ItemMeta itemMeta) {
+        if (itemMeta instanceof ArmorMeta armorMeta && this.trimConfiguration.enable()) {
+            armorMeta.setTrim(new ArmorTrim(this.trimConfiguration.material(), this.trimConfiguration.pattern()));
+        }
+    }
+
+    public void applyAxolotlBucket(ItemMeta itemMeta) {
+        if (itemMeta instanceof AxolotlBucketMeta axolotlBucketMeta && this.axolotlBucketConfiguration.enable()) {
+            axolotlBucketMeta.setVariant(this.axolotlBucketConfiguration.variant());
+        }
+    }
+
+    public void applyBanner(ItemMeta itemMeta) {
+        if (itemMeta instanceof BannerMeta bannerMeta && this.bannerMetaConfiguration.enable()) {
+            bannerMeta.setPatterns(this.bannerMetaConfiguration.patterns());
+        }
+    }
+
+    public void applyBlockDataMeta(ItemMeta itemMeta) {
+        if (itemMeta instanceof BlockDataMeta blockDataMeta && this.blockDataMetaConfiguration.enable()) {
+            blockDataMeta.setBlockData(this.blockDataMetaConfiguration.blockData());
+        }
     }
 }
