@@ -1,5 +1,6 @@
 package fr.maxlego08.items.api.configurations;
 
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.utils.Between;
 import org.bukkit.Axis;
 import org.bukkit.Instrument;
@@ -70,7 +71,6 @@ import org.bukkit.block.data.type.TurtleEgg;
 import org.bukkit.block.data.type.Vault;
 import org.bukkit.block.data.type.Wall;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.Map;
@@ -78,7 +78,7 @@ import java.util.Set;
 
 public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
 
-    public static BlockDataMetaConfiguration loadBlockDataMeta(Plugin plugin, YamlConfiguration configuration, String fileName, String path) {
+    public static BlockDataMetaConfiguration loadBlockDataMeta(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
         boolean enableBlockDataMeta = configuration.getBoolean(path + "block-data-meta.enable", false);
         BlockData blockData = null;
 

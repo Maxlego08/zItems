@@ -1,0 +1,18 @@
+material: CHEST
+lore:
+  - "&7Custom chest with content"
+
+block-state-meta:
+
+  enable: true
+
+  container:
+    0:
+      custom-item: "custom_seed"
+      amount: 16
+    1:
+      material: DIAMOND
+      amount: 16
+    5:
+      material: STONE
+      display-name: "<rainbow>Heyy"

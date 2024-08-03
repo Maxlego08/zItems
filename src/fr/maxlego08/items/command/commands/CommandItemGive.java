@@ -26,7 +26,7 @@ public class CommandItemGive extends VCommand {
 
         String itemName = this.argAsString(0);
         Player player = this.argAsPlayer(1, this.player);
-        int amount = this.argAsInteger(2, 1);
+        int amount = this.argAsInteger(2, 0);
 
         if (player == null) return CommandType.SYNTAX_ERROR;
 

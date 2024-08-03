@@ -3,6 +3,7 @@ package fr.maxlego08.items;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.command.commands.CommandItem;
@@ -12,10 +13,10 @@ import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
-import fr.maxlego08.items.trim.TrimHelper;
+import fr.maxlego08.items.api.trim.TrimHelper;
 import fr.maxlego08.items.zcore.ZPlugin;
 
-public class ItemsPlugin extends ZPlugin {
+public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
     private final TrimHelper trimHelper = new TrimHelper();
     private final ItemManager itemManager = new ZItemManager(this);
@@ -70,6 +71,7 @@ public class ItemsPlugin extends ZPlugin {
         return trimHelper;
     }
 
+    @Override
     public Item createItem(String name, ItemConfiguration itemConfiguration) {
         return new ZItem(this, name, itemConfiguration);
     }

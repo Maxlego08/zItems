@@ -40,7 +40,7 @@ public enum Message {
 
     ITEM_NOT_FOUND("&cImpossible to find the item &f%name%&c."),
 
-    ITEM_GIVE("&aYou just gave &7x%amount% &b%name% to the player &f%player%&a.");
+    ITEM_GIVE("&aYou just gave &b%name% to the player &f%player%&a.");
 
     private List<String> messages;
     private String message;

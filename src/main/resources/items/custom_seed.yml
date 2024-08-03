@@ -1,5 +1,7 @@
 material: WHEAT_SEEDS
 
+display-name: "&eGrow Wheat"
+
 block-data-meta:
   enable: true
   material: WHEAT

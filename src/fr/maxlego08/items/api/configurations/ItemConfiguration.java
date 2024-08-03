@@ -1,11 +1,11 @@
 package fr.maxlego08.items.api.configurations;
 
 import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
+import fr.maxlego08.items.api.trim.TrimHelper;
 import fr.maxlego08.items.api.utils.Between;
-import fr.maxlego08.items.trim.TrimHelper;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -62,13 +62,13 @@ public class ItemConfiguration {
     private final boolean attributeShowInTooltip;
     private final TrimConfiguration trimConfiguration;
     private final ArmorStandConfig armorStandConfig;
+    private final BlockDataMetaConfiguration blockDataMetaConfiguration;
+    private final BlockStateMetaConfiguration blockStateMetaConfiguration;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
-    private BlockDataMetaConfiguration blockDataMetaConfiguration;
-    private BlockStateMetaConfiguration blockStateMetaConfiguration;
     private Food food;
 
-    public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+    public ItemConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
         this.itemType = ItemType.valueOf(configuration.getString(path + "type", "CLASSIC").toUpperCase());
         this.material = Material.getMaterial(configuration.getString(path + "material", "IRON_SWORD").toUpperCase());
@@ -167,7 +167,7 @@ public class ItemConfiguration {
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
     }
 
-    private void loadAxolotl(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+    private void loadAxolotl(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
         boolean enableAxolotl = configuration.getBoolean(path + "axolotl-bucket.enable", false);
         if (enableAxolotl) {
             try {
@@ -181,7 +181,7 @@ public class ItemConfiguration {
         }
     }
 
-    private void loadBanner(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+    private void loadBanner(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
         boolean enableBannerMeta = configuration.getBoolean(path + "banner-meta.enable", false);
         List<Pattern> patterns = new ArrayList<>();
 

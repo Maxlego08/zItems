@@ -43,10 +43,9 @@ public class ZItem extends ZUtils implements Item {
 
         ItemStack itemStack = new ItemStack(this.configuration.getMaterial());
 
-        itemStack.setAmount(amount);
-        if (this.configuration.getAmount() > 0) {
-            itemStack.setAmount(this.configuration.getAmount());
-        }
+        int currentAmount = amount == 0 ? this.configuration.getAmount() : amount;
+        currentAmount = currentAmount == 0 ? 1 : currentAmount;
+        itemStack.setAmount(currentAmount);
 
         ItemMeta itemMeta = itemStack.getItemMeta();
 

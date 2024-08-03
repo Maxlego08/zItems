@@ -94,6 +94,6 @@ public class ZItemManager extends ZUtils implements ItemManager {
         ItemStack itemStack = item.build(player, amount);
         give(player, itemStack);
 
-        message(sender, Message.ITEM_GIVE, "%name%", itemName, "%player%", player.getName(), "%amount%", amount);
+        message(sender, Message.ITEM_GIVE, "%name%", itemName, "%player%", player.getName());
     }
 }
