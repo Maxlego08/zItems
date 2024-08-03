@@ -53,7 +53,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
 
             String itemName = file.getName().replace(".yml", "");
             YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
-            ItemConfiguration itemConfiguration = new ItemConfiguration(plugin, configuration, file.getPath());
+            ItemConfiguration itemConfiguration = new ItemConfiguration(plugin, configuration, file.getPath(), "");
             Item item = new ZItem(this.plugin, itemName, itemConfiguration);
 
             this.items.add(item);
