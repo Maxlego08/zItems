@@ -7,15 +7,77 @@ import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.trim.TrimHelper;
 import org.bukkit.Axis;
 import org.bukkit.DyeColor;
+import org.bukkit.Instrument;
 import org.bukkit.Material;
+import org.bukkit.Note;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.block.data.*;
-import org.bukkit.block.data.type.*;
-import org.bukkit.command.Command;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.AnaloguePowerable;
+import org.bukkit.block.data.Attachable;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Brushable;
+import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Hangable;
+import org.bukkit.block.data.Hatchable;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Lightable;
+import org.bukkit.block.data.MultipleFacing;
+import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.Orientable;
+import org.bukkit.block.data.Powerable;
+import org.bukkit.block.data.Rail;
+import org.bukkit.block.data.Rotatable;
+import org.bukkit.block.data.Snowable;
+import org.bukkit.block.data.Waterlogged;
+import org.bukkit.block.data.type.Bamboo;
+import org.bukkit.block.data.type.Beehive;
+import org.bukkit.block.data.type.BrewingStand;
+import org.bukkit.block.data.type.BubbleColumn;
+import org.bukkit.block.data.type.Cake;
+import org.bukkit.block.data.type.Campfire;
+import org.bukkit.block.data.type.Candle;
+import org.bukkit.block.data.type.CaveVinesPlant;
+import org.bukkit.block.data.type.Chest;
+import org.bukkit.block.data.type.CommandBlock;
+import org.bukkit.block.data.type.Comparator;
+import org.bukkit.block.data.type.Crafter;
+import org.bukkit.block.data.type.DaylightDetector;
+import org.bukkit.block.data.type.Door;
+import org.bukkit.block.data.type.EndPortalFrame;
+import org.bukkit.block.data.type.Farmland;
+import org.bukkit.block.data.type.Gate;
+import org.bukkit.block.data.type.Jigsaw;
+import org.bukkit.block.data.type.Leaves;
+import org.bukkit.block.data.type.NoteBlock;
+import org.bukkit.block.data.type.PinkPetals;
+import org.bukkit.block.data.type.Piston;
+import org.bukkit.block.data.type.PistonHead;
+import org.bukkit.block.data.type.PointedDripstone;
+import org.bukkit.block.data.type.Repeater;
+import org.bukkit.block.data.type.RespawnAnchor;
+import org.bukkit.block.data.type.Sapling;
+import org.bukkit.block.data.type.Scaffolding;
+import org.bukkit.block.data.type.SculkCatalyst;
+import org.bukkit.block.data.type.SculkSensor;
+import org.bukkit.block.data.type.SculkShrieker;
+import org.bukkit.block.data.type.SeaPickle;
+import org.bukkit.block.data.type.Slab;
+import org.bukkit.block.data.type.Snow;
+import org.bukkit.block.data.type.Stairs;
+import org.bukkit.block.data.type.TNT;
+import org.bukkit.block.data.type.TechnicalPiston;
+import org.bukkit.block.data.type.TrapDoor;
+import org.bukkit.block.data.type.TrialSpawner;
+import org.bukkit.block.data.type.Tripwire;
+import org.bukkit.block.data.type.TripwireHook;
+import org.bukkit.block.data.type.TurtleEgg;
+import org.bukkit.block.data.type.Vault;
+import org.bukkit.block.data.type.Wall;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Axolotl;
@@ -35,6 +97,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ItemConfiguration {
 
@@ -263,87 +326,83 @@ public class ItemConfiguration {
                     }
                 }
 
-                if(blockData instanceof Beehive beehive) {
+                if (blockData instanceof Beehive beehive) {
                     int honeyLevel = configuration.getInt("block-data-meta.honey-level", 0);
-                    if(honeyLevel < 0 || honeyLevel > beehive.getMaximumHoneyLevel()) {
+                    if (honeyLevel < 0 || honeyLevel > beehive.getMaximumHoneyLevel()) {
                         throw new IllegalArgumentException("Honey level must be between 0 and " + beehive.getMaximumHoneyLevel());
                     }
                     beehive.setHoneyLevel(honeyLevel);
                 }
 
-                if(blockData instanceof Powerable powerable) {
+                if (blockData instanceof Powerable powerable) {
                     powerable.setPowered(configuration.getBoolean("block-data-meta.powered", false));
                 }
 
-                if(blockData instanceof Bisected bisected) {
+                if (blockData instanceof Bisected bisected) {
                     String halfAsString = configuration.getString("block-data-meta.half");
-                    if(halfAsString != null) {
+                    if (halfAsString != null) {
                         bisected.setHalf(Bisected.Half.valueOf(halfAsString.toUpperCase()));
                     }
                 }
 
-                if(blockData instanceof BrewingStand brewingStand) {
-                    List<Map<?,?>> bottles = configuration.getMapList("block-data-meta.bottles");
+                if (blockData instanceof BrewingStand brewingStand) {
+                    List<Map<?, ?>> bottles = configuration.getMapList("block-data-meta.bottles");
                     for (int i = 0; i < bottles.size(); i++) {
-                        Map<?,?> bottle = bottles.get(i);
+                        Map<?, ?> bottle = bottles.get(i);
                         brewingStand.setBottle(i, (boolean) bottle.get(i));
                     }
                 }
 
-                if(blockData instanceof Brushable brushable) {
+                if (blockData instanceof Brushable brushable) {
                     int dusted = configuration.getInt("block-data-meta.dusted", 0);
-                    if(dusted < 0 || dusted > brushable.getMaximumDusted()) {
+                    if (dusted < 0 || dusted > brushable.getMaximumDusted()) {
                         throw new IllegalArgumentException("Dusted must be between 0 and " + brushable.getMaximumDusted());
                     }
                     brushable.setDusted(dusted);
                 }
 
-                if(blockData instanceof BubbleColumn bubbleColumn) {
+                if (blockData instanceof BubbleColumn bubbleColumn) {
                     bubbleColumn.setDrag(configuration.getBoolean("block-data-meta.drag", false));
                 }
 
-                if(blockData instanceof Cake cake) {
+                if (blockData instanceof Cake cake) {
                     int bites = configuration.getInt("block-data-meta.bites", 0);
-                    if(bites < 0 || bites > cake.getMaximumBites()) {
+                    if (bites < 0 || bites > cake.getMaximumBites()) {
                         throw new IllegalArgumentException("Bites must be between 0 and " + cake.getMaximumBites());
                     }
                     cake.setBites(bites);
                 }
 
-                if(blockData instanceof Lightable lightable) {
-                    lightable.setLit(configuration.getBoolean("block-data-meta.lit", false));
-                }
-
-                if(blockData instanceof Campfire campfire) {
+                if (blockData instanceof Campfire campfire) {
                     campfire.setSignalFire(configuration.getBoolean("block-data-meta.signal-fire", false));
                 }
 
-                if(blockData instanceof Candle candle) {
+                if (blockData instanceof Candle candle) {
                     int candles = configuration.getInt("block-data-meta.candles", 1);
-                    if(candles < 1 || candles > candle.getMaximumCandles()) {
+                    if (candles < 1 || candles > candle.getMaximumCandles()) {
                         throw new IllegalArgumentException("Candles must be between 1 and " + candle.getMaximumCandles());
                     }
                     candle.setCandles(candles);
                 }
 
-                if(blockData instanceof CaveVinesPlant caveVinesPlant) {
+                if (blockData instanceof CaveVinesPlant caveVinesPlant) {
                     caveVinesPlant.setBerries(configuration.getBoolean("block-data-meta.berries", false));
                 }
 
-                if(blockData instanceof Chest chest) {
+                if (blockData instanceof Chest chest) {
                     String typeAsString = configuration.getString("block-data-meta.chest-type");
-                    if(typeAsString != null) {
+                    if (typeAsString != null) {
                         chest.setType(Chest.Type.valueOf(typeAsString.toUpperCase()));
                     }
                 }
 
-                if(blockData instanceof CommandBlock commandBlock) {
+                if (blockData instanceof CommandBlock commandBlock) {
                     commandBlock.setConditional(configuration.getBoolean("block-data-meta.conditional", false));
                 }
 
-                if(blockData instanceof Comparator comparator) {
+                if (blockData instanceof Comparator comparator) {
                     String modeAsString = configuration.getString("block-data-meta.comparator-mode");
-                    if(modeAsString != null) {
+                    if (modeAsString != null) {
                         comparator.setMode(Comparator.Mode.valueOf(modeAsString.toUpperCase()));
                     }
                 }
@@ -352,15 +411,231 @@ public class ItemConfiguration {
                     boolean crafting = configuration.getBoolean("block-data-meta.crafter-crafting", false);
                     boolean triggered = configuration.getBoolean("block-data-meta.crafter-triggered", false);
                     String orientationAsString = configuration.getString("block-data-meta.crafter-orientation");
-                    if(orientationAsString != null) {
+                    if (orientationAsString != null) {
                         crafter.setOrientation(Crafter.Orientation.valueOf(orientationAsString.toUpperCase()));
                     }
                     crafter.setCrafting(crafting);
                     crafter.setTriggered(triggered);
                 }
 
-                if(blockData instanceof DaylightDetector daylightDetector) {
+                if (blockData instanceof DaylightDetector daylightDetector) {
                     daylightDetector.setInverted(configuration.getBoolean("block-data-meta.inverted", false));
+                }
+
+                if (blockData instanceof Door door) {
+                    String hinge = configuration.getString("block-data-meta.hinge");
+                    if (hinge != null) {
+                        door.setHinge(Door.Hinge.valueOf(hinge));
+                    }
+                }
+
+                if (blockData instanceof EndPortalFrame endPortalFrame) {
+                    endPortalFrame.setEye(configuration.getBoolean("block-data-meta.eye", false));
+                }
+
+                if (blockData instanceof Farmland farmland) {
+                    if (configuration.getString("block-data-meta.moisture", "").equalsIgnoreCase("max")) {
+                        farmland.setMoisture(farmland.getMaximumMoisture());
+                    } else farmland.setMoisture(configuration.getInt("block-data-meta.moisture", 0));
+                }
+
+                if (blockData instanceof Gate gate) {
+                    gate.setInWall(configuration.getBoolean("block-data-meta.in_wall", false));
+                }
+
+                if (blockData instanceof Hangable hangable) {
+                    hangable.setHanging(configuration.getBoolean("block-data-meta.hanging", false));
+                }
+
+                if (blockData instanceof Hatchable hatchable) {
+                    if (configuration.getString("block-data-meta.hatch", "").equalsIgnoreCase("max")) {
+                        hatchable.setHatch(hatchable.getMaximumHatch());
+                    } else hatchable.setHatch(configuration.getInt("block-data-meta.hatch", 0));
+                }
+
+                if (blockData instanceof Jigsaw jigsaw) {
+                    String orientationAsString = configuration.getString("block-data-meta.jigsaw-orientation");
+                    if (orientationAsString != null) {
+                        jigsaw.setOrientation(Jigsaw.Orientation.valueOf(orientationAsString));
+                    }
+                }
+
+                if (blockData instanceof Leaves leaves) {
+                    leaves.setPersistent(configuration.getBoolean("block-data-meta.persistent", false));
+                    leaves.setDistance(configuration.getInt("block-data-meta.distance", 1));
+                }
+
+                if (blockData instanceof Levelled levelled) {
+                    if (configuration.getString("block-data-meta.level", "").equalsIgnoreCase("max")) {
+                        levelled.setLevel(levelled.getMaximumLevel());
+                    } else levelled.setLevel(configuration.getInt("block-data-meta.level", 0));
+                }
+
+                if (blockData instanceof Lightable lightable) {
+                    lightable.setLit(configuration.getBoolean("block-data-meta.lit", false));
+                }
+
+                if (blockData instanceof MultipleFacing multipleFacing) {
+                    Set<BlockFace> faces = multipleFacing.getAllowedFaces();
+                    for (BlockFace face : faces) {
+                        multipleFacing.setFace(face, configuration.getBoolean("block-data-meta.face." + face.name(), false));
+                    }
+                }
+
+                if (blockData instanceof NoteBlock noteBlock) {
+                    String instrument = configuration.getString("block-data-meta.instrument");
+                    if (instrument != null) {
+                        noteBlock.setInstrument(Instrument.valueOf(instrument));
+                    }
+                    noteBlock.setNote(new Note(configuration.getInt("block-data-meta.note", 0)));
+                }
+
+                if (blockData instanceof PinkPetals pinkPetals) {
+                    pinkPetals.setFlowerAmount(configuration.getInt("block-data-meta.flower-amount", 1));
+                }
+
+                if (blockData instanceof Piston piston) {
+                    piston.setExtended(configuration.getBoolean("block-data-meta.extended", false));
+                }
+
+                if (blockData instanceof PistonHead pistonHead) {
+                    pistonHead.setShort(configuration.getBoolean("block-data-meta.short", false));
+                }
+
+                if (blockData instanceof PointedDripstone pointedDripstone) {
+                    String thickness = configuration.getString("block-data-meta.thickness");
+                    if (thickness != null) {
+                        pointedDripstone.setThickness(PointedDripstone.Thickness.valueOf(thickness));
+                    }
+                    String verticalDirection = configuration.getString("block-data-meta.vertical-direction");
+                    if (verticalDirection != null) {
+                        pointedDripstone.setVerticalDirection(BlockFace.valueOf(verticalDirection));
+                    }
+                }
+
+                if (blockData instanceof Rail rail) {
+                    String shape = configuration.getString("block-data-meta.rail-shape");
+                    if (shape != null) {
+                        rail.setShape(Rail.Shape.valueOf(shape));
+                    }
+                }
+
+                if (blockData instanceof Repeater repeater) {
+                    repeater.setDelay(between(configuration.getInt("block-data-meta.repeater-delay", 1), repeater.getMinimumDelay(), repeater.getMaximumDelay()));
+                    repeater.setLocked(configuration.getBoolean("block-data-meta.repeater-locked", false));
+                }
+
+                if (blockData instanceof RespawnAnchor respawnAnchor) {
+                    respawnAnchor.setCharges(configuration.getInt("block-data-meta.charges", 0));
+                }
+
+                if (blockData instanceof Rotatable rotatable) {
+                    String rotation = configuration.getString("block-data-meta.rotation");
+                    if (rotation != null) {
+                        rotatable.setRotation(BlockFace.valueOf(rotation));
+                    }
+                }
+
+                if (blockData instanceof Scaffolding scaffolding) {
+                    scaffolding.setBottom(configuration.getBoolean("block-data-meta.scaffolding-bottom", false));
+                    scaffolding.setDistance(configuration.getInt("block-data-meta.scaffolding-distance", 0));
+                }
+
+                if (blockData instanceof SculkCatalyst sculkCatalyst) {
+                    sculkCatalyst.setBloom(configuration.getBoolean("block-data-meta.bloom", false));
+                }
+
+                if (blockData instanceof SculkSensor sculkSensor) {
+                    String phase = configuration.getString("block-data-meta.phase");
+                    if (phase != null) {
+                        sculkSensor.setPhase(SculkSensor.Phase.valueOf(phase));
+                    }
+                }
+
+                if (blockData instanceof SculkShrieker sculkShrieker) {
+                    sculkShrieker.setShrieking(configuration.getBoolean("block-data-meta.shrieker-shrieking", false));
+                    sculkShrieker.setCanSummon(configuration.getBoolean("block-data-meta.shrieker-can-summon", false));
+                }
+
+                if (blockData instanceof SeaPickle seaPickle) {
+                    seaPickle.setPickles(between(configuration.getInt("block-data-meta.pickles", 1), seaPickle.getMinimumPickles(), seaPickle.getMaximumPickles()));
+                }
+
+                if (blockData instanceof Slab slab) {
+                    String type = configuration.getString("block-data-meta.slab-type");
+                    if (type != null) {
+                        slab.setType(Slab.Type.valueOf(type));
+                    }
+                }
+
+                if (blockData instanceof Snow snow) {
+                    snow.setLayers(between(configuration.getInt("block-data-meta.layers", 1), snow.getMinimumLayers(), snow.getMaximumLayers()));
+                }
+
+                if (blockData instanceof Snowable snowable) {
+                    snowable.setSnowy(configuration.getBoolean("block-data-meta.snowy", false));
+                }
+
+                if (blockData instanceof Stairs stairs) {
+                    String shape = configuration.getString("block-data-meta.stairs-shape");
+                    if (shape != null) {
+                        stairs.setShape(Stairs.Shape.valueOf(shape));
+                    }
+                }
+
+                if (blockData instanceof TechnicalPiston technicalPiston) {
+                    String type = configuration.getString("block-data-meta.technical-piston-type");
+                    if (type != null) {
+                        technicalPiston.setType(TechnicalPiston.Type.valueOf(type));
+                    }
+                }
+
+                if (blockData instanceof TNT tnt) {
+                    tnt.setUnstable(configuration.getBoolean("block-data-meta.unstable", false));
+                }
+
+                if (blockData instanceof TrapDoor trapDoor) {
+                    trapDoor.setOpen(configuration.getBoolean("block-data-meta.open", false));
+                }
+
+                if (blockData instanceof Tripwire tripwire) {
+                    tripwire.setDisarmed(configuration.getBoolean("block-data-meta.disarmed", false));
+                }
+
+                if (blockData instanceof TripwireHook tripwireHook) {
+                    tripwireHook.setAttached(configuration.getBoolean("block-data-meta.attached", false));
+                    tripwireHook.setPowered(configuration.getBoolean("block-data-meta.powered", false));
+                }
+
+                if (blockData instanceof TrialSpawner trialSpawner) {
+                    String state = configuration.getString("block-data-meta.trial-spawner-state");
+                    if (state != null) {
+                        trialSpawner.setTrialSpawnerState(TrialSpawner.State.valueOf(state));
+                    }
+                    trialSpawner.setOminous(configuration.getBoolean("block-data-meta.trial-spawner-ominous", false));
+                }
+
+                if (blockData instanceof TurtleEgg turtleEgg) {
+                    turtleEgg.setEggs(between(configuration.getInt("block-data-meta.eggs", 1), turtleEgg.getMinimumEggs(), turtleEgg.getMaximumEggs()));
+                }
+
+
+                if (blockData instanceof Vault vault) {
+                    String state = configuration.getString("block-data-meta.vault-state");
+                    if (state != null) {
+                        vault.setTrialSpawnerState(Vault.State.valueOf(state));
+                    }
+                    vault.setOminous(configuration.getBoolean("block-data-meta.vault-ominous", false));
+                }
+
+                if (blockData instanceof Wall wall) {
+                    wall.setUp(configuration.getBoolean("block-data-meta.wall-up", false));
+                    for (BlockFace face : BlockFace.values()) {
+                        String height = configuration.getString("block-data-meta.wall-height." + face.name());
+                        if (height != null) {
+                            wall.setHeight(face, Wall.Height.valueOf(height));
+                        }
+                    }
                 }
 
 
