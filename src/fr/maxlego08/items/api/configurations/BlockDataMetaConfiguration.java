@@ -1,7 +1,7 @@
 package fr.maxlego08.items.api.configurations;
 
 import fr.maxlego08.items.api.ItemPlugin;
-import fr.maxlego08.items.api.utils.Between;
+import fr.maxlego08.items.api.utils.Helper;
 import org.bukkit.Axis;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -332,7 +332,7 @@ public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
                 }
 
                 if (blockData instanceof Repeater repeater) {
-                    repeater.setDelay(Between.between(configuration.getInt(path + "block-data-meta.repeater-delay", 1), repeater.getMinimumDelay(), repeater.getMaximumDelay()));
+                    repeater.setDelay(Helper.between(configuration.getInt(path + "block-data-meta.repeater-delay", 1), repeater.getMinimumDelay(), repeater.getMaximumDelay()));
                     repeater.setLocked(configuration.getBoolean(path + "block-data-meta.repeater-locked", false));
                 }
 
@@ -369,7 +369,7 @@ public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
                 }
 
                 if (blockData instanceof SeaPickle seaPickle) {
-                    seaPickle.setPickles(Between.between(configuration.getInt(path + "block-data-meta.pickles", 1), seaPickle.getMinimumPickles(), seaPickle.getMaximumPickles()));
+                    seaPickle.setPickles(Helper.between(configuration.getInt(path + "block-data-meta.pickles", 1), seaPickle.getMinimumPickles(), seaPickle.getMaximumPickles()));
                 }
 
                 if (blockData instanceof Slab slab) {
@@ -380,7 +380,7 @@ public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
                 }
 
                 if (blockData instanceof Snow snow) {
-                    snow.setLayers(Between.between(configuration.getInt(path + "block-data-meta.layers", 1), snow.getMinimumLayers(), snow.getMaximumLayers()));
+                    snow.setLayers(Helper.between(configuration.getInt(path + "block-data-meta.layers", 1), snow.getMinimumLayers(), snow.getMaximumLayers()));
                 }
 
                 if (blockData instanceof Snowable snowable) {
@@ -427,7 +427,7 @@ public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
                 }
 
                 if (blockData instanceof TurtleEgg turtleEgg) {
-                    turtleEgg.setEggs(Between.between(configuration.getInt(path + "block-data-meta.eggs", 1), turtleEgg.getMinimumEggs(), turtleEgg.getMaximumEggs()));
+                    turtleEgg.setEggs(Helper.between(configuration.getInt(path + "block-data-meta.eggs", 1), turtleEgg.getMinimumEggs(), turtleEgg.getMaximumEggs()));
                 }
 
                 if (blockData instanceof Vault vault) {

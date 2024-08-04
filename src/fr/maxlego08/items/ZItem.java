@@ -61,6 +61,7 @@ public class ZItem extends ZUtils implements Item {
             this.configuration.applyArmorStand(itemMeta);
             this.configuration.applyAxolotlBucket(itemMeta);
             this.configuration.applyBanner(itemMeta);
+            this.configuration.applyPotionMeta(itemMeta);
             this.configuration.applyBlockDataMeta(itemMeta);
             this.configuration.applyBlockState(itemMeta, player, this.plugin.getItemComponent());
 

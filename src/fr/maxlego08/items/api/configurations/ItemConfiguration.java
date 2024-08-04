@@ -6,7 +6,8 @@ import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.trim.TrimHelper;
-import fr.maxlego08.items.api.utils.Between;
+import fr.maxlego08.items.api.utils.Helper;
+import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -26,9 +27,13 @@ import org.bukkit.inventory.meta.BlockDataMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,14 +72,15 @@ public class ItemConfiguration {
     private final BlockStateMetaConfiguration blockStateMetaConfiguration;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
+    private PotionMetaConfiguration potionMetaConfiguration;
     private Food food;
 
     public ItemConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
         this.itemType = ItemType.valueOf(configuration.getString(path + "type", "CLASSIC").toUpperCase());
         this.material = Material.getMaterial(configuration.getString(path + "material", "IRON_SWORD").toUpperCase());
-        this.maxStackSize = Between.between(configuration.getInt(path + "max-stack-size", 0), 0, 99); // between 0 and 99
-        this.amount = Between.between(configuration.getInt(path + "amount", 0), 0, 99); // between 1 and 99
+        this.maxStackSize = Helper.between(configuration.getInt(path + "max-stack-size", 0), 0, 99); // between 0 and 99
+        this.amount = Helper.between(configuration.getInt(path + "amount", 0), 0, 99); // between 1 and 99
         this.displayName = configuration.getString(path + "display-name");
         this.itemName = configuration.getString(path + "item-name");
         this.lore = configuration.getStringList(path + "lore");
@@ -164,8 +170,51 @@ public class ItemConfiguration {
 
         this.loadAxolotl(plugin, configuration, fileName, path);
         this.loadBanner(plugin, configuration, fileName, path);
+        this.loadPotion(plugin, configuration, fileName, path);
         this.blockDataMetaConfiguration = BlockDataMetaConfiguration.loadBlockDataMeta(plugin, configuration, fileName, path);
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
+    }
+
+    private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+
+        boolean enablePotion = configuration.getBoolean(path + "potion-meta.enable", false);
+
+        if (enablePotion) {
+            try {
+
+                Color potionColor = Helper.getColor(configuration, path + "potion-meta.color", null);
+                PotionType basePotionType = null;
+                String value = configuration.getString(path + "potion-meta.base-potion-type");
+                if (value != null) {
+                    basePotionType = PotionType.valueOf(value.toUpperCase());
+                }
+                List<CustomPotionEffect> customEffects = new ArrayList<>();
+                List<Map<?, ?>> effectsList = configuration.getMapList(path + "potion-meta.custom-effect");
+
+                for (Map<?, ?> map : effectsList) {
+                    boolean overwrite = map.containsKey("overwrite") ? (Boolean) map.get("overwrite") : false;
+                    PotionEffectType type = map.containsKey("type") ? PotionMetaConfiguration.potionEffectTypeMap.get(((String) map.get("type")).toLowerCase()) : PotionEffectType.STRENGTH;
+                    int duration = map.containsKey("duration") ? ((Number) map.get("duration")).intValue() : 100;
+                    int amplifier = map.containsKey("amplifier") ? ((Number) map.get("amplifier")).intValue() : 0;
+                    boolean ambient = map.containsKey("ambient") ? (Boolean) map.get("ambient") : true;
+                    boolean particles = map.containsKey("particles") ? (Boolean) map.get("particles") : true;
+                    boolean icon = map.containsKey("icon") ? (Boolean) map.get("icon") : true;
+
+                    CustomPotionEffect effect = new CustomPotionEffect(overwrite, type, duration, amplifier, ambient, particles, icon);
+                    customEffects.add(effect);
+                }
+
+                this.potionMetaConfiguration = new PotionMetaConfiguration(true, potionColor, customEffects, basePotionType);
+                System.out.println(this.potionMetaConfiguration);
+
+            } catch (Exception exception) {
+                plugin.getLogger().severe("Impossible to load the potion meta for item " + fileName);
+                exception.printStackTrace();
+                this.potionMetaConfiguration = new PotionMetaConfiguration(false, null, null, null);
+            }
+        } else {
+            this.potionMetaConfiguration = new PotionMetaConfiguration(false, null, null, null);
+        }
     }
 
     private void loadAxolotl(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
@@ -373,6 +422,23 @@ public class ItemConfiguration {
     public void applyBlockDataMeta(ItemMeta itemMeta) {
         if (itemMeta instanceof BlockDataMeta blockDataMeta && this.blockDataMetaConfiguration.enable()) {
             blockDataMeta.setBlockData(this.blockDataMetaConfiguration.blockData());
+        }
+    }
+
+    public void applyPotionMeta(ItemMeta itemMeta) {
+        if (itemMeta instanceof PotionMeta potionMeta && this.potionMetaConfiguration.enable()) {
+
+            if (this.potionMetaConfiguration.color() != null) {
+                potionMeta.setColor(this.potionMetaConfiguration.color());
+            }
+
+            if (this.potionMetaConfiguration.basePotionType() != null) {
+                potionMeta.setBasePotionType(this.potionMetaConfiguration.basePotionType());
+            }
+
+            for (CustomPotionEffect customPotionEffect : this.potionMetaConfiguration.customPotionEffects()) {
+                potionMeta.addCustomEffect(new PotionEffect(customPotionEffect.type(), customPotionEffect.duration(), customPotionEffect.amplifier(), customPotionEffect.ambient(), customPotionEffect.particles(), customPotionEffect.icon()), customPotionEffect.overwrite());
+            }
         }
     }
 
