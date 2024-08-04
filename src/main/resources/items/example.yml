@@ -68,6 +68,13 @@ fire-resistant: true
 # The item model property identifier.
 custom-model-data: 1234
 
+# Determines the default color of its name. This enum is ordered from least rare to most rare.
+# COMMON - White item name.
+# EPIC - Light purple item name.
+# RARE - Aqua item name.
+# UNCOMMON - Yellow item name.
+rarity: RARE
+
 # If present, it will completely hide whole item tooltip (that includes item name). The tooltip will be still visible and searchable in creative mode.
 hide-tooltip: true
 

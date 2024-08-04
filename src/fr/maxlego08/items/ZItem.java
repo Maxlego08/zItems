@@ -103,6 +103,10 @@ public class ZItem extends ZUtils implements Item {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }
 
+            if (this.configuration.getItemRarity() != null) {
+                itemMeta.setRarity(this.configuration.getItemRarity());
+            }
+
             itemStack.setItemMeta(itemMeta);
         } else {
             plugin.getLogger().severe("ItemMeta is null !");

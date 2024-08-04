@@ -19,6 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
+import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
@@ -74,6 +75,7 @@ public class ItemConfiguration {
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
     private Food food;
+    private ItemRarity itemRarity;
 
     public ItemConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
@@ -99,6 +101,14 @@ public class ItemConfiguration {
         this.canBreakShowInTooltip = configuration.getBoolean(path + "can-break.show-in-tooltip", true);
         this.enchantmentGlint = configuration.getBoolean(path + "enchantment.glint", false);
         this.enchantmentShowInTooltip = configuration.getBoolean(path + "enchantment.show-in-tooltip", true);
+        String rarity = configuration.getString(path + "rarity");
+        if (rarity != null) {
+            try {
+                this.itemRarity = ItemRarity.valueOf(rarity.toUpperCase());
+            } catch (Exception exception) {
+                plugin.getLogger().severe("Rarity " + rarity + " was not found for the item " + fileName);
+            }
+        }
 
         // Load enchantments
         this.enchantments = new ArrayList<>();
@@ -112,7 +122,7 @@ public class ItemConfiguration {
                 var enchantment = optional.get().enchantment();
                 this.enchantments.add(new ItemEnchantment(enchantment, level));
             } else {
-                plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found !");
+                plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found for the item " + fileName);
             }
         }
 
@@ -446,5 +456,9 @@ public class ItemConfiguration {
         if (this.blockStateMetaConfiguration != null && blockStateMetaConfiguration.enable() && itemMeta instanceof BlockStateMeta blockStateMeta) {
             this.blockStateMetaConfiguration.apply(blockStateMeta, player, itemComponent);
         }
+    }
+
+    public ItemRarity getItemRarity() {
+        return itemRarity;
     }
 }
