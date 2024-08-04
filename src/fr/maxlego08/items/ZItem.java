@@ -91,7 +91,7 @@ public class ZItem extends ZUtils implements Item {
                 }
             }
 
-            this.configuration.enchant(itemStack);
+            this.configuration.enchant(itemMeta);
             if (!this.configuration.isEnchantmentShowInTooltip()) {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }

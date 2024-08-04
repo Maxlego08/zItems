@@ -5,8 +5,8 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
-import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.api.utils.Helper;
+import fr.maxlego08.items.api.utils.TrimHelper;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -20,7 +20,6 @@ import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -72,10 +71,10 @@ public class ItemConfiguration {
     private final ArmorStandConfig armorStandConfig;
     private final BlockDataMetaConfiguration blockDataMetaConfiguration;
     private final BlockStateMetaConfiguration blockStateMetaConfiguration;
+    private final ToolComponentConfiguration toolComponentConfiguration;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
-    private final ToolComponentConfiguration toolComponentConfiguration;
     private Food food;
     private ItemRarity itemRarity;
 
@@ -218,7 +217,6 @@ public class ItemConfiguration {
                 }
 
                 this.potionMetaConfiguration = new PotionMetaConfiguration(true, potionColor, customEffects, basePotionType);
-                System.out.println(this.potionMetaConfiguration);
 
             } catch (Exception exception) {
                 plugin.getLogger().severe("Impossible to load the potion meta for item " + fileName);
@@ -369,21 +367,19 @@ public class ItemConfiguration {
         return itemType;
     }
 
-    public void enchant(ItemStack itemStack) {
+    public void enchant(ItemMeta itemMeta) {
 
         this.enchantments.forEach(itemEnchantment -> {
 
             var enchantment = itemEnchantment.enchantment();
             var level = itemEnchantment.level();
 
-            if (itemStack.getType() == Material.ENCHANTED_BOOK) {
-                var enchantmentStorageMeta = (EnchantmentStorageMeta) itemStack.getItemMeta();
+            if (itemMeta instanceof EnchantmentStorageMeta enchantmentStorageMeta) {
                 if (level == 0) enchantmentStorageMeta.removeStoredEnchant(enchantment);
                 else enchantmentStorageMeta.addStoredEnchant(enchantment, level, true);
-                itemStack.setItemMeta(enchantmentStorageMeta);
             } else {
-                if (level == 0) itemStack.removeEnchantment(enchantment);
-                else itemStack.addUnsafeEnchantment(enchantment, level);
+                if (level == 0) itemMeta.removeEnchant(enchantment);
+                else itemMeta.addEnchant(enchantment, level, true);
             }
         });
     }
@@ -440,7 +436,6 @@ public class ItemConfiguration {
 
     public void applyToolComponent(ItemMeta itemMeta) {
 
-        System.out.println(this.toolComponentConfiguration.enable());
         if (!this.toolComponentConfiguration.enable()) return;
 
         ToolComponent toolComponent = itemMeta.getTool();

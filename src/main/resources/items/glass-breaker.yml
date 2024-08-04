@@ -1,0 +1,41 @@
+material: SHEARS
+display-name: "#3bdbc9ɢʟᴀss ʙʀᴇᴀᴋᴇʀ"
+lore:
+  - "&8Allows breaking of glasses"
+
+max-stack-size: 1
+
+max-damage: 9999
+
+tool-component:
+
+  enable: true
+
+  # Amount of durability to be removed from the tool each time a block is broken.
+  damage-per-block: 1
+
+  # Default mining speed of this tool. The tool uses this value if no rule explicitly overrides it. 1.0 is standard mining speed.
+  default-mining-speed: 0.0
+
+  rules:
+    materials:
+      - materials:
+          - GLASS
+          - WHITE_STAINED_GLASS
+          - ORANGE_STAINED_GLASS
+          - MAGENTA_STAINED_GLASS
+          - LIGHT_BLUE_STAINED_GLASS
+          - YELLOW_STAINED_GLASS
+          - LIME_STAINED_GLASS
+          - PINK_STAINED_GLASS
+          - GRAY_STAINED_GLASS
+          - LIGHT_GRAY_STAINED_GLASS
+          - CYAN_STAINED_GLASS
+          - PURPLE_STAINED_GLASS
+          - BLUE_STAINED_GLASS
+          - BROWN_STAINED_GLASS
+          - GREEN_STAINED_GLASS
+          - RED_STAINED_GLASS
+          - BLACK_STAINED_GLASS
+        speed: 8.0
+        correct-for-drops: true

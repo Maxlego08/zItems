@@ -81,6 +81,7 @@ hide-tooltip: true
 # If True, disables 'additional' tooltip part which comes from the item type.
 hide-additional-tooltip: false
 
+# ToDo - No possible with spigot API for the moment !
 # Determines which blocks that blocks with this tag can be placed against in adventure mode.
 can-place-on:
   blocks:
@@ -91,6 +92,7 @@ can-place-on:
 
   show-in-tooltip: true
 
+# ToDo - No possible with spigot API for the moment !
 # The only blocks this item may break when used by a player in adventure mode.
 can-break:
   blocks:

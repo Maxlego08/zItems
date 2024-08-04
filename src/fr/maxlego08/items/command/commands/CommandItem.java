@@ -7,17 +7,17 @@ import fr.maxlego08.items.zcore.utils.commands.CommandType;
 
 public class CommandItem extends VCommand {
 
-	public CommandItem(ItemsPlugin plugin) {
-		super(plugin);
-		this.setPermission(Permission.ZITEMS_USE);
-		this.addSubCommand(new CommandItemReload(plugin));
-		this.addSubCommand(new CommandItemGive(plugin));
-	}
+    public CommandItem(ItemsPlugin plugin) {
+        super(plugin);
+        this.setPermission(Permission.ZITEMS_USE);
+        this.addSubCommand(new CommandItemReload(plugin));
+        this.addSubCommand(new CommandItemGive(plugin));
+    }
 
-	@Override
-	protected CommandType perform(ItemsPlugin plugin) {
-		syntaxMessage();
-		return CommandType.SUCCESS;
-	}
+    @Override
+    protected CommandType perform(ItemsPlugin plugin) {
+        syntaxMessage();
+        return CommandType.SUCCESS;
+    }
 
 }
