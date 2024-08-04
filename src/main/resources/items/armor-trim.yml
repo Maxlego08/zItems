@@ -1,0 +1,16 @@
+material: DIAMOND_CHESTPLATE
+
+trim:
+  enable: true
+  # QUARTZ, IRON, NETHERITE, REDSTONE, COPPER; GOLD; EMERALD, DIAMOND, LAPIS, AMETHYST
+  material: quartz
+  # SENTRY, DUNE, COAST, WILD, WARD, EYE, VEX, TIDE, SNOUT, RIB, SPIRE, WAYFINDER, SHAPER, SILENCE, RAISER, HOST
+  pattern: dune
+
+# All items can be given Modifiers which affect various Attributes of the player/mob which wears or holds them.
+attribute:
+  attributes:
+    - attribute: GENERIC_ARMOR
+      operation: add_number
+      amount: 25.0
+      slot: ARMOR

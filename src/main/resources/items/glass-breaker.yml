@@ -7,6 +7,11 @@ max-stack-size: 1
 
 max-damage: 9999
 
+enchantment:
+  enchantments:
+    - enchantment: silktouch
+      level: 1
+
 tool-component:
 
   enable: true
@@ -37,5 +42,6 @@ tool-component:
           - GREEN_STAINED_GLASS
           - RED_STAINED_GLASS
           - BLACK_STAINED_GLASS
+          - TINTED_GLASS
         speed: 8.0
         correct-for-drops: true

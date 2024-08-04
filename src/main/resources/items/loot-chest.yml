@@ -1,4 +1,7 @@
 material: CHEST
+
+rarity: RARE
+
 lore:
   - "&7Custom chest with content"
 

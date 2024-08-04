@@ -1,0 +1,35 @@
+# Prendre les component tool type des autres items pour facilité la configuration pour des multi tools
+
+material: MACE
+display-name: "#307fc9ᴍᴜʟᴛɪᴛᴏᴏʟs"
+lore:
+  - "&8Allows to break all blocks!"
+
+max-stack-size: 1
+
+max-damage: 3000
+
+tool-component:
+
+  enable: true
+
+  # Amount of durability to be removed from the tool each time a block is broken.
+  damage-per-block: 1
+
+  # Default mining speed of this tool. This value is used by the tool if no rule explicitly overrides it. 1.0 is standard mining speed.
+  default-mining-speed: 5.0
+
+  rules:
+    tags:
+      - tag: MINEABLE_PICKAXE
+        speed: 6.0
+        correct-for-drops: true
+      - tag: MINEABLE_SHOVEL
+        speed: 6.0
+        correct-for-drops: true
+      - tag: MINEABLE_HOE
+        speed: 6.0
+        correct-for-drops: true
+      - tag: MINEABLE_AXE
+        speed: 6.0
+        correct-for-drops: true
