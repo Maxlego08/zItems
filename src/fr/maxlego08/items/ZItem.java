@@ -64,6 +64,7 @@ public class ZItem extends ZUtils implements Item {
             this.configuration.applyPotionMeta(itemMeta);
             this.configuration.applyBlockDataMeta(itemMeta);
             this.configuration.applyBlockState(itemMeta, player, this.plugin.getItemComponent());
+            this.configuration.applyToolComponent(itemMeta);
 
             if (itemMeta instanceof Damageable damageable) {
                 if (this.configuration.getMaxDamage() > 0) damageable.setMaxDamage(this.configuration.getMaxDamage());

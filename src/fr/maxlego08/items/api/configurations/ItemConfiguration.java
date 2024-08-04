@@ -5,7 +5,7 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
-import fr.maxlego08.items.api.trim.TrimHelper;
+import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.api.utils.Helper;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -29,6 +29,7 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
@@ -74,6 +75,7 @@ public class ItemConfiguration {
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
+    private final ToolComponentConfiguration toolComponentConfiguration;
     private Food food;
     private ItemRarity itemRarity;
 
@@ -183,6 +185,7 @@ public class ItemConfiguration {
         this.loadPotion(plugin, configuration, fileName, path);
         this.blockDataMetaConfiguration = BlockDataMetaConfiguration.loadBlockDataMeta(plugin, configuration, fileName, path);
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
+        this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
     }
 
     private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
@@ -433,6 +436,17 @@ public class ItemConfiguration {
         if (itemMeta instanceof BlockDataMeta blockDataMeta && this.blockDataMetaConfiguration.enable()) {
             blockDataMeta.setBlockData(this.blockDataMetaConfiguration.blockData());
         }
+    }
+
+    public void applyToolComponent(ItemMeta itemMeta) {
+
+        System.out.println(this.toolComponentConfiguration.enable());
+        if (!this.toolComponentConfiguration.enable()) return;
+
+        ToolComponent toolComponent = itemMeta.getTool();
+        this.toolComponentConfiguration.apply(toolComponent);
+
+        itemMeta.setTool(toolComponent);
     }
 
     public void applyPotionMeta(ItemMeta itemMeta) {

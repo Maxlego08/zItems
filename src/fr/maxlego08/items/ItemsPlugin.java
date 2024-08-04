@@ -13,7 +13,7 @@ import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
-import fr.maxlego08.items.api.trim.TrimHelper;
+import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.zcore.ZPlugin;
 
 public class ItemsPlugin extends ZPlugin implements ItemPlugin {
