@@ -62,7 +62,7 @@ public class ZItem extends ZUtils implements Item {
             this.configuration.applyAxolotlBucket(itemMeta);
             this.configuration.applyBanner(itemMeta);
             this.configuration.applyBlockDataMeta(itemMeta);
-            this.configuration.applyBlockState(itemMeta, player);
+            this.configuration.applyBlockState(itemMeta, player, this.plugin.getItemComponent());
 
             if (itemMeta instanceof Damageable damageable) {
                 if (this.configuration.getMaxDamage() > 0) damageable.setMaxDamage(this.configuration.getMaxDamage());
@@ -119,7 +119,7 @@ public class ZItem extends ZUtils implements Item {
         }
 
         if (this.configuration.getDisplayName() != null) {
-            itemComponent.setItemName(itemMeta, papi(this.configuration.getDisplayName(), player));
+            itemComponent.setDisplayName(itemMeta, papi(this.configuration.getDisplayName(), player));
         }
 
         if (this.configuration.getLore() != null && !this.configuration.getLore().isEmpty()) {

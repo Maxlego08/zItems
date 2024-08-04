@@ -1,6 +1,7 @@
 package fr.maxlego08.items.api.configurations;
 
 import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
+import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.enchantments.Enchantments;
@@ -375,9 +376,9 @@ public class ItemConfiguration {
         }
     }
 
-    public void applyBlockState(ItemMeta itemMeta, Player player) {
+    public void applyBlockState(ItemMeta itemMeta, Player player, ItemComponent itemComponent) {
         if (this.blockStateMetaConfiguration != null && blockStateMetaConfiguration.enable() && itemMeta instanceof BlockStateMeta blockStateMeta) {
-            this.blockStateMetaConfiguration.apply(blockStateMeta, player);
+            this.blockStateMetaConfiguration.apply(blockStateMeta, player, itemComponent);
         }
     }
 }

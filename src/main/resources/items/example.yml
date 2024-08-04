@@ -480,3 +480,30 @@ block-state-meta:
     5: # Slot 5
       material: STONE
       display-name: "<rainbow>Heyy"
+
+  #
+  # More informations here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/Sign.html
+  sign:
+    waxed: true
+    FRONT:
+      glow: false
+      lines:
+        - index: 0
+          line: "<click:suggest_command:/test><red>line 1"
+        - index: 1
+          line: "line 2"
+        - index: 2
+          line: "line 3"
+        - index: 3
+          line: "line 4"
+    BACK:
+      glow: true
+      lines:
+        - index: 0
+          line: "line 5"
+        - index: 1
+          line: "line 6"
+        - index: 2
+          line: "line 7"
+        - index: 3
+          line: "line 8"

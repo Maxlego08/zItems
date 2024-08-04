@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
@@ -89,6 +90,11 @@ public class PaperComponent implements ItemComponent {
     public void setLore(ItemMeta itemMeta, List<String> lore) {
         var components = lore.stream().map(line -> getComponent(line).decoration(TextDecoration.ITALIC, getState(line))).toList();
         itemMeta.lore(components);
+    }
+
+    @Override
+    public void setLine(SignSide signSide, int index, String line) {
+        signSide.line(index, getComponent(line).decoration(TextDecoration.ITALIC, getState(line)));
     }
 
     public Component getComponent(String message) {
