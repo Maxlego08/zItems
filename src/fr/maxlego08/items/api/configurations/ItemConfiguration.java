@@ -4,6 +4,21 @@ import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
+import fr.maxlego08.items.api.configurations.meta.ArmorStandConfig;
+import fr.maxlego08.items.api.configurations.meta.AttributeConfiguration;
+import fr.maxlego08.items.api.configurations.meta.AxolotlBucketConfiguration;
+import fr.maxlego08.items.api.configurations.meta.BannerMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.BlockDataMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.BlockStateMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.CustomPotionEffect;
+import fr.maxlego08.items.api.configurations.meta.Food;
+import fr.maxlego08.items.api.configurations.meta.FoodEffect;
+import fr.maxlego08.items.api.configurations.meta.ItemEnchantment;
+import fr.maxlego08.items.api.configurations.meta.PotionMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.ToolComponentConfiguration;
+import fr.maxlego08.items.api.configurations.meta.TrimConfiguration;
+import fr.maxlego08.items.api.configurations.specials.FarmingHoeConfiguration;
+import fr.maxlego08.items.api.configurations.specials.SpecialConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TrimHelper;
@@ -77,6 +92,7 @@ public class ItemConfiguration {
     private PotionMetaConfiguration potionMetaConfiguration;
     private Food food;
     private ItemRarity itemRarity;
+    private SpecialConfiguration specialConfiguration;
 
     public ItemConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
@@ -185,6 +201,20 @@ public class ItemConfiguration {
         this.blockDataMetaConfiguration = BlockDataMetaConfiguration.loadBlockDataMeta(plugin, configuration, fileName, path);
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
+
+        switch (itemType) {
+            case FARMING_HOE ->
+                    this.specialConfiguration = this.loadFarmingHoeConfiguration(plugin, configuration, fileName, path);
+        }
+    }
+
+    private SpecialConfiguration loadFarmingHoeConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+        int size = configuration.getInt(path + "farming-hoe.size", 1);
+        if (size % 2 == 0) {
+            size = 3;
+            plugin.getLogger().severe("Farming hoe size must be odd ! Use default value: 3. For file " + fileName);
+        }
+        return new FarmingHoeConfiguration(size);
     }
 
     private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
@@ -469,5 +499,13 @@ public class ItemConfiguration {
 
     public ItemRarity getItemRarity() {
         return itemRarity;
+    }
+
+    public SpecialConfiguration getSpecialConfiguration() {
+        return this.specialConfiguration;
+    }
+
+    public boolean hasSpecialConfiguration() {
+        return this.specialConfiguration != null;
     }
 }

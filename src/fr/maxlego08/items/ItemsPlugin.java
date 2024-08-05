@@ -14,6 +14,7 @@ import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
 import fr.maxlego08.items.api.utils.TrimHelper;
+import fr.maxlego08.items.specials.FarmingHoeListener;
 import fr.maxlego08.items.zcore.ZPlugin;
 
 public class ItemsPlugin extends ZPlugin implements ItemPlugin {
@@ -35,6 +36,8 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
 
         this.registerCommand("zitems", new CommandItem(this), "items", "zit");
+
+        this.addListener(new FarmingHoeListener(this));
 
         this.addSave(Config.getInstance());
         this.addSave(new MessageLoader(this));

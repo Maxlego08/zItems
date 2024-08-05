@@ -1,4 +1,4 @@
-package fr.maxlego08.items.api.configurations;
+package fr.maxlego08.items.api.configurations.meta;
 
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;

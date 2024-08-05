@@ -1,4 +1,4 @@
-package fr.maxlego08.items.api.configurations;
+package fr.maxlego08.items.api.configurations.meta;
 
 import fr.maxlego08.items.ItemsPlugin;
 import org.bukkit.entity.Player;
