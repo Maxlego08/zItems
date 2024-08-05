@@ -20,6 +20,7 @@ import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -72,6 +73,7 @@ public class ItemConfiguration {
     private final BlockDataMetaConfiguration blockDataMetaConfiguration;
     private final BlockStateMetaConfiguration blockStateMetaConfiguration;
     private final ToolComponentConfiguration toolComponentConfiguration;
+    private final RecipeConfiguration recipeConfiguration;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
@@ -185,6 +187,7 @@ public class ItemConfiguration {
         this.blockDataMetaConfiguration = BlockDataMetaConfiguration.loadBlockDataMeta(plugin, configuration, fileName, path);
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
+        this.recipeConfiguration = RecipeConfiguration.loadRecipe(configuration, fileName, path);
     }
 
     private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
@@ -467,7 +470,15 @@ public class ItemConfiguration {
         }
     }
 
+    public void createRecipe(ItemPlugin plugin, ItemStack result, String filename) {
+        this.recipeConfiguration.apply(plugin, result, filename);
+    }
+
     public ItemRarity getItemRarity() {
         return itemRarity;
+    }
+
+    public RecipeConfiguration getRecipeConfiguration() {
+        return recipeConfiguration;
     }
 }

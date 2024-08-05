@@ -3,6 +3,8 @@ package fr.maxlego08.items;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
+import fr.maxlego08.items.api.configurations.RecipeConfiguration;
+import fr.maxlego08.items.listener.ListenerAdapter;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.command.CommandSender;

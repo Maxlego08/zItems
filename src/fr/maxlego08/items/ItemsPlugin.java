@@ -10,6 +10,7 @@ import fr.maxlego08.items.command.commands.CommandItem;
 import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
 import fr.maxlego08.items.enchantments.ZEnchantments;
+import fr.maxlego08.items.listener.ListenerAdapter;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
@@ -35,7 +36,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
 
         this.registerCommand("zitems", new CommandItem(this), "items", "zit");
-
+        this.addListener(new PrepareCraftListener(this.itemManager));
         this.addSave(Config.getInstance());
         this.addSave(new MessageLoader(this));
         this.itemManager.loadItems();

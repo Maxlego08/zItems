@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 public record ItemSlotItem(int slot, Item item) implements ItemSlot {
     @Override
-    public Item item(Player player) {
+    public Item item() {
         return this.item;
     }
 

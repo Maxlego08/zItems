@@ -3,6 +3,14 @@ display-name: "#3bdbc9ɢʟᴀss ʙʀᴇᴀᴋᴇʀ"
 lore:
   - "&8Allows breaking of glasses"
 
+craft:
+  pattern:
+    - " S"
+    - "S"
+  ingredients:
+    S:
+      tag: PLANKS
+
 max-stack-size: 1
 
 max-damage: 9999
