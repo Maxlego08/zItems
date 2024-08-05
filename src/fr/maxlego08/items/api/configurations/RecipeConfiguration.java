@@ -15,15 +15,17 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.*;
 
-public record RecipeConfiguration(String[] pattern, Map<String, String> ingredients) {
+public record RecipeConfiguration(String[] pattern, Map<String, String> ingredients, int amount) {
 
     public static RecipeConfiguration loadRecipe(YamlConfiguration configuration, String fileName, String path) {
         ConfigurationSection craftSection = configuration.getConfigurationSection(path + "craft");
         boolean enableRecipe = craftSection != null;
 
         if (!enableRecipe) {
-            return new RecipeConfiguration(null, null);
+            return new RecipeConfiguration(null, null, -1);
         }
+
+        int amount = craftSection.getInt("amount", 1);
 
         List<String> pattern = (List<String>) craftSection.getList("pattern", new ArrayList<>());
         if(pattern.isEmpty()) {
@@ -71,16 +73,17 @@ public record RecipeConfiguration(String[] pattern, Map<String, String> ingredie
 
         }
 
-        return new RecipeConfiguration(pattern.toArray(new String[0]), ingredients);
+        return new RecipeConfiguration(pattern.toArray(new String[0]), ingredients, amount);
     }
 
-    public void apply(ItemPlugin plugin, ItemStack result, String filename) {
+    public void apply(ItemPlugin plugin, Item result, String filename) {
         if(pattern == null || ingredients == null) {
             return;
         }
 
+        ItemStack itemResult = result.build(null, amount);
         NamespacedKey recipeKey = new NamespacedKey(plugin, filename + "_craft");
-        ShapedRecipe recipe = new ShapedRecipe(recipeKey, result);
+        ShapedRecipe recipe = new ShapedRecipe(recipeKey, itemResult);
         recipe.shape(pattern);
         for (Map.Entry<String, String> entry : ingredients.entrySet()) {
             char key = entry.getKey().charAt(0);

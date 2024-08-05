@@ -35,7 +35,7 @@ public class ZItem extends ZUtils implements Item {
         this.plugin = plugin;
         this.name = name;
         this.configuration = configuration;
-        this.configuration.createRecipe(plugin, this.build(null, 1), name);
+        this.configuration.createRecipe(plugin, this, name);
     }
 
     @Override

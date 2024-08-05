@@ -4,6 +4,7 @@ lore:
   - "&8Allows breaking of glasses"
 
 craft:
+  amount: 1
   pattern:
     - " S"
     - "S"

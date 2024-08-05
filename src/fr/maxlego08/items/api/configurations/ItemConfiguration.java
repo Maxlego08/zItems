@@ -1,6 +1,7 @@
 package fr.maxlego08.items.api.configurations;
 
 import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
+import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
@@ -470,7 +471,7 @@ public class ItemConfiguration {
         }
     }
 
-    public void createRecipe(ItemPlugin plugin, ItemStack result, String filename) {
+    public void createRecipe(ItemPlugin plugin, Item result, String filename) {
         this.recipeConfiguration.apply(plugin, result, filename);
     }
 
