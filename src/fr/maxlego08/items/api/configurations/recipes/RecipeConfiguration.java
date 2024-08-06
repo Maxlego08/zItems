@@ -94,24 +94,29 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
             ingredients[i++] = new ItemRecipe.Ingredient(choice, '-');
         }
 
-        return new ItemRecipe(RecipeType.SMITHING_TRANSFORM, amount, ingredients, new String[0],0, 0);
+        return new ItemRecipe("", "", RecipeType.SMITHING_TRANSFORM, amount, ingredients, new String[0],0, 0);
     }
 
     private static ItemRecipe getStonecuttingRecipe(ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
+        String group = (String) recipeConfig.getOrDefault("group","");
         Map<String, String> ingredient = (Map<String, String>) recipeConfig.get("ingredient");
         RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
-        return new ItemRecipe(RecipeType.STONECUTTING, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, '-')}, new String[0], 0, 0);
+        return new ItemRecipe(group, "", RecipeType.STONECUTTING, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, '-')}, new String[0], 0, 0);
     }
 
     private static ItemRecipe allFurnaceTypeRecipe(RecipeType type, ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
+        String group = (String) recipeConfig.getOrDefault("group","");
+        String category = (String) recipeConfig.getOrDefault("category","");
         int cookingTime = (int) recipeConfig.getOrDefault("cooking-time", 200);
         float experience = ((Number) recipeConfig.getOrDefault("experience", 0)).floatValue();
         Map<String, String> ingredient = (Map<String, String>) recipeConfig.get("ingredient");
         RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
-        return new ItemRecipe(type, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, '-')}, new String[0], cookingTime, experience);
+        return new ItemRecipe(group,category, type, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, '-')}, new String[0], cookingTime, experience);
     }
 
     private static ItemRecipe getShapelessRecipe(ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
+        String group = (String) recipeConfig.getOrDefault("group","");
+        String category = (String) recipeConfig.getOrDefault("category","");
         List<ItemRecipe.Ingredient> ingredients = new ArrayList<>();
 
         List<Map<String,String>> ingredientsMap = (List<Map<String, String>>) recipeConfig.get("ingredients");
@@ -119,10 +124,12 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
             RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
             ingredients.add(new ItemRecipe.Ingredient(choice, '-'));
         }
-        return new ItemRecipe(RecipeType.CRAFTING_SHAPELESS, amount, ingredients.toArray(new ItemRecipe.Ingredient[0]), new String[0],0, 0);
+        return new ItemRecipe(group, category, RecipeType.CRAFTING_SHAPELESS, amount, ingredients.toArray(new ItemRecipe.Ingredient[0]), new String[0],0, 0);
     }
 
     private static ItemRecipe getShapedRecipe(ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
+        String group = (String) recipeConfig.getOrDefault("group","");
+        String category = (String) recipeConfig.getOrDefault("category","");
         List<ItemRecipe.Ingredient> ingredients = new ArrayList<>();
 
         List<String> pattern = (List<String>) recipeConfig.get("pattern");
@@ -135,7 +142,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
             ingredients.add(new ItemRecipe.Ingredient(choice, sign.charAt(0)));
         }
 
-        return new ItemRecipe(RecipeType.CRAFTING_SHAPED, amount, ingredients.toArray(new ItemRecipe.Ingredient[0]), pattern.toArray(new String[0]),0, 0);
+        return new ItemRecipe(group, category, RecipeType.CRAFTING_SHAPED, amount, ingredients.toArray(new ItemRecipe.Ingredient[0]), pattern.toArray(new String[0]),0, 0);
     }
 
     public void apply(Item itemName, ItemsPlugin plugin) {
