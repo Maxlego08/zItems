@@ -1,7 +1,8 @@
-package fr.maxlego08.items.api.configurations;
+package fr.maxlego08.items.api.configurations.meta;
 
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.state.ItemSlot;
 import fr.maxlego08.items.api.configurations.state.ItemSlotCustomItem;
 import fr.maxlego08.items.api.configurations.state.ItemSlotItem;
@@ -18,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public record BlockStateMetaConfiguration(boolean enable, List<ItemSlot> containerItems, boolean signWaxed,

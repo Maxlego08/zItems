@@ -1,4 +1,4 @@
-package fr.maxlego08.items.api.configurations;
+package fr.maxlego08.items.api.configurations.meta;
 
 public record ArmorStandConfig(
     boolean enable,

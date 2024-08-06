@@ -2,9 +2,12 @@ package fr.maxlego08.items;
 
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
-import fr.maxlego08.items.api.configurations.Food;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
+<<<<<<< HEAD
 import fr.maxlego08.items.api.configurations.RecipeConfiguration;
+=======
+import fr.maxlego08.items.api.configurations.meta.Food;
+>>>>>>> 0d37d303796cae78ef766dd60e85abde960a5d9e
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,7 +23,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+<<<<<<< HEAD
 import org.bukkit.plugin.java.JavaPlugin;
+=======
+>>>>>>> 0d37d303796cae78ef766dd60e85abde960a5d9e
 
 import java.util.Optional;
 import java.util.UUID;
@@ -63,9 +69,14 @@ public class ZItem extends ZUtils implements Item {
 
             PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
             persistentDataContainer.set(ITEM_KEY, PersistentDataType.STRING, this.name);
+            persistentDataContainer.set(ITEM_TYPE_KEY, PersistentDataType.STRING, this.configuration.getItemType().name());
 
             if (this.configuration.getMaxStackSize() > 0) {
                 itemMeta.setMaxStackSize(this.configuration.getMaxStackSize());
+            }
+
+            if (this.configuration.hasSpecialConfiguration()) {
+                this.configuration.getSpecialConfiguration().apply(player, this.plugin, itemMeta, persistentDataContainer);
             }
 
             this.applyNames(itemMeta, player);

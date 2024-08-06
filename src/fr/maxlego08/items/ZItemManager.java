@@ -44,6 +44,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
                 this.plugin.saveResource("items/loot-chest.yml", false);
                 this.plugin.saveResource("items/multitools.yml", false);
                 this.plugin.saveResource("items/strength-potion.yml", false);
+                this.plugin.saveResource("items/hoe.yml", false);
             }
         }
 
