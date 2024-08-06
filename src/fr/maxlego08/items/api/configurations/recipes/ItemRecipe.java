@@ -1,11 +1,10 @@
 package fr.maxlego08.items.api.configurations.recipes;
 
-import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.Item;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 
-public record ItemRecipe(RecipeType recipeType, int amount, Ingredient[] ingredients, int cookingTime, float experience) {
+public record ItemRecipe(RecipeType recipeType, int amount, Ingredient[] ingredients, String[] pattern, int cookingTime, float experience) {
 
     record Ingredient(RecipeChoice choice, char sign) {}
 
@@ -16,6 +15,7 @@ public record ItemRecipe(RecipeType recipeType, int amount, Ingredient[] ingredi
         switch (recipeType) {
             case CRAFTING_SHAPED -> {
                 recipe = new ShapedRecipe(key, result);
+                ((ShapedRecipe) recipe).shape(pattern);
                 for (Ingredient ingredient : ingredients) {
                     ((ShapedRecipe) recipe).setIngredient(ingredient.sign(), ingredient.choice());
                 }

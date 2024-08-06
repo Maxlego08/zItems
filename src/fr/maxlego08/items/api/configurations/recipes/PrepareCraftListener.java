@@ -29,17 +29,8 @@ public class PrepareCraftListener implements Listener {
         ItemStack item = event.getResult();
         if(item == null || item.isEmpty()) return;
 
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return;
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return;
-
-        Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
-        if (itemOptional.isEmpty()) return;
-        Item itemResult = itemOptional.get();
-
-        event.getInventory().setResult(itemResult.build(player, item.getAmount()));
+        ItemStack newResult = this.setCustomResultWithPlaceholders(item, player);
+        if(newResult != null) event.getInventory().setResult(newResult);
     }
 
     @EventHandler
@@ -49,21 +40,20 @@ public class PrepareCraftListener implements Listener {
         if (recipe == null) return;
 
         ItemStack result = recipe.getResult();
-        ItemMeta meta = result.getItemMeta();
-        if (meta == null) return;
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return;
-
-        Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
-        if (itemOptional.isEmpty()) return;
-        Item itemResult = itemOptional.get();
-
-        RecipeConfiguration recipeConfiguration = itemResult.getConfiguration().getRecipeConfiguration();
-
-        //TODO : handle check if item in matrix must be a custom item
-
-        event.getInventory().setResult(itemResult.build(player, result.getAmount()));
+        ItemStack newResult = this.setCustomResultWithPlaceholders(result, player);
+        if(newResult != null) event.getInventory().setResult(newResult);
     }
 
+    private ItemStack setCustomResultWithPlaceholders(ItemStack result, Player player) {
+        ItemMeta meta = result.getItemMeta();
+        if (meta == null) return null;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return null;
+
+        Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
+        if (itemOptional.isEmpty()) return null;
+        Item itemResult = itemOptional.get();
+        return itemResult.build(player, result.getAmount());
+    }
 }
