@@ -53,6 +53,10 @@ public class ZItemManager extends ZUtils implements ItemManager {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+        //Must create recipe after all registeration to get custom items from the List when ingredient is custom
+        this.items.forEach(item -> {
+            item.getConfiguration().createRecipe(item, this.plugin);
+        });
     }
 
     @Override

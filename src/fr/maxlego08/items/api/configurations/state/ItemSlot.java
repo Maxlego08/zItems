@@ -7,7 +7,7 @@ public interface ItemSlot {
 
         int slot();
 
-        Item item(Player player);
+        Item item();
 
         int amount();
 

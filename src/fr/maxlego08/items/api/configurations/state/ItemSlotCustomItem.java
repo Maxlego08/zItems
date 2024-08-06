@@ -24,7 +24,7 @@ public class ItemSlotCustomItem implements ItemSlot {
     }
 
     @Override
-    public Item item(Player player) {
+    public Item item() {
         var optional = this.plugin.getItemManager().getItem(customItem);
         return optional.orElse(new FakeItem());
     }

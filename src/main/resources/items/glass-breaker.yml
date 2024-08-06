@@ -3,6 +3,42 @@ display-name: "#3bdbc9ɢʟᴀss ʙʀᴇᴀᴋᴇʀ"
 lore:
   - "&8Allows breaking of glasses"
 
+recipes:
+  - type: smithing_transform
+    template:
+      item: minecraft:glass
+    base:
+      tag: planks
+    addition:
+      item: minecraft:glass
+  - type: blasting
+    category: blocks
+    group: example
+    ingredient: # List or string
+      item: minecraft:glass
+    cookingtime: 100
+    experience: 10
+  - type: crafting_shapeless
+    category: redstone
+    ingredients:
+      - item: minecraft:glass
+      - tag: planks
+  - type: crafting_shaped
+    category: building
+    pattern:
+      - " A "
+      - "A1A"
+      - " A "
+    ingredients:
+      1:
+        tag: planks
+      A:
+        item: minecraft:glass
+  - type: stonecutting
+    amount: 2
+    ingredient:
+      item: minecraft:glass
+
 max-stack-size: 1
 
 max-damage: 9999

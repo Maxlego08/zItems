@@ -5,6 +5,7 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
+import fr.maxlego08.items.api.configurations.recipes.PrepareCraftListener;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.utils.TrimHelper;
@@ -45,7 +46,8 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
 
         this.registerCommand("zitems", new CommandItem(this), "items", "zit");
-
+      
+        this.addListener(new PrepareCraftListener(this.itemManager));
         // ToDo, create a check for register listener only if a item for this list exist
         this.addListener(new FarmingHoeListener(this));
 
@@ -67,6 +69,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         this.preDisable();
 
+        this.getServer().clearRecipes();
         this.saveFiles();
 
         this.postDisable();

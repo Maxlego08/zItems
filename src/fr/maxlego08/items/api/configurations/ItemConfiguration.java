@@ -1,6 +1,8 @@
 package fr.maxlego08.items.api.configurations;
 
 import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
+import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
@@ -17,6 +19,7 @@ import fr.maxlego08.items.api.configurations.meta.ItemEnchantment;
 import fr.maxlego08.items.api.configurations.meta.PotionMetaConfiguration;
 import fr.maxlego08.items.api.configurations.meta.ToolComponentConfiguration;
 import fr.maxlego08.items.api.configurations.meta.TrimConfiguration;
+import fr.maxlego08.items.api.configurations.recipes.RecipeConfiguration;
 import fr.maxlego08.items.api.configurations.specials.FarmingHoeConfiguration;
 import fr.maxlego08.items.api.configurations.specials.SpecialConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
@@ -88,6 +91,7 @@ public class ItemConfiguration {
     private final BlockDataMetaConfiguration blockDataMetaConfiguration;
     private final BlockStateMetaConfiguration blockStateMetaConfiguration;
     private final ToolComponentConfiguration toolComponentConfiguration;
+    private final RecipeConfiguration recipeConfiguration;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
@@ -202,7 +206,7 @@ public class ItemConfiguration {
         this.blockDataMetaConfiguration = BlockDataMetaConfiguration.loadBlockDataMeta(plugin, configuration, fileName, path);
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
-
+        this.recipeConfiguration = RecipeConfiguration.loadRecipe(plugin, configuration, fileName, path);
         switch (itemType) {
             case FARMING_HOE ->
                     this.specialConfiguration = this.loadFarmingHoeConfiguration(plugin, configuration, fileName, path);
@@ -534,8 +538,16 @@ public class ItemConfiguration {
         }
     }
 
+    public void createRecipe(Item itemName, ItemsPlugin plugin) {
+        this.recipeConfiguration.apply(itemName, plugin);
+    }
+
     public ItemRarity getItemRarity() {
         return itemRarity;
+    }
+
+    public RecipeConfiguration getRecipeConfiguration() {
+        return recipeConfiguration;
     }
 
     public SpecialConfiguration getSpecialConfiguration() {

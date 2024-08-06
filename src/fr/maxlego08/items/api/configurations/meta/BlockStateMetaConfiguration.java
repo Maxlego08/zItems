@@ -87,7 +87,7 @@ public record BlockStateMetaConfiguration(boolean enable, List<ItemSlot> contain
         if (blockState instanceof Container container && !this.containerItems.isEmpty()) {
 
             var inventory = container.getInventory();
-            this.containerItems.forEach(itemSlot -> inventory.setItem(itemSlot.slot(), itemSlot.item(player).build(player, itemSlot.amount())));
+            this.containerItems.forEach(itemSlot -> inventory.setItem(itemSlot.slot(), itemSlot.item().build(player, itemSlot.amount())));
         }
 
         if (blockState instanceof Sign sign) {

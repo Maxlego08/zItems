@@ -19,6 +19,7 @@ public class CommandItemReload extends VCommand {
     protected CommandType perform(ItemsPlugin plugin) {
 
         plugin.reloadFiles();
+        plugin.getServer().clearRecipes();
         plugin.getItemManager().loadItems();
         message(sender, Message.RELOAD);
 

@@ -5,6 +5,7 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.meta.Food;
 import fr.maxlego08.items.zcore.utils.ZUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
@@ -55,6 +56,7 @@ public class ZItem extends ZUtils implements Item {
 
             PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
             persistentDataContainer.set(ITEM_KEY, PersistentDataType.STRING, this.name);
+            persistentDataContainer.set(ITEM_TYPE_KEY, PersistentDataType.STRING, this.configuration.getItemType().name());
 
             if (this.configuration.getMaxStackSize() > 0) {
                 itemMeta.setMaxStackSize(this.configuration.getMaxStackSize());

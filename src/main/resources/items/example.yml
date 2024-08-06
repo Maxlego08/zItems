@@ -3,40 +3,6 @@ material: iron_sword
 # Overrides the default maximum stack size of this item. Choose a number between 1 and 99. max-stack-size must be 1 if max-damage is set.
 max-stack-size: 2
 
-# https://minecraft.wiki/w/Recipe
-recipes:
-  - type: blasting
-    category: blocks
-    group: example
-    ingredient: # List or string
-      - itsmyitem:example
-      - minecraft:example_2
-    cookingtime: 100
-    experience: 10
-  - type: crafting_shaped
-    category: building
-    pattern:
-      - " A "
-      - "A1A"
-      - " A "
-    key:
-      1: minecraft:emerald # List or string
-      A: # List or string
-        - minecraft:stone
-        - minecraft:andesite
-        - minecraft:granite
-  - type: crafting_shapeless
-    category: redstone
-    ingredients:
-      - ingredient: # List
-          - minecraft:emerald
-          - minecraft:diamond
-      - minecraft:stone
-      - minecraft:andesite
-      - minecraft:granite
-
-
-
 # Display name override for an item. This can be changed or removed in an anvil. They are styled with italics by default but you can turn italics off. They can show labels where applicable (for example: banner markers, names in item frames). The custom name will take priority over item-name.
 display-name: '&6&lExample Item'
 
