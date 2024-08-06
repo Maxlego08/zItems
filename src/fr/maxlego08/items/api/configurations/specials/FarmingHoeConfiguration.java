@@ -18,7 +18,8 @@ public record FarmingHoeConfiguration(int size,
                                       List<Material> allowedCrops,
                                       int damage,
                                       int harvestDamage,
-                                      List<Material> allowedPlantSeeds
+                                      List<Material> allowedPlantSeeds,
+                                      boolean eventBlockBreakEvent
 ) implements SpecialConfiguration {
 
 

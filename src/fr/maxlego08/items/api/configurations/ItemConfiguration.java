@@ -221,6 +221,7 @@ public class ItemConfiguration {
         boolean dropItemInInventory = configuration.getBoolean(path + "farming-hoe.add-item-in-inventory", false);
         boolean harvest = configuration.getBoolean(path + "farming-hoe.harvest", false);
         boolean plantSeeds = configuration.getBoolean(path + "farming-hoe.plant-seeds", false);
+        boolean eventBlockBreakEvent = configuration.getBoolean(path + "farming-hoe.enable-block-break-event", true);
 
         List<Material> blacklistMaterials = stringListToMaterialList(configuration.getStringList(path + "farming-hoe.drop-blacklist"));
         List<Material> allowedCrops = stringListToMaterialList(configuration.getStringList(path + "farming-hoe.allowed-crops"));
@@ -240,7 +241,7 @@ public class ItemConfiguration {
             }
         }
 
-        return new FarmingHoeConfiguration(size, autoReplant, dropItemType, dropItemInInventory, harvest, plantSeeds, blacklistMaterials, allowedCrops, damage, harvestDamage, allowedPlantSeeds);
+        return new FarmingHoeConfiguration(size, autoReplant, dropItemType, dropItemInInventory, harvest, plantSeeds, blacklistMaterials, allowedCrops, damage, harvestDamage, allowedPlantSeeds, eventBlockBreakEvent);
     }
 
     private List<Material> stringListToMaterialList(List<String> strings) {

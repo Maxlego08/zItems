@@ -6,22 +6,31 @@ import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
+import fr.maxlego08.items.api.hook.BlockAccess;
+import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.command.commands.CommandItem;
 import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
 import fr.maxlego08.items.enchantments.ZEnchantments;
+import fr.maxlego08.items.hook.WorldGuardAccess;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
-import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.specials.FarmingHoeListener;
 import fr.maxlego08.items.zcore.ZPlugin;
+import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
     private final TrimHelper trimHelper = new TrimHelper();
     private final ItemManager itemManager = new ZItemManager(this);
     private final Enchantments enchantments = new ZEnchantments();
+    private final List<BlockAccess> blockAccesses = new ArrayList<>();
     private ItemComponent itemComponent;
 
     @Override
@@ -46,6 +55,10 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         this.loadFiles();
 
+        if (this.isEnable(Plugins.WORLDGUARD)) {
+            this.registerBlockAccess(new WorldGuardAccess());
+        }
+
         this.postEnable();
     }
 
@@ -65,6 +78,21 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
     public ItemManager getItemManager() {
         return itemManager;
+    }
+
+    @Override
+    public List<BlockAccess> getBlockAccess() {
+        return this.blockAccesses;
+    }
+
+    @Override
+    public void registerBlockAccess(BlockAccess blockAccess) {
+        this.blockAccesses.add(blockAccess);
+    }
+
+    @Override
+    public boolean hasAccess(Player player, Location location) {
+        return this.blockAccesses.stream().allMatch(blockAccess -> blockAccess.hasAccess(player, location));
     }
 
     public Enchantments getEnchantments() {
