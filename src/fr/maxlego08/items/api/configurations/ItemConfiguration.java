@@ -57,6 +57,7 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ItemConfiguration {
 
@@ -213,12 +214,48 @@ public class ItemConfiguration {
     }
 
     private SpecialConfiguration loadFarmingHoeConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+
+        FarmingHoeConfiguration.DropItemType dropItemType = FarmingHoeConfiguration.DropItemType.CENTER;
+
         int size = configuration.getInt(path + "farming-hoe.size", 1);
+        int damage = configuration.getInt(path + "farming-hoe.damage", 1);
+        int harvestDamage = configuration.getInt(path + "farming-hoe.harvest-damage", 1);
+
+        boolean autoReplant = configuration.getBoolean(path + "farming-hoe.auto-replant", true);
+        boolean dropItemInInventory = configuration.getBoolean(path + "farming-hoe.add-item-in-inventory", false);
+        boolean harvest = configuration.getBoolean(path + "farming-hoe.harvest", false);
+        boolean plantSeeds = configuration.getBoolean(path + "farming-hoe.plant-seeds", false);
+        boolean eventBlockBreakEvent = configuration.getBoolean(path + "farming-hoe.enable-block-break-event", true);
+
+        List<Material> blacklistMaterials = stringListToMaterialList(configuration.getStringList(path + "farming-hoe.drop-blacklist"));
+        List<Material> allowedCrops = stringListToMaterialList(configuration.getStringList(path + "farming-hoe.allowed-crops"));
+        List<Material> allowedPlantSeeds = stringListToMaterialList(configuration.getStringList(path + "farming-hoe.allowed-plant-seeds"));
+
         if (size % 2 == 0) {
             size = 3;
             plugin.getLogger().severe("Farming hoe size must be odd ! Use default value: 3. For file " + fileName);
         }
-        return new FarmingHoeConfiguration(size);
+
+        String dropItemTypeString = configuration.getString(path + "farming-hoe.drop-item-type");
+        if (dropItemTypeString != null) {
+            try {
+                dropItemType = FarmingHoeConfiguration.DropItemType.valueOf(dropItemTypeString.toUpperCase());
+            } catch (Exception exception) {
+                plugin.getLogger().severe("Impossible to find the drop-item-type " + dropItemTypeString + " For file " + fileName);
+            }
+        }
+
+        return new FarmingHoeConfiguration(size, autoReplant, dropItemType, dropItemInInventory, harvest, plantSeeds, blacklistMaterials, allowedCrops, damage, harvestDamage, allowedPlantSeeds, eventBlockBreakEvent);
+    }
+
+    private List<Material> stringListToMaterialList(List<String> strings) {
+        return strings.stream().map(value -> {
+            try {
+                return Material.valueOf(value.toUpperCase());
+            } catch (Exception ignored) {
+                return null;
+            }
+        }).filter(Objects::nonNull).toList();
     }
 
     private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {

@@ -9,7 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public interface Item {
 
     NamespacedKey ITEM_KEY = new NamespacedKey(JavaPlugin.getProvidingPlugin(ItemPlugin.class), "item-id");
-    NamespacedKey ITEM_TYPE_KEY = new NamespacedKey(JavaPlugin.getProvidingPlugin(ItemPlugin.class), "item-type");
 
     ItemConfiguration getConfiguration();
 

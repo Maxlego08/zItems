@@ -3,5 +3,61 @@ material: NETHERITE_HOE
 display-name: "&eFarming Hoe"
 max-damage: 6000
 
+# Allows configuration of FARMING_HOE type item
 farming-hoe:
+
+  # Diameter of the hoe, the number must be odd
   size: 3
+
+  # Number of damage that the item will take when it used
+  damage: 1
+
+  # Allows to automatically replant
+  # If disabled all blocks will break and the player should crash manually.
+  auto-replant: true
+
+  # Allows to define where items will appear
+  # BLOCK - La location du bloc d’articles provient des articles
+  # CENTER - The location of the block where the player will have clicked
+  # PLAYER - The player’s location
+  drop-item-type: CENTER
+
+  # Allows to add items in the player’s inventory
+  # If the player has no space in his inventory, the items will drop to the ground.
+  add-item-in-inventory: true
+
+  # List of materials that will not be dropped or given to the player when using the farming hoe
+  drop-blacklist:
+    - WHEAT_SEEDS
+    - BEETROOT_SEEDS
+
+  # Planting that are compatible with hoe
+  # If you want all the plantations to be compatible the list must be empty
+  allowed-crops:
+    - WHEAT
+    - POTATOES
+    - CARROTS
+    - BEETROOTS
+    - NETHER_WART
+
+  # Allows to harvest with the size of the hoe
+  harvest: true
+
+  # Number of damage that the item will take when it goes to harvest
+  harvest-damage: 3
+
+  # When you go to right-click on a soil block with seeds in your inventories you will be able to plant your seeds with the defined size
+  plant-seeds: true
+
+  # Seeds allowed to be planted
+  allowed-plant-seeds:
+    - WHEAT_SEEDS
+    - BEETROOT_SEEDS
+    - NETHER_WART
+
+  # Activate the BlockBreakEvent when the player will use the hoe will allow to check on each block if he has permission
+  # to break it and to indicate to other plugins that the player to break a block.
+  # For the jobs/quest/other plugins this can be very useful if zItems does not implement its plugin methods.
+  # Attention, if you have a big server it can hurt the performance of having so many BlockBreakEvent !
+  # It is advisable to implement the plugins you need, if there are any missing come on discord.
+  enable-block-break-event: true
