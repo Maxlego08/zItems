@@ -209,12 +209,27 @@ public class ItemConfiguration {
     }
 
     private SpecialConfiguration loadFarmingHoeConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+
+        FarmingHoeConfiguration.DropItemType dropItemType = FarmingHoeConfiguration.DropItemType.CENTER;
         int size = configuration.getInt(path + "farming-hoe.size", 1);
+        boolean autoPlant = configuration.getBoolean(path + "farming-hoe.auto-plant", true);
+        boolean dropItemInInventory = configuration.getBoolean(path + "farming-hoe.add-item-in-inventory", false);
+
         if (size % 2 == 0) {
             size = 3;
             plugin.getLogger().severe("Farming hoe size must be odd ! Use default value: 3. For file " + fileName);
         }
-        return new FarmingHoeConfiguration(size);
+
+        String dropItemTypeString = configuration.getString("");
+        if (dropItemTypeString != null) {
+            try {
+                dropItemType = FarmingHoeConfiguration.DropItemType.valueOf(dropItemTypeString.toUpperCase());
+            } catch (Exception exception) {
+                plugin.getLogger().severe("Impossible to find the drop type " + dropItemTypeString + " For file " + fileName);
+            }
+        }
+
+        return new FarmingHoeConfiguration(size, autoPlant, dropItemType, dropItemInInventory);
     }
 
     private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {

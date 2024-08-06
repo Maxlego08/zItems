@@ -37,6 +37,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         this.registerCommand("zitems", new CommandItem(this), "items", "zit");
 
+        // ToDo, create a check for register listener only if a item for this list exist
         this.addListener(new FarmingHoeListener(this));
 
         this.addSave(Config.getInstance());
