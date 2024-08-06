@@ -62,7 +62,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
                     return new RecipeChoice.MaterialChoice(Material.valueOf(data[1].trim().toUpperCase()));
                 } else if(data[0].equalsIgnoreCase("zitems")) {
                     Item ingredientItem = plugin.getItemManager().getItem(data[1].trim()).orElseThrow(() -> new IllegalArgumentException("Invalid item name"));
-                    new RecipeChoice.MaterialChoice(ingredientItem.build(null, 1).getType());
+                    return new RecipeChoice.MaterialChoice(ingredientItem.build(null, 1).getType());
                 } else {
                     throw new IllegalArgumentException("Invalid item type");
                 }
@@ -78,7 +78,6 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
             }
             default -> throw new IllegalArgumentException("Invalid ingredient type");
         }
-        throw new IllegalArgumentException("Invalid ingredient type");
     }
 
     private static ItemRecipe getSmithingTransformRecipe(ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
@@ -90,8 +89,8 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
                 throw new IllegalArgumentException("Missing key " + key + " in smithing transform recipe");
             }
             Map<String, String> ingredient = (Map<String, String>) recipeConfig.get(key);
-            RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get( ingredient.keySet().toArray()[0]));
-            ingredients[i++] = new ItemRecipe.Ingredient(choice, '-');
+            RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
+            ingredients[i++] = new ItemRecipe.Ingredient(choice, ingredient.get(ingredient.keySet().toArray()[0]),'-');
         }
 
         return new ItemRecipe("", "", RecipeType.SMITHING_TRANSFORM, amount, ingredients, new String[0],0, 0);
@@ -101,7 +100,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
         String group = (String) recipeConfig.getOrDefault("group","");
         Map<String, String> ingredient = (Map<String, String>) recipeConfig.get("ingredient");
         RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
-        return new ItemRecipe(group, "", RecipeType.STONECUTTING, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, '-')}, new String[0], 0, 0);
+        return new ItemRecipe(group, "", RecipeType.STONECUTTING, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, ingredient.get( ingredient.keySet().toArray()[0]),'-')}, new String[0], 0, 0);
     }
 
     private static ItemRecipe allFurnaceTypeRecipe(RecipeType type, ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
@@ -111,7 +110,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
         float experience = ((Number) recipeConfig.getOrDefault("experience", 0)).floatValue();
         Map<String, String> ingredient = (Map<String, String>) recipeConfig.get("ingredient");
         RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
-        return new ItemRecipe(group,category, type, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, '-')}, new String[0], cookingTime, experience);
+        return new ItemRecipe(group,category, type, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, ingredient.get( ingredient.keySet().toArray()[0]),'-')}, new String[0], cookingTime, experience);
     }
 
     private static ItemRecipe getShapelessRecipe(ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
@@ -122,7 +121,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
         List<Map<String,String>> ingredientsMap = (List<Map<String, String>>) recipeConfig.get("ingredients");
         for (Map<String, String> ingredient : ingredientsMap) {
             RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
-            ingredients.add(new ItemRecipe.Ingredient(choice, '-'));
+            ingredients.add(new ItemRecipe.Ingredient(choice, ingredient.get( ingredient.keySet().toArray()[0]),'-'));
         }
         return new ItemRecipe(group, category, RecipeType.CRAFTING_SHAPELESS, amount, ingredients.toArray(new ItemRecipe.Ingredient[0]), new String[0],0, 0);
     }
@@ -139,7 +138,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
             String sign = String.valueOf(stringObjectEntry.getKey());
             Map<String, String> ingredient = (Map<String, String>) stringObjectEntry.getValue();
             RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
-            ingredients.add(new ItemRecipe.Ingredient(choice, sign.charAt(0)));
+            ingredients.add(new ItemRecipe.Ingredient(choice, ingredient.get( ingredient.keySet().toArray()[0]), sign.charAt(0)));
         }
 
         return new ItemRecipe(group, category, RecipeType.CRAFTING_SHAPED, amount, ingredients.toArray(new ItemRecipe.Ingredient[0]), pattern.toArray(new String[0]),0, 0);

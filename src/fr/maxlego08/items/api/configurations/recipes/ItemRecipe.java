@@ -8,7 +8,7 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 public record ItemRecipe(String group, String category, RecipeType recipeType, int amount, Ingredient[] ingredients, String[] pattern, int cookingTime, float experience) {
 
-    record Ingredient(RecipeChoice choice, char sign) {}
+    record Ingredient(RecipeChoice choice, String ingredientName, char sign) {}
 
     public Recipe toBukkitRecipe(Item item) {
         NamespacedKey key = recipeType.getNamespacedKey(item.getName());
