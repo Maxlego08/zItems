@@ -3,9 +3,11 @@ package fr.maxlego08.items.api.configurations.recipes;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,6 +23,40 @@ public class PrepareCraftListener implements Listener {
 
     public PrepareCraftListener(ItemManager itemManager) {
         this.itemManager = itemManager;
+    }
+
+    @EventHandler
+    public void onSmelt(BlockCookEvent event) {
+        ItemStack item = event.getSource();
+        if (item == null || item.isEmpty()) return;
+
+        if(event.getRecipe() == null) {
+            return;
+        }
+
+        ItemStack result = event.getRecipe().getResult();
+        ItemMeta meta = result.getItemMeta();
+        if (meta == null) return;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return;
+        Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
+        if (itemOptional.isEmpty()) return;
+
+        NamespacedKey key = event.getRecipe().getKey();
+        List<ItemRecipe> itemRecipes = itemOptional.get().getConfiguration()
+                .getRecipeConfiguration().recipes();
+        for (ItemRecipe itemRecipe : itemRecipes) {
+            if (!RecipeType.smeltingRecipes().contains(itemRecipe.recipeType())) continue;
+            if (!itemRecipe.recipeType().getNamespacedKey(itemOptional.get().getName())
+                    .equals(key))
+                continue;
+
+            if(!isSimilar(item, itemRecipe.ingredients()[0])) {
+                event.setCancelled(true);
+                return;
+            }
+        }
     }
 
     @EventHandler

@@ -104,6 +104,8 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
     }
 
     private static ItemRecipe allFurnaceTypeRecipe(RecipeType type, ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
+        //TODO: if recipe with ingredient exist the existnt recipe doesn't work
+
         String group = (String) recipeConfig.getOrDefault("group","");
         String category = (String) recipeConfig.getOrDefault("category","");
         int cookingTime = (int) recipeConfig.getOrDefault("cooking-time", 200);

@@ -5,6 +5,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
+
 public enum RecipeType {
 
     CRAFTING_SHAPED,
@@ -28,5 +30,9 @@ public enum RecipeType {
             }
         }
         return null;
+    }
+
+    public static List<RecipeType> smeltingRecipes() {
+        return List.of(CAMPFIRE_COOOKING, BLASTING, SMOKING, SMELTING);
     }
 }
