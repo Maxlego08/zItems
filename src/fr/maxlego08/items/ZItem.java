@@ -3,32 +3,20 @@ package fr.maxlego08.items;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
-<<<<<<< HEAD
-import fr.maxlego08.items.api.configurations.RecipeConfiguration;
-=======
 import fr.maxlego08.items.api.configurations.meta.Food;
->>>>>>> 0d37d303796cae78ef766dd60e85abde960a5d9e
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Tag;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-<<<<<<< HEAD
-import org.bukkit.plugin.java.JavaPlugin;
-=======
->>>>>>> 0d37d303796cae78ef766dd60e85abde960a5d9e
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class ZItem extends ZUtils implements Item {
@@ -41,7 +29,6 @@ public class ZItem extends ZUtils implements Item {
         this.plugin = plugin;
         this.name = name;
         this.configuration = configuration;
-        this.configuration.createRecipe(plugin, this, name);
     }
 
     @Override

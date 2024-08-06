@@ -3,14 +3,21 @@ display-name: "#3bdbc9ɢʟᴀss ʙʀᴇᴀᴋᴇʀ"
 lore:
   - "&8Allows breaking of glasses"
 
-craft:
-  amount: 1
-  pattern:
-    - " S"
-    - "S"
-  ingredients:
-    S:
-      tag: PLANKS
+recipes:
+  - type: smithing_transform
+    template:
+      item: minecraft:glass
+    base:
+      tag: planks
+    addition:
+      item: minecraft:glass
+  - type: blasting
+    category: blocks
+    group: example
+    ingredient: # List or string
+      item: minecraft:glass
+    cookingtime: 100
+    experience: 10
 
 max-stack-size: 1
 

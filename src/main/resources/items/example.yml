@@ -5,6 +5,13 @@ max-stack-size: 2
 
 # https://minecraft.wiki/w/Recipe
 recipes:
+  - type: smithing_transform
+    template:
+      item: minecraft:example_1
+    base:
+      item: minecraft:example_2
+    addition:
+      item: minecraft:example_3
   - type: blasting
     category: blocks
     group: example

@@ -1,6 +1,7 @@
 package fr.maxlego08.items.api.configurations;
 
 import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
+import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
@@ -18,6 +19,7 @@ import fr.maxlego08.items.api.configurations.meta.ItemEnchantment;
 import fr.maxlego08.items.api.configurations.meta.PotionMetaConfiguration;
 import fr.maxlego08.items.api.configurations.meta.ToolComponentConfiguration;
 import fr.maxlego08.items.api.configurations.meta.TrimConfiguration;
+import fr.maxlego08.items.api.configurations.recipes.RecipeConfiguration;
 import fr.maxlego08.items.api.configurations.specials.FarmingHoeConfiguration;
 import fr.maxlego08.items.api.configurations.specials.SpecialConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
@@ -36,7 +38,6 @@ import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -204,7 +205,7 @@ public class ItemConfiguration {
         this.blockDataMetaConfiguration = BlockDataMetaConfiguration.loadBlockDataMeta(plugin, configuration, fileName, path);
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
-        this.recipeConfiguration = RecipeConfiguration.loadRecipe(configuration, fileName, path);
+        this.recipeConfiguration = RecipeConfiguration.loadRecipe(plugin, configuration, fileName, path);
         switch (itemType) {
             case FARMING_HOE ->
                     this.specialConfiguration = this.loadFarmingHoeConfiguration(plugin, configuration, fileName, path);
@@ -500,8 +501,8 @@ public class ItemConfiguration {
         }
     }
 
-    public void createRecipe(ItemPlugin plugin, Item result, String filename) {
-        this.recipeConfiguration.apply(plugin, result, filename);
+    public void createRecipe(Item itemName, ItemsPlugin plugin) {
+        this.recipeConfiguration.apply(itemName, plugin);
     }
 
     public ItemRarity getItemRarity() {

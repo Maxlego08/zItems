@@ -3,8 +3,6 @@ package fr.maxlego08.items;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
-import fr.maxlego08.items.api.configurations.RecipeConfiguration;
-import fr.maxlego08.items.listener.ListenerAdapter;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.command.CommandSender;
@@ -55,6 +53,10 @@ public class ZItemManager extends ZUtils implements ItemManager {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+        //Must create recipe after all registeration to get custom items from the List when ingredient is custom
+        this.items.forEach(item -> {
+            item.getConfiguration().createRecipe(item, this.plugin);
+        });
     }
 
     @Override
