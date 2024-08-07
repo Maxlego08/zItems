@@ -56,7 +56,6 @@ public class ZItem extends ZUtils implements Item {
 
             PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
             persistentDataContainer.set(ITEM_KEY, PersistentDataType.STRING, this.name);
-            persistentDataContainer.set(ITEM_TYPE_KEY, PersistentDataType.STRING, this.configuration.getItemType().name());
 
             if (this.configuration.getMaxStackSize() > 0) {
                 itemMeta.setMaxStackSize(this.configuration.getMaxStackSize());

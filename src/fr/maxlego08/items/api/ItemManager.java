@@ -22,4 +22,6 @@ public interface ItemManager {
     List<String> getItemNames();
 
     void giveItem(CommandSender sender, Player player, String itemName, int amount);
+
+    void deleteCrafts();
 }

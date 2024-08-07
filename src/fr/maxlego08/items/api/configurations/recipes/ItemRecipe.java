@@ -6,86 +6,96 @@ import org.bukkit.inventory.*;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
-public record ItemRecipe(String group, String category, RecipeType recipeType, int amount, Ingredient[] ingredients, String[] pattern, int cookingTime, float experience) {
+public record ItemRecipe(String group, String category, RecipeType recipeType, int amount, Ingredient[] ingredients,
+                         String[] pattern, int cookingTime, float experience) {
 
-    record Ingredient(RecipeChoice choice, String ingredientName, char sign) {}
+    public NamespacedKey getNamespacedKey(Item item) {
+        return this.recipeType.getNamespacedKey(item.getName());
+    }
 
     public Recipe toBukkitRecipe(Item item) {
-        NamespacedKey key = recipeType.getNamespacedKey(item.getName());
+        NamespacedKey key = getNamespacedKey(item);
         ItemStack result = item.build(null, amount);
-        Recipe recipe = null;
-        switch (recipeType) {
+        return switch (this.recipeType) {
             case CRAFTING_SHAPED -> {
-                recipe = new ShapedRecipe(key, result);
-                ((ShapedRecipe) recipe).shape(pattern);
+                var shapedRecipe = new ShapedRecipe(key, result);
+                shapedRecipe.shape(pattern);
                 for (Ingredient ingredient : ingredients) {
-                    ((ShapedRecipe) recipe).setIngredient(ingredient.sign(), ingredient.choice());
+                    shapedRecipe.setIngredient(ingredient.sign(), ingredient.choice());
                 }
-                if(!group.isEmpty()) {
-                    ((ShapedRecipe) recipe).setGroup(group);
+                if (!group.isEmpty()) {
+                    shapedRecipe.setGroup(group);
                 }
-                if(!category.isEmpty()) {
-                    ((ShapedRecipe) recipe).setCategory(CraftingBookCategory.valueOf(category.toUpperCase()));
+                if (!category.isEmpty()) {
+                    shapedRecipe.setCategory(CraftingBookCategory.valueOf(category.toUpperCase()));
                 }
+                yield shapedRecipe;
             }
             case CRAFTING_SHAPELESS -> {
-                recipe = new ShapelessRecipe(key, result);
+                var shapelessRecipe = new ShapelessRecipe(key, result);
                 for (Ingredient ingredient : ingredients) {
-                    ((ShapelessRecipe) recipe).addIngredient(ingredient.choice());
+                    shapelessRecipe.addIngredient(ingredient.choice());
                 }
-                if(!group.isEmpty()) {
-                    ((ShapelessRecipe) recipe).setGroup(group);
+                if (!group.isEmpty()) {
+                    shapelessRecipe.setGroup(group);
                 }
-                if(!category.isEmpty()) {
-                    ((ShapelessRecipe) recipe).setCategory(CraftingBookCategory.valueOf(category.toUpperCase()));
+                if (!category.isEmpty()) {
+                    shapelessRecipe.setCategory(CraftingBookCategory.valueOf(category.toUpperCase()));
                 }
+                yield shapelessRecipe;
             }
             case BLASTING -> {
-                recipe = new BlastingRecipe(key, result, ingredients[0].choice(), experience, cookingTime);
-                if(!group.isEmpty()) {
-                    ((BlastingRecipe) recipe).setGroup(group);
+                var blastingRecipe = new BlastingRecipe(key, result, ingredients[0].choice(), experience, cookingTime);
+                if (!group.isEmpty()) {
+                    blastingRecipe.setGroup(group);
                 }
-                if(!category.isEmpty()) {
-                    ((BlastingRecipe) recipe).setCategory(CookingBookCategory.valueOf(category.toUpperCase()));
+                if (!category.isEmpty()) {
+                    blastingRecipe.setCategory(CookingBookCategory.valueOf(category.toUpperCase()));
                 }
+                yield blastingRecipe;
             }
-            case CAMPFIRE_COOOKING -> {
-                recipe = new CampfireRecipe(key, result, ingredients[0].choice(), experience, cookingTime);
-                if(!group.isEmpty()) {
-                    ((CampfireRecipe) recipe).setGroup(group);
+            case CAMPFIRE_COOKING -> {
+                var campfireRecipe = new CampfireRecipe(key, result, ingredients[0].choice(), experience, cookingTime);
+                if (!group.isEmpty()) {
+                    campfireRecipe.setGroup(group);
                 }
-                if(!category.isEmpty()) {
-                    ((CampfireRecipe) recipe).setCategory(CookingBookCategory.valueOf(category.toUpperCase()));
+                if (!category.isEmpty()) {
+                    campfireRecipe.setCategory(CookingBookCategory.valueOf(category.toUpperCase()));
                 }
+                yield campfireRecipe;
             }
             case SMOKING -> {
-                recipe = new SmokingRecipe(key, result, ingredients[0].choice(), experience, cookingTime);
-                if(!group.isEmpty()) {
-                    ((SmokingRecipe) recipe).setGroup(group);
+                var smokingRecipe = new SmokingRecipe(key, result, ingredients[0].choice(), experience, cookingTime);
+                if (!group.isEmpty()) {
+                    smokingRecipe.setGroup(group);
                 }
-                if(!category.isEmpty()) {
-                    ((SmokingRecipe) recipe).setCategory(CookingBookCategory.valueOf(category.toUpperCase()));
+                if (!category.isEmpty()) {
+                    smokingRecipe.setCategory(CookingBookCategory.valueOf(category.toUpperCase()));
                 }
+                yield smokingRecipe;
             }
-            case STONECUTTING -> {
-                recipe = new StonecuttingRecipe(key, result, ingredients[0].choice());
-                if(!group.isEmpty()) {
-                    ((StonecuttingRecipe) recipe).setGroup(group);
+            case STONE_CUTTING -> {
+                var stonecuttingRecipe = new StonecuttingRecipe(key, result, ingredients[0].choice());
+                if (!group.isEmpty()) {
+                    stonecuttingRecipe.setGroup(group);
                 }
+                yield stonecuttingRecipe;
             }
             case SMELTING -> {
-                recipe = new FurnaceRecipe(key, result, ingredients[0].choice(), experience, cookingTime);
-                if(!group.isEmpty()) {
-                    ((FurnaceRecipe) recipe).setGroup(group);
+                var furnaceRecipe = new FurnaceRecipe(key, result, ingredients[0].choice(), experience, cookingTime);
+                if (!group.isEmpty()) {
+                    furnaceRecipe.setGroup(group);
                 }
-                if(!category.isEmpty()) {
-                    ((FurnaceRecipe) recipe).setCategory(CookingBookCategory.valueOf(category.toUpperCase()));
+                if (!category.isEmpty()) {
+                    furnaceRecipe.setCategory(CookingBookCategory.valueOf(category.toUpperCase()));
                 }
+                yield furnaceRecipe;
             }
-            case SMITHING_TRANSFORM -> {
-                recipe = new SmithingTransformRecipe(key, result, ingredients[0].choice(), ingredients[1].choice(), ingredients[2].choice());
-            }
-        }
-        return recipe;
+            case SMITHING_TRANSFORM -> new SmithingTransformRecipe(key, result, ingredients[0].choice(), ingredients[1].choice(), ingredients[2].choice());
+        };
+    }
+
+
+    record Ingredient(RecipeChoice choice, String ingredientName, char sign) {
     }
 }

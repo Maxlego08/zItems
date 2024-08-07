@@ -46,6 +46,8 @@ public class ZItemManager extends ZUtils implements ItemManager {
             }
         }
 
+        // deleteCrafts();
+
         this.items.clear();
 
         try (Stream<Path> stream = Files.walk(folder.toPath())) {
@@ -53,10 +55,9 @@ public class ZItemManager extends ZUtils implements ItemManager {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        //Must create recipe after all registeration to get custom items from the List when ingredient is custom
-        this.items.forEach(item -> {
-            item.getConfiguration().createRecipe(item, this.plugin);
-        });
+
+        // Must create a recipe after all registrations to get custom items from the List when ingredient is custom
+        // this.items.forEach(item -> item.getConfiguration().createRecipe(item, this.plugin));
     }
 
     @Override
@@ -108,5 +109,10 @@ public class ZItemManager extends ZUtils implements ItemManager {
         give(player, itemStack);
 
         message(sender, Message.ITEM_GIVE, "%name%", itemName, "%player%", player.getName());
+    }
+
+    @Override
+    public void deleteCrafts() {
+        this.items.forEach(item -> item.getConfiguration().deleteRecipe(item, this.plugin));
     }
 }

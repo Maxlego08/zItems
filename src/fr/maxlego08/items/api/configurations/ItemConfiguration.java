@@ -538,8 +538,12 @@ public class ItemConfiguration {
         }
     }
 
-    public void createRecipe(Item itemName, ItemsPlugin plugin) {
-        this.recipeConfiguration.apply(itemName, plugin);
+    public void createRecipe(Item item, ItemsPlugin plugin) {
+        this.recipeConfiguration.apply(item, plugin);
+    }
+
+    public void deleteRecipe(Item item, ItemsPlugin plugin) {
+        this.recipeConfiguration.deleteRecipe(item, plugin);
     }
 
     public ItemRarity getItemRarity() {

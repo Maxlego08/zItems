@@ -46,7 +46,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
 
         this.registerCommand("zitems", new CommandItem(this), "items", "zit");
-      
+
         this.addListener(new PrepareCraftListener(this.itemManager));
         // ToDo, create a check for register listener only if a item for this list exist
         this.addListener(new FarmingHoeListener(this));
@@ -69,7 +69,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         this.preDisable();
 
-        this.getServer().clearRecipes();
         this.saveFiles();
 
         this.postDisable();

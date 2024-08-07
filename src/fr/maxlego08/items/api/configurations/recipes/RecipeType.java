@@ -2,7 +2,6 @@ package fr.maxlego08.items.api.configurations.recipes;
 
 import fr.maxlego08.items.ItemsPlugin;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -12,9 +11,9 @@ public enum RecipeType {
     CRAFTING_SHAPED,
     CRAFTING_SHAPELESS,
     BLASTING,
-    CAMPFIRE_COOOKING,
+    CAMPFIRE_COOKING,
     SMOKING,
-    STONECUTTING,
+    STONE_CUTTING,
     SMELTING,
     SMITHING_TRANSFORM,
     ;
@@ -33,6 +32,6 @@ public enum RecipeType {
     }
 
     public static List<RecipeType> smeltingRecipes() {
-        return List.of(CAMPFIRE_COOOKING, BLASTING, SMOKING, SMELTING);
+        return List.of(CAMPFIRE_COOKING, BLASTING, SMOKING, SMELTING);
     }
 }
