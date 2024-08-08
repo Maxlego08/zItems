@@ -88,7 +88,6 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
     }
 
     private static ItemRecipe getStonecuttingRecipe(ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
-        //TODO: doesnt work
         String group = (String) recipeConfig.getOrDefault("group", "");
         Map<String, String> ingredient = (Map<String, String>) recipeConfig.get("ingredient");
         RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
