@@ -572,7 +572,7 @@ recipes:
         tag: planks
       A:
         item: minecraft:glass
-  - type: stonecutting
+  - type: stone_cutting
     amount: 2
     ingredient:
       item: minecraft:glass

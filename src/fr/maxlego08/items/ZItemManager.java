@@ -46,7 +46,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
             }
         }
 
-        // deleteCrafts();
+        this.deleteCrafts();
 
         this.items.clear();
 
@@ -57,7 +57,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
         }
 
         // Must create a recipe after all registrations to get custom items from the List when ingredient is custom
-        // this.items.forEach(item -> item.getConfiguration().createRecipe(item, this.plugin));
+        this.items.forEach(item -> item.getConfiguration().createRecipe(item, this.plugin));
     }
 
     @Override

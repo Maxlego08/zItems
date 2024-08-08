@@ -23,7 +23,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
             for (Map<String, Object> recipeConfig : recipesConfig) {
                 RecipeType recipeType = RecipeType.getRecipeByString(((String) recipeConfig.get("type")).toUpperCase());
                 if (recipeType == null) {
-                    plugin.getLogger().warning("Invalid recipe type in " + fileName + " at " + path);
+                    plugin.getLogger().warning("Invalid recipe type in " + fileName + " at " + path + " for " + recipeConfig.get("type"));
                     continue;
                 }
                 int amount = (int) recipeConfig.getOrDefault("amount", 1);
@@ -141,16 +141,19 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
     public void apply(Item itemName, ItemsPlugin plugin) {
         for (ItemRecipe recipe : this.recipes) {
             var server = plugin.getServer();
-            server.addRecipe(recipe.toBukkitRecipe(itemName), true);
-            server.updateRecipes();
+            if(server.addRecipe(recipe.toBukkitRecipe(itemName))) {
+                server.updateRecipes();
+            }
         }
     }
 
     public void deleteRecipe(Item item, ItemsPlugin plugin) {
         for (ItemRecipe recipe : this.recipes) {
             var server = plugin.getServer();
-            server.removeRecipe(recipe.getNamespacedKey(item), true);
-            server.updateRecipes();
+            if(server.removeRecipe(recipe.getNamespacedKey(item))) {
+                server.updateRecipes();
+            }
+
         }
     }
 }
