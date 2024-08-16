@@ -95,14 +95,37 @@ public class DisableEnchantsListener implements Listener {
 
     @EventHandler
     public void onEnchant(EnchantItemEvent event) {
+        ItemStack item = event.getItem();
 
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return;
+        Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
+        if (itemOptional.isEmpty()) return;
+
+        Item customItem = itemOptional.get();
+        List<ItemEnchantment> disableEnchants = customItem.getConfiguration().getDisableEnchantments();
+        if (disableEnchants.isEmpty()) return;
+
+        for (ItemEnchantment enchantment : disableEnchants) {
+            if (event.getEnchantsToAdd().containsKey(enchantment.enchantment())) {
+                if (enchantment.level() == -1) {
+                    event.getEnchantsToAdd().remove(enchantment.enchantment());
+                    continue;
+                }
+
+                if (event.getEnchantsToAdd().get(enchantment.enchantment()) == enchantment.level()) {
+                    event.getEnchantsToAdd().remove(enchantment.enchantment());
+                }
+            }
+        }
     }
 
     @EventHandler
     public void onPrepareEnchantTable(PrepareItemEnchantEvent event) {
         ItemStack item = event.getItem();
-
-        if(item == null) return;
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
