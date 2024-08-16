@@ -83,6 +83,7 @@ public class ItemConfiguration {
     private final boolean canBreakShowInTooltip;
     private final boolean enchantmentGlint;
     private final List<ItemEnchantment> enchantments;
+    private final List<ItemEnchantment> disableEnchantments;
     private final boolean enchantmentShowInTooltip;
     private final List<AttributeConfiguration> attributes;
     private final boolean attributeShowInTooltip;
@@ -145,6 +146,35 @@ public class ItemConfiguration {
                 this.enchantments.add(new ItemEnchantment(enchantment, level));
             } else {
                 plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found for the item " + fileName);
+            }
+        }
+
+        this.disableEnchantments = new ArrayList<>();
+        List<Map<?, ?>> enchantmentDisableList = configuration.getMapList(path + "enchantment.disable-enchantments");
+        Enchantments enchantmentsDisable = plugin.getEnchantments();
+        for (Map<?, ?> enchantmentMap : enchantmentDisableList) {
+            String enchantmentAsString = (String) enchantmentMap.get("enchantment");
+            var optional = enchantmentsDisable.getEnchantments(enchantmentAsString.toLowerCase());
+            Object levels = enchantmentMap.get("levels");
+            if (levels instanceof List) {
+                List<Integer> levelsList = (List<Integer>) levels;
+                for (Integer level : levelsList) {
+                    if (optional.isPresent()) {
+                        var enchantment = optional.get().enchantment();
+                        this.disableEnchantments.add(new ItemEnchantment(enchantment, level));
+                    } else {
+                        plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found for the item " + fileName);
+                    }
+                }
+            } else if (levels instanceof String string) {
+                if(string.equalsIgnoreCase("all")) {
+                    if (optional.isPresent()) {
+                        var enchantment = optional.get().enchantment();
+                        this.disableEnchantments.add(new ItemEnchantment(enchantment, -1));
+                    } else {
+                        plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found for the item " + fileName);
+                    }
+                }
             }
         }
 
@@ -420,6 +450,10 @@ public class ItemConfiguration {
 
     public List<ItemEnchantment> getEnchantments() {
         return enchantments;
+    }
+
+    public List<ItemEnchantment> getDisableEnchantments() {
+        return disableEnchantments;
     }
 
     public boolean isEnchantmentShowInTooltip() {

@@ -62,6 +62,11 @@ enchantment:
   enchantments:
     - enchantment: silktouch
       level: 1
+  disable-enchantments:
+    - enchantment: unbreaking
+      levels: all
+    - enchantment: sharpness
+      levels: [1,2,3]
 
 tool-component:
 

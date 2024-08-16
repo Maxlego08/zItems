@@ -12,6 +12,7 @@ import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.command.commands.CommandItem;
 import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
+import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.hook.WorldGuardAccess;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
@@ -48,6 +49,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.registerCommand("zitems", new CommandItem(this), "items", "zit");
 
         this.addListener(new PrepareCraftListener(this.itemManager));
+        this.addListener(new DisableEnchantsListener(this.itemManager));
         // ToDo, create a check for register listener only if a item for this list exist
         this.addListener(new FarmingHoeListener(this));
 
