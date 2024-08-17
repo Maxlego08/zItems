@@ -22,6 +22,7 @@ import fr.maxlego08.items.api.configurations.meta.TrimConfiguration;
 import fr.maxlego08.items.api.configurations.recipes.RecipeConfiguration;
 import fr.maxlego08.items.api.configurations.specials.FarmingHoeConfiguration;
 import fr.maxlego08.items.api.configurations.specials.SpecialConfiguration;
+import fr.maxlego08.items.api.configurations.specials.VeinMiningConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TrimHelper;
@@ -207,10 +208,22 @@ public class ItemConfiguration {
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
         this.recipeConfiguration = RecipeConfiguration.loadRecipe(plugin, configuration, fileName, path);
+
         switch (itemType) {
-            case FARMING_HOE ->
-                    this.specialConfiguration = this.loadFarmingHoeConfiguration(plugin, configuration, fileName, path);
+            case FARMING_HOE -> {
+                this.specialConfiguration = this.loadFarmingHoeConfiguration(plugin, configuration, fileName, path);
+            }
+            case VEIN_MINING -> {
+                this.specialConfiguration = this.loadTreeCutConfiguration(plugin, configuration, fileName, path);
+            }
         }
+    }
+
+    private SpecialConfiguration loadTreeCutConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+
+        int blockLimit = configuration.getInt(path + "tree-cutter.block-limit", 1024);
+
+        return new VeinMiningConfiguration(blockLimit);
     }
 
     private SpecialConfiguration loadFarmingHoeConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {

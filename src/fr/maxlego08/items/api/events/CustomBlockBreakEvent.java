@@ -5,9 +5,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class FarmingHoeBlockBreakEvent extends BlockBreakEvent {
+public class CustomBlockBreakEvent extends BlockBreakEvent {
 
-    public FarmingHoeBlockBreakEvent(@NotNull Block theBlock, @NotNull Player player) {
+    public CustomBlockBreakEvent(@NotNull Block theBlock, @NotNull Player player) {
         super(theBlock, player);
     }
 }

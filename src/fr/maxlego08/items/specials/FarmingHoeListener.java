@@ -3,7 +3,7 @@ package fr.maxlego08.items.specials;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.specials.FarmingHoeConfiguration;
-import fr.maxlego08.items.api.events.FarmingHoeBlockBreakEvent;
+import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.zcore.utils.ElapsedTime;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,7 +48,7 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (event.isCancelled() || event instanceof FarmingHoeBlockBreakEvent) return;
+        if (event.isCancelled() || event instanceof CustomBlockBreakEvent) return;
 
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
@@ -84,7 +84,7 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
                     if (!this.plugin.hasAccess(player, block.getLocation())) continue;
 
                     if (farmingHoeConfiguration.eventBlockBreakEvent()) {
-                        var blockEvent = new FarmingHoeBlockBreakEvent(block, player);
+                        var blockEvent = new CustomBlockBreakEvent(block, player);
                         blockEvent.callEvent();
 
                         if (blockEvent.isCancelled()) continue;

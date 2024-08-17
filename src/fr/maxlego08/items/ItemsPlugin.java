@@ -18,6 +18,7 @@ import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
 import fr.maxlego08.items.specials.FarmingHoeListener;
+import fr.maxlego08.items.specials.VeinMiningListener;
 import fr.maxlego08.items.zcore.ZPlugin;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 import org.bukkit.Location;
@@ -50,6 +51,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addListener(new PrepareCraftListener(this.itemManager));
         // ToDo, create a check for register listener only if a item for this list exist
         this.addListener(new FarmingHoeListener(this));
+        this.addListener(new VeinMiningListener(this));
 
         this.addSave(Config.getInstance());
         this.addSave(new MessageLoader(this));
