@@ -1,0 +1,6 @@
+type: VEIN_MINING
+display-name: "#34eb9bᴠᴇɪɴ ᴍɪɴɪɴɢ"
+
+allowed-materials: []
+allowed-tags:
+  - ITEMS_PICKAXES

@@ -4,6 +4,7 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.specials.VeinMiningConfiguration;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
+import fr.maxlego08.items.zcore.utils.VeinMiner;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

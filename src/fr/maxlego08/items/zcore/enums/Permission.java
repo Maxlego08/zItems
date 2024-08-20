@@ -5,6 +5,7 @@ public enum Permission {
     ZITEMS_USE,
     ZITEMS_RELOAD,
     ZITEMS_GIVE,
+    ZITEMS_RUNE_APPLY,
 
     ;
 

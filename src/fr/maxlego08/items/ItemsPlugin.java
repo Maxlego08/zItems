@@ -8,6 +8,7 @@ import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.recipes.PrepareCraftListener;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
+import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.command.commands.CommandItem;
 import fr.maxlego08.items.components.PaperComponent;
@@ -16,6 +17,8 @@ import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.hook.WorldGuardAccess;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
+import fr.maxlego08.items.runes.RuneListener;
+import fr.maxlego08.items.runes.ZRuneManager;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
 import fr.maxlego08.items.specials.FarmingHoeListener;
@@ -32,6 +35,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
     private final TrimHelper trimHelper = new TrimHelper();
     private final ItemManager itemManager = new ZItemManager(this);
+    private final RuneManager runeManager = new ZRuneManager(this);
     private final Enchantments enchantments = new ZEnchantments();
     private final List<BlockAccess> blockAccesses = new ArrayList<>();
     private ItemComponent itemComponent;
@@ -51,6 +55,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         this.addListener(new PrepareCraftListener(this.itemManager));
         this.addListener(new DisableEnchantsListener(this.itemManager));
+
         // ToDo, create a check for register listener only if a item for this list exist
         this.addListener(new FarmingHoeListener(this));
         this.addListener(new VeinMiningListener(this));
@@ -58,6 +63,10 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addSave(Config.getInstance());
         this.addSave(new MessageLoader(this));
         this.itemManager.loadItems();
+        this.runeManager.loadRunes();
+
+        // Rune listener
+        this.addListener(new RuneListener(this, this.runeManager));
 
         this.loadFiles();
 
@@ -112,5 +121,9 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     @Override
     public Item createItem(String name, ItemConfiguration itemConfiguration) {
         return new ZItem(this, name, itemConfiguration);
+    }
+
+    public RuneManager getRuneManager() {
+        return runeManager;
     }
 }

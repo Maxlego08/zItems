@@ -11,6 +11,7 @@ public class CommandItem extends VCommand {
         super(plugin);
         this.setPermission(Permission.ZITEMS_USE);
         this.addSubCommand(new CommandItemReload(plugin));
+        this.addSubCommand(new CommandItemApplyRune(plugin));
         this.addSubCommand(new CommandItemGive(plugin));
     }
 

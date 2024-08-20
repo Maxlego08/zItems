@@ -37,10 +37,14 @@ public enum Message {
 
     DESCRIPTION_RELOAD("Reload configuration files"),
     DESCRIPTION_GIVE("Give an item"),
+    DESCRIPTION_RUN_APPLY("Apply a rune to an item"),
 
     ITEM_NOT_FOUND("&cImpossible to find the item &f%name%&c."),
 
-    ITEM_GIVE("&aYou just gave &b%name% to the player &f%player%&a.");
+    ITEM_GIVE("&aYou just gave &b%name% to the player &f%player%&a."),
+    COMMAND_RUNE_NOT_FOUND("&cCannot find rune %name%."),
+
+    ;
 
     private List<String> messages;
     private String message;
