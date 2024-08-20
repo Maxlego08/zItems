@@ -1,0 +1,11 @@
+type: MELT_MINING
+
+display-name: "#34eb9bᴍᴇʟᴛ ᴍɪɴɪɴɢ"
+
+item-name: "#34eb9bᴍᴇʟᴛ ᴍɪɴɪɴɢ"
+lore:
+  - "&8Allows to melt mineras"
+
+allowed-materials: [ ]
+allowed-tags:
+  - ITEMS_PICKAXES

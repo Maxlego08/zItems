@@ -1,4 +1,4 @@
 package fr.maxlego08.items.api.runes.configurations;
 
-public interface RunConfiguration {
+public interface RuneConfiguration {
 }

@@ -43,6 +43,10 @@ public enum Message {
 
     ITEM_GIVE("&aYou just gave &b%name% to the player &f%player%&a."),
     COMMAND_RUNE_NOT_FOUND("&cCannot find rune %name%."),
+    COMMAND_RUNE_ALREADY_APPLIED("&cThis item already contains the rune %name%."),
+
+    RUNE_LORE("", "&7Runes"),
+    RUNE_LINE("&8- %rune%"),
 
     ;
 

@@ -2,6 +2,7 @@ package fr.maxlego08.items.runes;
 
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneType;
+import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 
@@ -14,13 +15,15 @@ public class ZRune implements Rune {
     private final RuneType type;
     private final List<Material> materials;
     private final List<Tag<Material>> tags;
+    private final RuneConfiguration configuration;
 
-    public ZRune(String name, String displayName, RuneType type, List<Material> materials, List<Tag<Material>> tags) {
+    public ZRune(String name, String displayName, RuneType type, List<Material> materials, List<Tag<Material>> tags, RuneConfiguration configuration) {
         this.name = name;
         this.displayName = displayName;
         this.type = type;
         this.materials = materials;
         this.tags = tags;
+        this.configuration = configuration;
     }
 
     @Override
@@ -46,5 +49,10 @@ public class ZRune implements Rune {
     @Override
     public List<Tag<Material>> getTags() {
         return tags;
+    }
+
+    @Override
+    public <T extends RuneConfiguration> T getConfiguration() {
+        return (T) this.configuration;
     }
 }

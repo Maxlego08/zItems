@@ -1,5 +1,6 @@
 package fr.maxlego08.items.api.runes;
 
+import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 
@@ -16,5 +17,7 @@ public interface Rune {
     List<Material> getMaterials();
 
     List<Tag<Material>> getTags();
+
+    <T extends RuneConfiguration> T getConfiguration();
 
 }

@@ -5,6 +5,7 @@ import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RuneType;
+import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
 import fr.maxlego08.items.zcore.utils.VeinMiner;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -50,15 +51,30 @@ public class RuneListener implements Listener {
         var optional = getRunes(itemStack);
         if (optional.isEmpty()) return;
 
-        var optionalRune = optional.get().stream().filter(rune -> rune.getType() == RuneType.VEIN_MINING).findFirst();
-        if (optionalRune.isEmpty()) return;
+        var optionalRuneMelt = optional.get().stream().filter(rune -> rune.getType() == RuneType.MELT_MINING).findFirst();
+
+        var optionalRuneVein = optional.get().stream().filter(rune -> rune.getType() == RuneType.VEIN_MINING).findFirst();
+        if (optionalRuneVein.isEmpty()) {
+            if (optionalRuneMelt.isPresent()) {
+                MeltMining.meltBlocks(event, event.getBlock(), itemStack);
+            }
+            return;
+        }
+
+        Rune rune = optionalRuneVein.get();
+        RuneVeinMiningConfiguration configuration = rune.getConfiguration();
 
         var block = event.getBlock();
+        if (!configuration.contains(block.getType())) return;
 
-        var blocks = VeinMiner.getVeinBlocks(block, 2048);
-        blocks.remove(block);
+        var blocks = VeinMiner.getVeinBlocks(block, configuration.blockLimit());
 
-        blocks.removeIf(veinBlock -> !plugin.hasAccess(player, veinBlock.getLocation()));
-        blocks.forEach(veinBlock -> veinBlock.breakNaturally(itemStack));
+        blocks.removeIf(veinBlock -> !plugin.hasAccess(player, veinBlock.getLocation()) || !configuration.contains(veinBlock.getType()));
+        if (optionalRuneMelt.isPresent()) {
+            MeltMining.meltBlocks(event, blocks, itemStack);
+        } else {
+            blocks.remove(block);
+            blocks.forEach(veinBlock -> veinBlock.breakNaturally(itemStack));
+        }
     }
 }

@@ -4,6 +4,9 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RuneType;
+import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
@@ -46,6 +49,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         if (!folder.exists()) {
             if (folder.mkdirs()) {
                 this.plugin.saveResource("runes/vein-mining.yml", false);
+                this.plugin.saveResource("runes/melt-mining.yml", false);
             }
         }
 
@@ -72,7 +76,13 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             String displayName = configuration.getString("display-name");
             List<Material> materials = configuration.getStringList("allowed-materials").stream().map(String::toUpperCase).map(Material::valueOf).toList();
             List<Tag<Material>> tags = configuration.getStringList("allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTags).toList();
-            Rune rune = new ZRune(runeName, displayName, runeType, materials, tags);
+
+            RuneConfiguration runeConfiguration = switch (runeType) {
+                case VEIN_MINING -> RuneVeinMiningConfiguration.loadConfiguration(configuration);
+                case MELT_MINING -> RuneMeltMiningConfiguration.loadConfiguration(configuration);
+            };
+
+            Rune rune = new ZRune(runeName, displayName, runeType, materials, tags, runeConfiguration);
 
             this.runes.add(rune);
 
@@ -110,14 +120,40 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = itemStack.getItemMeta();
+        Rune rune = optional.get();
+
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
+        List<Rune> runes = persistentDataContainer.getOrDefault(this.namespacedKey, this.runeDataType, new ArrayList<>());
 
-        List<Rune> runes = new ArrayList<>();
-        runes.add(optional.get());
+        if (runes.contains(rune)) {
+            message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
+            return;
+        }
 
+        List<String> lore = itemMeta.hasLore() ? new ArrayList<>(itemMeta.getLore()) : new ArrayList<>();
+
+        if (runes.isEmpty()) {
+            lore.addAll(generateRuneLore(rune));
+        } else {
+            lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+        }
+
+        itemMeta.setLore(lore);
+
+        runes.add(rune);
         persistentDataContainer.set(this.namespacedKey, this.runeDataType, runes);
 
         itemStack.setItemMeta(itemMeta);
+    }
+
+    private List<String> generateRuneLore(Rune rune) {
+        List<String> runeLore = Message.RUNE_LORE.getMessages();
+        List<String> formattedLore = new ArrayList<>();
+
+        runeLore.forEach(line -> formattedLore.add(color(line)));
+        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%name%", rune.getDisplayName())));
+
+        return formattedLore;
     }
 
     @Override
