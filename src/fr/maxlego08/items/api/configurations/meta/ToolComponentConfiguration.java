@@ -29,7 +29,7 @@ public record ToolComponentConfiguration(boolean enable, int damagePerBlock, flo
                     if (map.containsKey("tag") && map.containsKey("speed") && map.containsKey("correct-for-drops")) {
 
                         String tagName = ((String) map.get("tag")).toUpperCase();
-                        var tag = TagRegistry.getTags(tagName);
+                        var tag = TagRegistry.getTag(tagName);
                         if (tag == null) {
                             plugin.getLogger().severe("Invalid tag " + tagName + " for item " + fileName + " (Map: " + map + ")");
                             continue;

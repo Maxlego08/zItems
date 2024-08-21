@@ -1,9 +1,8 @@
-package fr.maxlego08.items.specials;
+package fr.maxlego08.items.runes;
 
 import fr.maxlego08.items.ItemsPlugin;
-import fr.maxlego08.items.api.ItemType;
-import fr.maxlego08.items.api.configurations.specials.FarmingHoeConfiguration;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
+import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
 import fr.maxlego08.items.zcore.utils.ElapsedTime;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,11 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -25,42 +19,53 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Listener class for handling events related to the Farming Hoe.
- * Extends SpecialHelper with FarmingHoeConfiguration.
- */
-public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> implements Listener {
+public class FarmingHoe {
 
-    /**
-     * Constructor for the FarmingHoeListener.
-     *
-     * @param plugin The plugin instance.
-     */
-    public FarmingHoeListener(ItemsPlugin plugin) {
-        super(plugin, ItemType.FARMING_HOE);
+
+    public static void interact(PlayerInteractEvent event, ItemStack itemStack, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
+        var player = event.getPlayer();
+        var world = player.getWorld();
+        var block = event.getClickedBlock();
+        if (block == null) return;
+        
+        if (!canBecomeSoil(block)) {
+            if (runeFarmingHoeConfiguration.plantSeeds()) {
+                plantSeeds(block, runeFarmingHoeConfiguration, world, event, player);
+            }
+            return;
+        }
+
+        if (!runeFarmingHoeConfiguration.harvest()) return;
+        
+        int range = runeFarmingHoeConfiguration.size() / 2;
+        event.setCancelled(true);
+        boolean needToRemoveDamage = false;
+        for (int x = -range; x <= range; x++) {
+            for (int z = -range; z <= range; z++) {
+
+                var soilBlock = world.getBlockAt(block.getX() + x, block.getY(), block.getZ() + z);
+                if (canBecomeSoil(soilBlock)) {
+                    needToRemoveDamage = true;
+                    soilBlock.setType(Material.FARMLAND);
+                }
+            }
+        }
+
+        if (needToRemoveDamage && runeFarmingHoeConfiguration.harvestDamage() >= 1) {
+            itemStack.damage(runeFarmingHoeConfiguration.harvestDamage(), player);
+        }
     }
 
-    /**
-     * Handles the BlockBreakEvent to implement the special behavior of the Farming Hoe.
-     *
-     * @param event The BlockBreakEvent triggered by breaking a block.
-     */
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockBreak(BlockBreakEvent event) {
-
-        if (event.isCancelled() || event instanceof CustomBlockBreakEvent) return;
-
+    public static void breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneFarmingHoeConfiguration farmingHoeConfiguration) {
+        
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
-
-        if (!isSpecialItem(itemStack)) return;
-
+        
         var world = player.getWorld();
         var farmBlock = event.getBlock();
 
         if (!(farmBlock.getBlockData() instanceof Ageable)) return;
-
-        FarmingHoeConfiguration farmingHoeConfiguration = getSpecialConfiguration(itemStack);
+        
         int range = farmingHoeConfiguration.size() / 2;
 
         var allowedBlock = farmingHoeConfiguration.allowedCrops();
@@ -81,7 +86,7 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
 
                     if (!allowedBlock.contains(block.getType())) continue;
 
-                    if (!this.plugin.hasAccess(player, block.getLocation())) continue;
+                    if (!plugin.hasAccess(player, block.getLocation())) continue;
 
                     if (farmingHoeConfiguration.eventBlockBreakEvent()) {
                         var blockEvent = new CustomBlockBreakEvent(block, player);
@@ -117,74 +122,25 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
         }
 
         elapsedTime.endDisplay();
+        
     }
-
-    /**
-     * Handles the PlayerInteractEvent to implement the special behavior of the Farming Hoe when interacting with blocks.
-     *
-     * @param event The PlayerInteractEvent triggered by interacting with a block.
-     */
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onInteract(PlayerInteractEvent event) {
-
-        if (event.useInteractedBlock() == Event.Result.DENY || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-
-        var player = event.getPlayer();
-        var itemStack = event.getItem();
-
-        if (itemStack == null || !isSpecialItem(itemStack)) return;
-
-        var world = player.getWorld();
-        var block = event.getClickedBlock();
-        if (block == null) return;
-
-        FarmingHoeConfiguration farmingHoeConfiguration = getSpecialConfiguration(itemStack);
-
-        if (!canBecomeSoil(block)) {
-            if (farmingHoeConfiguration.plantSeeds()) {
-                plantSeeds(block, farmingHoeConfiguration, world, event, player);
-            }
-            return;
-        }
-
-        if (!farmingHoeConfiguration.harvest()) return;
-
-        int range = farmingHoeConfiguration.size() / 2;
-        event.setCancelled(true);
-
-        boolean needToRemoveDamage = false;
-        for (int x = -range; x <= range; x++) {
-            for (int z = -range; z <= range; z++) {
-
-                var soilBlock = world.getBlockAt(block.getX() + x, block.getY(), block.getZ() + z);
-                if (canBecomeSoil(soilBlock)) {
-                    needToRemoveDamage = true;
-                    soilBlock.setType(Material.FARMLAND);
-                }
-            }
-        }
-
-        if (needToRemoveDamage && farmingHoeConfiguration.harvestDamage() >= 1) {
-            itemStack.damage(farmingHoeConfiguration.harvestDamage(), player);
-        }
-    }
-
+    
     /**
      * Plants seeds in a specified area around a given block.
      *
      * @param block                   The block to plant seeds around.
-     * @param farmingHoeConfiguration The configuration for the farming hoe.
+     * @param runeFarmingHoeConfiguration The configuration for the farming hoe.
      * @param world                   The world in which the event occurs.
      * @param event                   The player interact event.
      * @param player                  The player planting the seeds.
      */
-    private void plantSeeds(Block block, FarmingHoeConfiguration farmingHoeConfiguration, World world, PlayerInteractEvent event, Player player) {
-        int range = farmingHoeConfiguration.size() / 2;
+    private static void plantSeeds(Block block, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration, World world, PlayerInteractEvent event, Player player) {
+        int range = runeFarmingHoeConfiguration.size() / 2;
         Material baseBlockType = block.getType();
 
         if (baseBlockType == Material.FARMLAND || baseBlockType == Material.SOUL_SAND) {
             event.setCancelled(true);
-            Set<Material> allowedSeeds = new HashSet<>(farmingHoeConfiguration.allowedPlantSeeds());
+            Set<Material> allowedSeeds = new HashSet<>(runeFarmingHoeConfiguration.allowedPlantSeeds());
 
             for (int x = -range; x <= range; x++) {
                 for (int z = -range; z <= range; z++) {
@@ -204,7 +160,7 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
      * @param baseBlockType The base block type for comparison.
      * @return True if the block is valid for planting, false otherwise.
      */
-    private boolean isValidBlock(Block block, Material baseBlockType) {
+    private static boolean isValidBlock(Block block, Material baseBlockType) {
         return block.getType() == baseBlockType && block.getRelative(BlockFace.UP).getType().isAir();
     }
 
@@ -216,7 +172,7 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
      * @param player        The player planting the seed.
      * @param baseBlockType The base block type.
      */
-    private void plantSeedIfPossible(Block block, Set<Material> allowedSeeds, Player player, Material baseBlockType) {
+    private static void plantSeedIfPossible(Block block, Set<Material> allowedSeeds, Player player, Material baseBlockType) {
         for (Material seedMaterial : allowedSeeds) {
             if (isMatchingSeed(seedMaterial, baseBlockType)) {
                 ItemStack seed = new ItemStack(seedMaterial, 1);
@@ -239,7 +195,7 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
      * @param baseBlockType The base block type.
      * @return True if the seed matches the base block type, false otherwise.
      */
-    private boolean isMatchingSeed(Material seedMaterial, Material baseBlockType) {
+    private static boolean isMatchingSeed(Material seedMaterial, Material baseBlockType) {
         if (baseBlockType == Material.FARMLAND) {
             return seedMaterial != Material.NETHER_WART;
         } else if (baseBlockType == Material.SOUL_SAND) {
@@ -254,13 +210,13 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
      * @param player                  The player causing the drops.
      * @param drops                   The collection of items to drop.
      * @param location                The location to drop the items at.
-     * @param farmingHoeConfiguration The configuration for the farming hoe.
+     * @param runeFarmingHoeConfiguration The configuration for the farming hoe.
      */
-    private void dropItem(Player player, Collection<ItemStack> drops, Location location, FarmingHoeConfiguration farmingHoeConfiguration) {
+    private static void dropItem(Player player, Collection<ItemStack> drops, Location location, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
         World world = location.getWorld();
-        drops.removeIf(dropItemStack -> farmingHoeConfiguration.blacklistMaterials().contains(dropItemStack.getType()));
+        drops.removeIf(dropItemStack -> runeFarmingHoeConfiguration.blacklistMaterials().contains(dropItemStack.getType()));
 
-        if (farmingHoeConfiguration.dropItemInInventory()) {
+        if (runeFarmingHoeConfiguration.dropItemInInventory()) {
 
             var inventory = player.getInventory();
 
@@ -278,7 +234,7 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
      * @param block The block to check.
      * @return True if the block can become soil, false otherwise.
      */
-    private boolean canBecomeSoil(Block block) {
+    private static boolean canBecomeSoil(Block block) {
         if (block == null) return false;
 
         Material type = block.getType();
@@ -291,7 +247,7 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
      * @param seed The seed material.
      * @return The corresponding crop type, or Material.AIR if not found.
      */
-    private Material getCropTypeFromSeed(Material seed) {
+    private static Material getCropTypeFromSeed(Material seed) {
         if (seed == null) {
             return Material.AIR;
         }
@@ -306,4 +262,5 @@ public class FarmingHoeListener extends SpecialHelper<FarmingHoeConfiguration> i
             default -> Material.AIR;
         };
     }
+    
 }

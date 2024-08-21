@@ -19,8 +19,8 @@ public class CommandItemReload extends VCommand {
     protected CommandType perform(ItemsPlugin plugin) {
 
         plugin.reloadFiles();
-        plugin.getItemManager().loadItems();
         plugin.getRuneManager().loadRunes();
+        plugin.getItemManager().loadItems();
         message(sender, Message.RELOAD);
 
         return CommandType.SUCCESS;

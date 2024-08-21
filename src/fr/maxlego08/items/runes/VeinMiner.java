@@ -1,4 +1,4 @@
-package fr.maxlego08.items.zcore.utils;
+package fr.maxlego08.items.runes;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;

@@ -18,6 +18,8 @@ public interface Rune {
 
     List<Tag<Material>> getTags();
 
+    boolean isAllowed(Material material);
+
     <T extends RuneConfiguration> T getConfiguration();
 
 }

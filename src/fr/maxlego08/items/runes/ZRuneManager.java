@@ -5,6 +5,7 @@ import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
 import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
 import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
 import fr.maxlego08.items.api.utils.TagRegistry;
@@ -26,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -50,6 +52,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             if (folder.mkdirs()) {
                 this.plugin.saveResource("runes/vein-mining.yml", false);
                 this.plugin.saveResource("runes/melt-mining.yml", false);
+                this.plugin.saveResource("runes/farming-hoe.yml", false);
             }
         }
 
@@ -75,11 +78,12 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             RuneType runeType = RuneType.valueOf(configuration.getString("type", "ERROR").toUpperCase());
             String displayName = configuration.getString("display-name");
             List<Material> materials = configuration.getStringList("allowed-materials").stream().map(String::toUpperCase).map(Material::valueOf).toList();
-            List<Tag<Material>> tags = configuration.getStringList("allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTags).toList();
+            List<Tag<Material>> tags = configuration.getStringList("allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTag).filter(Objects::nonNull).toList();
 
             RuneConfiguration runeConfiguration = switch (runeType) {
                 case VEIN_MINING -> RuneVeinMiningConfiguration.loadConfiguration(configuration);
                 case MELT_MINING -> RuneMeltMiningConfiguration.loadConfiguration(configuration);
+                case FARMING_HOE -> RuneFarmingHoeConfiguration.loadConfiguration(this.plugin, configuration, runeName);
             };
 
             Rune rune = new ZRune(runeName, displayName, runeType, materials, tags, runeConfiguration);
@@ -89,7 +93,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             logger.info("Loaded rune " + file.getPath());
 
         } catch (Exception exception) {
-            logger.severe("Impossible to load the rune " + file.getPath());
+            logger.severe("Unable to load the rune " + file.getPath());
             exception.printStackTrace();
         }
     }
@@ -114,11 +118,16 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
         var optional = getRune(runeName);
         if (optional.isEmpty()) {
-            message(player, Message.COMMAND_RUNE_NOT_FOUND, "%name%", runeName);
+            message(player, Message.COMMAND_RUNE_NOT_FOUND, "%rune%", runeName);
             return;
         }
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
+        if (itemStack.isEmpty()) {
+            message(player, Message.ITEM_HAVE_NOT_META);
+            return;
+        }
+
         ItemMeta itemMeta = itemStack.getItemMeta();
         Rune rune = optional.get();
 
@@ -127,6 +136,11 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
         if (runes.contains(rune)) {
             message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
+            return;
+        }
+
+        if(!rune.isAllowed(itemStack.getType())) {
+            message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
             return;
         }
 
@@ -151,7 +165,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         List<String> formattedLore = new ArrayList<>();
 
         runeLore.forEach(line -> formattedLore.add(color(line)));
-        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%name%", rune.getDisplayName())));
+        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
 
         return formattedLore;
     }

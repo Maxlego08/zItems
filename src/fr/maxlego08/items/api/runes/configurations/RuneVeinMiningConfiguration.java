@@ -17,7 +17,7 @@ public record RuneVeinMiningConfiguration(
 
         int blockLimit = configuration.getInt("vein-mining.block-limit");
         List<Material> materials = configuration.getStringList("vein-mining.allowed-materials").stream().map(String::toUpperCase).map(Material::valueOf).toList();
-        List<Tag<Material>> tags = configuration.getStringList("vein-mining.allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTags).toList();
+        List<Tag<Material>> tags = configuration.getStringList("vein-mining.allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTag).toList();
 
         return new RuneVeinMiningConfiguration(blockLimit, materials, tags);
     }

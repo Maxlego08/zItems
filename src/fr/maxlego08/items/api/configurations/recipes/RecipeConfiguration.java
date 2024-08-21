@@ -3,6 +3,7 @@ package fr.maxlego08.items.api.configurations.recipes;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.utils.TagRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -59,13 +60,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
                 }
             }
             case "tag" -> {
-                for (String type : List.of(Tag.REGISTRY_BLOCKS, Tag.REGISTRY_ITEMS)) {
-                    Tag<Material> tag = Bukkit.getTag(type.trim().toLowerCase(), NamespacedKey.minecraft(ingredientArray[1].trim().toLowerCase()), Material.class);
-                    if (tag != null) {
-                        return new RecipeChoice.MaterialChoice(tag);
-                    }
-                }
-                throw new IllegalArgumentException("Invalid tag type");
+                return new RecipeChoice.MaterialChoice(TagRegistry.getTag(ingredientArray[1].trim().toLowerCase()));
             }
             default -> throw new IllegalArgumentException("Invalid ingredient type");
         }
