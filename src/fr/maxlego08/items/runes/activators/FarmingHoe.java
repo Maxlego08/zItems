@@ -1,7 +1,8 @@
-package fr.maxlego08.items.runes;
+package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
+import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
 import fr.maxlego08.items.zcore.utils.ElapsedTime;
 import org.bukkit.Location;
@@ -19,53 +20,156 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FarmingHoe {
-
-
-    public static void interact(PlayerInteractEvent event, ItemStack itemStack, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
-        var player = event.getPlayer();
-        var world = player.getWorld();
-        var block = event.getClickedBlock();
-        if (block == null) return;
-        
-        if (!canBecomeSoil(block)) {
-            if (runeFarmingHoeConfiguration.plantSeeds()) {
-                plantSeeds(block, runeFarmingHoeConfiguration, world, event, player);
-            }
-            return;
-        }
-
-        if (!runeFarmingHoeConfiguration.harvest()) return;
-        
+public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
+    
+    /**
+     * Plants seeds in a specified area around a given block.
+     *
+     * @param block                   The block to plant seeds around.
+     * @param runeFarmingHoeConfiguration The configuration for the farming hoe.
+     * @param world                   The world in which the event occurs.
+     * @param event                   The player interact event.
+     * @param player                  The player planting the seeds.
+     */
+    private void plantSeeds(Block block, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration, World world, PlayerInteractEvent event, Player player) {
         int range = runeFarmingHoeConfiguration.size() / 2;
-        event.setCancelled(true);
-        boolean needToRemoveDamage = false;
-        for (int x = -range; x <= range; x++) {
-            for (int z = -range; z <= range; z++) {
+        Material baseBlockType = block.getType();
 
-                var soilBlock = world.getBlockAt(block.getX() + x, block.getY(), block.getZ() + z);
-                if (canBecomeSoil(soilBlock)) {
-                    needToRemoveDamage = true;
-                    soilBlock.setType(Material.FARMLAND);
+        if (baseBlockType == Material.FARMLAND || baseBlockType == Material.SOUL_SAND) {
+            event.setCancelled(true);
+            Set<Material> allowedSeeds = new HashSet<>(runeFarmingHoeConfiguration.allowedPlantSeeds());
+
+            for (int x = -range; x <= range; x++) {
+                for (int z = -range; z <= range; z++) {
+                    Block currentBlock = world.getBlockAt(block.getX() + x, block.getY(), block.getZ() + z);
+                    if (isValidBlock(currentBlock, baseBlockType)) {
+                        plantSeedIfPossible(currentBlock, allowedSeeds, player, baseBlockType);
+                    }
                 }
             }
         }
+    }
 
-        if (needToRemoveDamage && runeFarmingHoeConfiguration.harvestDamage() >= 1) {
-            itemStack.damage(runeFarmingHoeConfiguration.harvestDamage(), player);
+    /**
+     * Checks if a block is valid for planting seeds.
+     *
+     * @param block         The block to check.
+     * @param baseBlockType The base block type for comparison.
+     * @return True if the block is valid for planting, false otherwise.
+     */
+    private boolean isValidBlock(Block block, Material baseBlockType) {
+        return block.getType() == baseBlockType && block.getRelative(BlockFace.UP).getType().isAir();
+    }
+
+    /**
+     * Plants a seed on a given block if possible.
+     *
+     * @param block         The block to plant the seed on.
+     * @param allowedSeeds  The set of allowed seeds.
+     * @param player        The player planting the seed.
+     * @param baseBlockType The base block type.
+     */
+    private void plantSeedIfPossible(Block block, Set<Material> allowedSeeds, Player player, Material baseBlockType) {
+        for (Material seedMaterial : allowedSeeds) {
+            if (isMatchingSeed(seedMaterial, baseBlockType)) {
+                ItemStack seed = new ItemStack(seedMaterial, 1);
+                if (player.getInventory().containsAtLeast(seed, 1)) {
+                    Material cropType = getCropTypeFromSeed(seedMaterial);
+                    if (!cropType.isAir()) {
+                        block.getRelative(BlockFace.UP).setType(cropType);
+                        player.getInventory().removeItem(seed);
+                        break;
+                    }
+                }
+            }
         }
     }
 
-    public static void breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneFarmingHoeConfiguration farmingHoeConfiguration) {
-        
+    /**
+     * Checks if a seed matches the given base block type.
+     *
+     * @param seedMaterial  The seed material.
+     * @param baseBlockType The base block type.
+     * @return True if the seed matches the base block type, false otherwise.
+     */
+    private boolean isMatchingSeed(Material seedMaterial, Material baseBlockType) {
+        if (baseBlockType == Material.FARMLAND) {
+            return seedMaterial != Material.NETHER_WART;
+        } else if (baseBlockType == Material.SOUL_SAND) {
+            return seedMaterial == Material.NETHER_WART;
+        }
+        return false;
+    }
+
+    /**
+     * Drops items at a specified location.
+     *
+     * @param player                  The player causing the drops.
+     * @param drops                   The collection of items to drop.
+     * @param location                The location to drop the items at.
+     * @param runeFarmingHoeConfiguration The configuration for the farming hoe.
+     */
+    private void dropItem(Player player, Collection<ItemStack> drops, Location location, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
+        World world = location.getWorld();
+        drops.removeIf(dropItemStack -> runeFarmingHoeConfiguration.blacklistMaterials().contains(dropItemStack.getType()));
+
+        if (runeFarmingHoeConfiguration.dropItemInInventory()) {
+
+            var inventory = player.getInventory();
+
+            var result = inventory.addItem(drops.toArray(new ItemStack[0]));
+            if (result.isEmpty()) return;
+
+            result.values().forEach(itemStackDrop -> world.dropItemNaturally(location, itemStackDrop));
+
+        } else drops.forEach(itemStackDrop -> world.dropItemNaturally(location, itemStackDrop));
+    }
+
+    /**
+     * Checks if a block can become soil.
+     *
+     * @param block The block to check.
+     * @return True if the block can become soil, false otherwise.
+     */
+    private boolean canBecomeSoil(Block block) {
+        if (block == null) return false;
+
+        Material type = block.getType();
+        return type == Material.DIRT || type == Material.GRASS_BLOCK || type == Material.PODZOL || type == Material.MYCELIUM;
+    }
+
+    /**
+     * Gets the crop type corresponding to a seed material.
+     *
+     * @param seed The seed material.
+     * @return The corresponding crop type, or Material.AIR if not found.
+     */
+    private Material getCropTypeFromSeed(Material seed) {
+        if (seed == null) {
+            return Material.AIR;
+        }
+
+        return switch (seed) {
+            case WHEAT_SEEDS -> Material.WHEAT;
+            case CARROT -> Material.CARROTS;
+            case POTATO -> Material.POTATOES;
+            case BEETROOT_SEEDS -> Material.BEETROOTS;
+            case PUMPKIN_SEEDS -> Material.PUMPKIN_STEM;
+            case MELON_SEEDS -> Material.MELON_STEM;
+            default -> Material.AIR;
+        };
+    }
+
+    @Override
+    public void breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneFarmingHoeConfiguration farmingHoeConfiguration) {
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
-        
+
         var world = player.getWorld();
         var farmBlock = event.getBlock();
 
         if (!(farmBlock.getBlockData() instanceof Ageable)) return;
-        
+
         int range = farmingHoeConfiguration.size() / 2;
 
         var allowedBlock = farmingHoeConfiguration.allowedCrops();
@@ -122,145 +226,10 @@ public class FarmingHoe {
         }
 
         elapsedTime.endDisplay();
-        
-    }
-    
-    /**
-     * Plants seeds in a specified area around a given block.
-     *
-     * @param block                   The block to plant seeds around.
-     * @param runeFarmingHoeConfiguration The configuration for the farming hoe.
-     * @param world                   The world in which the event occurs.
-     * @param event                   The player interact event.
-     * @param player                  The player planting the seeds.
-     */
-    private static void plantSeeds(Block block, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration, World world, PlayerInteractEvent event, Player player) {
-        int range = runeFarmingHoeConfiguration.size() / 2;
-        Material baseBlockType = block.getType();
-
-        if (baseBlockType == Material.FARMLAND || baseBlockType == Material.SOUL_SAND) {
-            event.setCancelled(true);
-            Set<Material> allowedSeeds = new HashSet<>(runeFarmingHoeConfiguration.allowedPlantSeeds());
-
-            for (int x = -range; x <= range; x++) {
-                for (int z = -range; z <= range; z++) {
-                    Block currentBlock = world.getBlockAt(block.getX() + x, block.getY(), block.getZ() + z);
-                    if (isValidBlock(currentBlock, baseBlockType)) {
-                        plantSeedIfPossible(currentBlock, allowedSeeds, player, baseBlockType);
-                    }
-                }
-            }
-        }
     }
 
-    /**
-     * Checks if a block is valid for planting seeds.
-     *
-     * @param block         The block to check.
-     * @param baseBlockType The base block type for comparison.
-     * @return True if the block is valid for planting, false otherwise.
-     */
-    private static boolean isValidBlock(Block block, Material baseBlockType) {
-        return block.getType() == baseBlockType && block.getRelative(BlockFace.UP).getType().isAir();
+    @Override
+    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneFarmingHoeConfiguration farmingHoeConfiguration) {
+
     }
-
-    /**
-     * Plants a seed on a given block if possible.
-     *
-     * @param block         The block to plant the seed on.
-     * @param allowedSeeds  The set of allowed seeds.
-     * @param player        The player planting the seed.
-     * @param baseBlockType The base block type.
-     */
-    private static void plantSeedIfPossible(Block block, Set<Material> allowedSeeds, Player player, Material baseBlockType) {
-        for (Material seedMaterial : allowedSeeds) {
-            if (isMatchingSeed(seedMaterial, baseBlockType)) {
-                ItemStack seed = new ItemStack(seedMaterial, 1);
-                if (player.getInventory().containsAtLeast(seed, 1)) {
-                    Material cropType = getCropTypeFromSeed(seedMaterial);
-                    if (!cropType.isAir()) {
-                        block.getRelative(BlockFace.UP).setType(cropType);
-                        player.getInventory().removeItem(seed);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Checks if a seed matches the given base block type.
-     *
-     * @param seedMaterial  The seed material.
-     * @param baseBlockType The base block type.
-     * @return True if the seed matches the base block type, false otherwise.
-     */
-    private static boolean isMatchingSeed(Material seedMaterial, Material baseBlockType) {
-        if (baseBlockType == Material.FARMLAND) {
-            return seedMaterial != Material.NETHER_WART;
-        } else if (baseBlockType == Material.SOUL_SAND) {
-            return seedMaterial == Material.NETHER_WART;
-        }
-        return false;
-    }
-
-    /**
-     * Drops items at a specified location.
-     *
-     * @param player                  The player causing the drops.
-     * @param drops                   The collection of items to drop.
-     * @param location                The location to drop the items at.
-     * @param runeFarmingHoeConfiguration The configuration for the farming hoe.
-     */
-    private static void dropItem(Player player, Collection<ItemStack> drops, Location location, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
-        World world = location.getWorld();
-        drops.removeIf(dropItemStack -> runeFarmingHoeConfiguration.blacklistMaterials().contains(dropItemStack.getType()));
-
-        if (runeFarmingHoeConfiguration.dropItemInInventory()) {
-
-            var inventory = player.getInventory();
-
-            var result = inventory.addItem(drops.toArray(new ItemStack[0]));
-            if (result.isEmpty()) return;
-
-            result.values().forEach(itemStackDrop -> world.dropItemNaturally(location, itemStackDrop));
-
-        } else drops.forEach(itemStackDrop -> world.dropItemNaturally(location, itemStackDrop));
-    }
-
-    /**
-     * Checks if a block can become soil.
-     *
-     * @param block The block to check.
-     * @return True if the block can become soil, false otherwise.
-     */
-    private static boolean canBecomeSoil(Block block) {
-        if (block == null) return false;
-
-        Material type = block.getType();
-        return type == Material.DIRT || type == Material.GRASS_BLOCK || type == Material.PODZOL || type == Material.MYCELIUM;
-    }
-
-    /**
-     * Gets the crop type corresponding to a seed material.
-     *
-     * @param seed The seed material.
-     * @return The corresponding crop type, or Material.AIR if not found.
-     */
-    private static Material getCropTypeFromSeed(Material seed) {
-        if (seed == null) {
-            return Material.AIR;
-        }
-
-        return switch (seed) {
-            case WHEAT_SEEDS -> Material.WHEAT;
-            case CARROT -> Material.CARROTS;
-            case POTATO -> Material.POTATOES;
-            case BEETROOT_SEEDS -> Material.BEETROOTS;
-            case PUMPKIN_SEEDS -> Material.PUMPKIN_STEM;
-            case MELON_SEEDS -> Material.MELON_STEM;
-            default -> Material.AIR;
-        };
-    }
-    
 }

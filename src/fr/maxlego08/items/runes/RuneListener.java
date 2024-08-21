@@ -4,8 +4,6 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
-import fr.maxlego08.items.api.runes.RuneType;
-import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -54,40 +52,8 @@ public class RuneListener implements Listener {
         var optional = getRunes(itemStack);
         if (optional.isEmpty()) return;
 
+        optional.get().forEach(rune -> rune.getType().getActivator().breakBlocks(plugin, event, rune.getConfiguration()));
 
-        var optionalRuneFarming = optional.get().stream().filter(rune -> rune.getType() == RuneType.FARMING_HOE).findFirst();
-
-        var optionalRuneMelt = optional.get().stream().filter(rune -> rune.getType() == RuneType.MELT_MINING).findFirst();
-
-        var optionalRuneVein = optional.get().stream().filter(rune -> rune.getType() == RuneType.VEIN_MINING).findFirst();
-
-        if (optionalRuneFarming.isPresent()) {
-            FarmingHoe.breakBlocks(plugin, event, optionalRuneFarming.get().getConfiguration());
-            return;
-        }
-
-        if (optionalRuneVein.isEmpty()) {
-            if (optionalRuneMelt.isPresent()) {
-                MeltMining.meltBlocks(event, event.getBlock(), itemStack);
-            }
-            return;
-        }
-
-        Rune rune = optionalRuneVein.get();
-        RuneVeinMiningConfiguration configuration = rune.getConfiguration();
-
-        var block = event.getBlock();
-        if (!configuration.contains(block.getType())) return;
-
-        var blocks = VeinMiner.getVeinBlocks(block, configuration.blockLimit());
-
-        blocks.removeIf(veinBlock -> !plugin.hasAccess(player, veinBlock.getLocation()) || !configuration.contains(veinBlock.getType()));
-        if (optionalRuneMelt.isPresent()) {
-            MeltMining.meltBlocks(event, blocks, itemStack);
-        } else {
-            blocks.remove(block);
-            blocks.forEach(veinBlock -> veinBlock.breakNaturally(itemStack));
-        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -100,9 +66,6 @@ public class RuneListener implements Listener {
         var optional = getRunes(itemStack);
         if (optional.isEmpty()) return;
 
-        var optionalRuneFarming = optional.get().stream().filter(rune -> rune.getType() == RuneType.FARMING_HOE).findFirst();
-        if (optionalRuneFarming.isEmpty()) return;
-
-        FarmingHoe.interact(event, itemStack, optionalRuneFarming.get().getConfiguration());
+       optional.get().forEach(rune -> rune.getType().getActivator().interactBlock(plugin, event, rune.getConfiguration()));
     }
 }

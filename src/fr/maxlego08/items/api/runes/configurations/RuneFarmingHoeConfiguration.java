@@ -4,26 +4,26 @@ import fr.maxlego08.items.ItemsPlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public record RuneFarmingHoeConfiguration(int size,
-                                          boolean autoReplant,
-                                          DropItemType dropItemType,
-                                          boolean dropItemInInventory,
-                                          boolean harvest,
-                                          boolean plantSeeds,
-                                          List<Material> blacklistMaterials,
-                                          List<Material> allowedCrops,
-                                          int damage,
-                                          int harvestDamage,
-                                          List<Material> allowedPlantSeeds,
-                                          boolean eventBlockBreakEvent
-) implements RuneConfiguration {
+public class RuneFarmingHoeConfiguration extends RuneConfiguration {
 
+    private final int size;
+    private final boolean autoReplant;
+    private final DropItemType dropItemType;
+    private final boolean dropItemInInventory;
+    private final boolean harvest;
+    private final boolean plantSeeds;
+    private final List<Material> blacklistMaterials;
+    private final List<Material> allowedCrops;
+    private final int damage;
+    private final int harvestDamage;
+    private final List<Material> allowedPlantSeeds;
+    private final boolean eventBlockBreakEvent;
 
-    public static RuneConfiguration loadConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String runeName) {
+    public RuneFarmingHoeConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String runeName) {
+        super(plugin, configuration, runeName);
 
         RuneFarmingHoeConfiguration.DropItemType dropItemType = RuneFarmingHoeConfiguration.DropItemType.CENTER;
 
@@ -55,10 +55,21 @@ public record RuneFarmingHoeConfiguration(int size,
             }
         }
 
-        return new RuneFarmingHoeConfiguration(size, autoReplant, dropItemType, dropItemInInventory, harvest, plantSeeds, blacklistMaterials, allowedCrops, damage, harvestDamage, allowedPlantSeeds, eventBlockBreakEvent);
+        this.size = size;
+        this.allowedCrops = allowedCrops;
+        this.autoReplant = autoReplant;
+        this.blacklistMaterials = blacklistMaterials;
+        this.damage = damage;
+        this.dropItemInInventory = dropItemInInventory;
+        this.dropItemType = dropItemType;
+        this.harvest = harvest;
+        this.plantSeeds = plantSeeds;
+        this.harvestDamage = harvestDamage;
+        this.allowedPlantSeeds = allowedPlantSeeds;
+        this.eventBlockBreakEvent = eventBlockBreakEvent;
     }
 
-    private static List<Material> stringListToMaterialList(List<String> strings) {
+    private List<Material> stringListToMaterialList(List<String> strings) {
         return strings.stream().map(value -> {
             try {
                 return Material.valueOf(value.toUpperCase());
@@ -66,6 +77,54 @@ public record RuneFarmingHoeConfiguration(int size,
                 return null;
             }
         }).filter(Objects::nonNull).toList();
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean autoReplant() {
+        return autoReplant;
+    }
+
+    public DropItemType dropItemType() {
+        return dropItemType;
+    }
+
+    public boolean dropItemInInventory() {
+        return dropItemInInventory;
+    }
+
+    public boolean harvest() {
+        return harvest;
+    }
+
+    public boolean plantSeeds() {
+        return plantSeeds;
+    }
+
+    public List<Material> blacklistMaterials() {
+        return blacklistMaterials;
+    }
+
+    public List<Material> allowedCrops() {
+        return allowedCrops;
+    }
+
+    public int damage() {
+        return damage;
+    }
+
+    public int harvestDamage() {
+        return harvestDamage;
+    }
+
+    public List<Material> allowedPlantSeeds() {
+        return allowedPlantSeeds;
+    }
+
+    public boolean eventBlockBreakEvent() {
+        return eventBlockBreakEvent;
     }
 
     public enum DropItemType {

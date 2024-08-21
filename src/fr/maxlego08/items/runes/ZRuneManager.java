@@ -5,9 +5,6 @@ import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
@@ -75,16 +72,12 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             String runeName = file.getName().replace(".yml", "");
             YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
 
-            RuneType runeType = RuneType.valueOf(configuration.getString("type", "ERROR").toUpperCase());
+            RuneType runeType = RuneType.getRuneType(configuration.getString("type", "ERROR").toUpperCase()).orElseThrow();
             String displayName = configuration.getString("display-name");
             List<Material> materials = configuration.getStringList("allowed-materials").stream().map(String::toUpperCase).map(Material::valueOf).toList();
             List<Tag<Material>> tags = configuration.getStringList("allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTag).filter(Objects::nonNull).toList();
 
-            RuneConfiguration runeConfiguration = switch (runeType) {
-                case VEIN_MINING -> RuneVeinMiningConfiguration.loadConfiguration(configuration);
-                case MELT_MINING -> RuneMeltMiningConfiguration.loadConfiguration(configuration);
-                case FARMING_HOE -> RuneFarmingHoeConfiguration.loadConfiguration(this.plugin, configuration, runeName);
-            };
+            RuneConfiguration runeConfiguration = runeType.getConfiguration(plugin, configuration, runeName);
 
             Rune rune = new ZRune(runeName, displayName, runeType, materials, tags, runeConfiguration);
 
@@ -109,7 +102,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     }
 
     @Override
-    public List<Rune> getRunes(RuneType runeType) {
+    public List<Rune> getRunes(RuneTypes runeType) {
         return this.runes.stream().filter(rune -> rune.getType() == runeType).toList();
     }
 

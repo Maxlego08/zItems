@@ -1,5 +1,8 @@
-package fr.maxlego08.items.runes;
+package fr.maxlego08.items.runes.activators;
 
+import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
+import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -7,6 +10,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -18,15 +22,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class MeltMining {
+public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
 
-    private static final Map<Material, FurnaceRecipe> caches = new HashMap<>();
+    private final Map<Material, FurnaceRecipe> caches = new HashMap<>();
 
-    public static void meltBlocks(BlockBreakEvent event, Block block, ItemStack itemStack) {
+    public void meltBlocks(BlockBreakEvent event, Block block, ItemStack itemStack) {
         meltBlocks(event, Set.of(block), itemStack);
     }
 
-    public static void meltBlocks(BlockBreakEvent event, Set<Block> blocks, ItemStack itemStack) {
+    public void meltBlocks(BlockBreakEvent event, Set<Block> blocks, ItemStack itemStack) {
         float totalExperience = 0;
 
         for (Block block : blocks) {
@@ -57,11 +61,11 @@ public class MeltMining {
         event.setDropItems(false);
     }
 
-    private static Optional<FurnaceRecipe> getFurnaceRecipeFor(Material blockType) {
-        return Optional.ofNullable(caches.computeIfAbsent(blockType, MeltMining::findFurnaceRecipe));
+    private Optional<FurnaceRecipe> getFurnaceRecipeFor(Material blockType) {
+        return Optional.ofNullable(caches.computeIfAbsent(blockType, this::findFurnaceRecipe));
     }
 
-    private static FurnaceRecipe findFurnaceRecipe(Material blockType) {
+    private FurnaceRecipe findFurnaceRecipe(Material blockType) {
         Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
         while (recipeIterator.hasNext()) {
             Recipe recipe = recipeIterator.next();
@@ -77,7 +81,18 @@ public class MeltMining {
         return null;
     }
 
-    private static void spawnFlameParticles(World world, Location location) {
+    private void spawnFlameParticles(World world, Location location) {
         world.spawnParticle(Particle.FLAME, location, 5, 0.3, 0.3, 0.3, 0.02);
     }
+
+    @Override
+    public void breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneMeltMiningConfiguration configuration) {
+        var player = event.getPlayer();
+        var itemStack = player.getInventory().getItemInMainHand();
+        var block = event.getBlock();
+        this.meltBlocks(event, block, itemStack);
+    }
+
+    @Override
+    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneMeltMiningConfiguration farmingHoeConfiguration) {}
 }
