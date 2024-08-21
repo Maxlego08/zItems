@@ -53,7 +53,7 @@ public class RuneListener implements Listener {
         if (optional.isEmpty()) return;
 
         optional.get().forEach(rune -> rune.getType().getActivator().breakBlocks(plugin, event, rune.getConfiguration()));
-
+        //TODO : add system to hava possibility to cumulate runes correctly
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
