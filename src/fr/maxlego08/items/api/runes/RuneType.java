@@ -1,9 +1,35 @@
 package fr.maxlego08.items.api.runes;
 
-public enum RuneType {
+import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.runes.RuneTypes;
+import org.bukkit.configuration.file.YamlConfiguration;
 
-    VEIN_MINING,
-    MELT_MINING,
-    FARMING_HOE,
-    ;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public interface RuneType {
+
+    List<RuneType> runeTypes = new ArrayList<>(Arrays.asList(RuneTypes.values()));
+
+    static void register(RuneType runeType) {
+        runeTypes.add(runeType);
+    }
+
+    static List<RuneType> getRuneTypes() {
+        return runeTypes;
+    }
+
+    static Optional<RuneType> getRuneType(String name) {
+        return runeTypes.stream().filter(runeType -> runeType.getName().equalsIgnoreCase(name)).findFirst();
+    }
+
+    String getName();
+
+    RuneActivator<?> getActivator();
+
+    RuneConfiguration getConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String runeName);
+
 }
