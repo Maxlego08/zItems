@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -75,7 +76,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             RuneType runeType = RuneType.valueOf(configuration.getString("type", "ERROR").toUpperCase());
             String displayName = configuration.getString("display-name");
             List<Material> materials = configuration.getStringList("allowed-materials").stream().map(String::toUpperCase).map(Material::valueOf).toList();
-            List<Tag<Material>> tags = configuration.getStringList("allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTags).toList();
+            List<Tag<Material>> tags = configuration.getStringList("allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTag).filter(Objects::nonNull).toList();
 
             RuneConfiguration runeConfiguration = switch (runeType) {
                 case VEIN_MINING -> RuneVeinMiningConfiguration.loadConfiguration(configuration);
@@ -114,11 +115,16 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
         var optional = getRune(runeName);
         if (optional.isEmpty()) {
-            message(player, Message.COMMAND_RUNE_NOT_FOUND, "%name%", runeName);
+            message(player, Message.COMMAND_RUNE_NOT_FOUND, "%rune%", runeName);
             return;
         }
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
+        if (itemStack.isEmpty()) {
+            message(player, Message.ITEM_HAVE_NOT_META);
+            return;
+        }
+
         ItemMeta itemMeta = itemStack.getItemMeta();
         Rune rune = optional.get();
 
@@ -127,6 +133,11 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
         if (runes.contains(rune)) {
             message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
+            return;
+        }
+
+        if(!rune.isAllowed(itemStack.getType())) {
+            message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
             return;
         }
 
@@ -151,7 +162,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         List<String> formattedLore = new ArrayList<>();
 
         runeLore.forEach(line -> formattedLore.add(color(line)));
-        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%name%", rune.getDisplayName())));
+        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
 
         return formattedLore;
     }
