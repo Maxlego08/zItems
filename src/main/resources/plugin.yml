@@ -1,5 +1,6 @@
 name: zItems
 author: Maxlego08
+contributors: [ Traqueur_ ]
 main: fr.maxlego08.items.ItemsPlugin
 website: https://groupez.dev
 description: Custom items

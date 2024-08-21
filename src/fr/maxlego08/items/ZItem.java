@@ -61,10 +61,6 @@ public class ZItem extends ZUtils implements Item {
                 itemMeta.setMaxStackSize(this.configuration.getMaxStackSize());
             }
 
-            if (this.configuration.hasSpecialConfiguration()) {
-                this.configuration.getSpecialConfiguration().apply(player, this.plugin, itemMeta, persistentDataContainer);
-            }
-
             this.applyNames(itemMeta, player);
             this.applyFood(itemMeta, player);
             this.configuration.applyTrim(itemMeta);

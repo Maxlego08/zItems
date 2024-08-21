@@ -5,6 +5,7 @@ import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
 import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
 import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
 import fr.maxlego08.items.api.utils.TagRegistry;
@@ -51,6 +52,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             if (folder.mkdirs()) {
                 this.plugin.saveResource("runes/vein-mining.yml", false);
                 this.plugin.saveResource("runes/melt-mining.yml", false);
+                this.plugin.saveResource("runes/farming-hoe.yml", false);
             }
         }
 
@@ -81,6 +83,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             RuneConfiguration runeConfiguration = switch (runeType) {
                 case VEIN_MINING -> RuneVeinMiningConfiguration.loadConfiguration(configuration);
                 case MELT_MINING -> RuneMeltMiningConfiguration.loadConfiguration(configuration);
+                case FARMING_HOE -> RuneFarmingHoeConfiguration.loadConfiguration(this.plugin, configuration, runeName);
             };
 
             Rune rune = new ZRune(runeName, displayName, runeType, materials, tags, runeConfiguration);
@@ -90,7 +93,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             logger.info("Loaded rune " + file.getPath());
 
         } catch (Exception exception) {
-            logger.severe("Impossible to load the rune " + file.getPath());
+            logger.severe("Unable to load the rune " + file.getPath());
             exception.printStackTrace();
         }
     }

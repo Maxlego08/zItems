@@ -21,8 +21,6 @@ import fr.maxlego08.items.runes.RuneListener;
 import fr.maxlego08.items.runes.ZRuneManager;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
-import fr.maxlego08.items.specials.FarmingHoeListener;
-import fr.maxlego08.items.specials.VeinMiningListener;
 import fr.maxlego08.items.zcore.ZPlugin;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 import org.bukkit.Location;
@@ -56,14 +54,10 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addListener(new PrepareCraftListener(this.itemManager));
         this.addListener(new DisableEnchantsListener(this.itemManager));
 
-        // ToDo, create a check for register listener only if a item for this list exist
-        this.addListener(new FarmingHoeListener(this));
-        this.addListener(new VeinMiningListener(this));
-
         this.addSave(Config.getInstance());
         this.addSave(new MessageLoader(this));
-        this.itemManager.loadItems();
         this.runeManager.loadRunes();
+        this.itemManager.loadItems();
 
         // Rune listener
         this.addListener(new RuneListener(this, this.runeManager));

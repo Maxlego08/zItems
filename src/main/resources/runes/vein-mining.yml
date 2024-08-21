@@ -4,3 +4,9 @@ display-name: "#34eb9bᴠᴇɪɴ ᴍɪɴɪɴɢ"
 allowed-materials: []
 allowed-tags:
   - PICKAXES
+
+vein-mining:
+  block-limit: 100
+  allowed-materials: [STONE]
+  allowed-tags:
+    - WOOL
