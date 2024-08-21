@@ -8,8 +8,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public interface RuneActivator<T extends RuneConfiguration> {
 
     void breakBlocks(ItemsPlugin plugin,
-                     BlockBreakEvent event, T farmingHoeConfiguration);
+                     BlockBreakEvent event, T runeConfiguration);
 
     void interactBlock(ItemsPlugin plugin,
-                       PlayerInteractEvent listener, T farmingHoeConfiguration);
+                       PlayerInteractEvent listener, T runeConfiguration);
 }

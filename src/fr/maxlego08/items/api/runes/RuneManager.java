@@ -1,6 +1,5 @@
 package fr.maxlego08.items.api.runes;
 
-import fr.maxlego08.items.runes.RuneTypes;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
@@ -19,7 +18,7 @@ public interface RuneManager {
 
     List<Rune> getRunes();
 
-    List<Rune> getRunes(RuneTypes runeType);
+    List<Rune> getRunes(RuneType runeType);
 
     void applyRune(Player player, String runName);
 

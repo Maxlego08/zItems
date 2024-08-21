@@ -102,7 +102,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     }
 
     @Override
-    public List<Rune> getRunes(RuneTypes runeType) {
+    public List<Rune> getRunes(RuneType runeType) {
         return this.runes.stream().filter(rune -> rune.getType() == runeType).toList();
     }
 
