@@ -52,6 +52,11 @@ public class ZRune implements Rune {
     }
 
     @Override
+    public boolean isAllowed(Material material) {
+        return materials.contains(material) || tags.stream().anyMatch(tag -> tag.isTagged(material));
+    }
+
+    @Override
     public <T extends RuneConfiguration> T getConfiguration() {
         return (T) this.configuration;
     }

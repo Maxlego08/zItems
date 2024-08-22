@@ -1,14 +1,18 @@
-package fr.maxlego08.items.zcore.utils;
+package fr.maxlego08.items.runes.activators;
 
+import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
+import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
-public class VeinMiner {
+public class VeinMiner implements RuneActivator<RuneVeinMiningConfiguration> {
 
     /**
      * Cette méthode prend un bloc de départ et renvoie un ensemble de tous les blocs connectés du même type.
@@ -17,7 +21,7 @@ public class VeinMiner {
      * @param maxVeinSize La taille maximale de la veine
      * @return Un ensemble de blocs connectés du même type
      */
-    public static Set<Block> getVeinBlocks(Block startBlock, int maxVeinSize) {
+    private Set<Block> getVeinBlocks(Block startBlock, int maxVeinSize) {
         Set<Block> veinBlocks = new HashSet<>();
         Queue<Block> blocksToCheck = new LinkedList<>();
         Material blockType = startBlock.getType();
@@ -51,5 +55,27 @@ public class VeinMiner {
         }
 
         return veinBlocks;
+    }
+
+    @Override
+    public Set<Block> breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneVeinMiningConfiguration configuration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
+        var player = event.getPlayer();
+        var block = event.getBlock();
+        var itemStack = player.getInventory().getItemInMainHand();
+        if (!configuration.contains(block.getType())) return origin;
+        var blocks = this.getVeinBlocks(block, configuration.blockLimit());
+        blocks.removeIf(veinBlock -> !plugin.hasAccess(player, veinBlock.getLocation()) || !configuration.contains(veinBlock.getType()));
+        blocks.forEach(veinBlock -> {
+            drops.put(veinBlock.getLocation(), new ArrayList<>(veinBlock.getDrops(itemStack)));
+        });
+        return blocks;
+    }
+
+    @Override
+    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneVeinMiningConfiguration farmingHoeConfiguration) {}
+
+    @Override
+    public int getPriority() {
+        return 1;
     }
 }

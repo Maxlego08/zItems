@@ -6,11 +6,7 @@ import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-public class RuneDataType implements PersistentDataType<byte[], List<Rune>> {
+public class RuneDataType implements PersistentDataType<String, Rune> {
 
     private final RuneManager runeManager;
 
@@ -19,33 +15,22 @@ public class RuneDataType implements PersistentDataType<byte[], List<Rune>> {
     }
 
     @Override
-    public @NotNull Class<byte[]> getPrimitiveType() {
-        return byte[].class;
+    public @NotNull Class<String> getPrimitiveType() {
+        return String.class;
     }
 
     @Override
-    public @NotNull Class<List<Rune>> getComplexType() {
-        return (Class<List<Rune>>) (Class<?>) List.class;
+    public @NotNull Class<Rune> getComplexType() {
+        return Rune.class;
     }
 
     @Override
-    public byte @NotNull [] toPrimitive(List<Rune> complex, @NotNull PersistentDataAdapterContext context) {
-        List<String> serializedRunes = new ArrayList<>();
-        for (Rune rune : complex) {
-            serializedRunes.add(rune.getName());
-        }
-        String joinedData = String.join(";", serializedRunes);
-        return joinedData.getBytes(StandardCharsets.UTF_8);
+    public @NotNull String toPrimitive(@NotNull Rune rune, @NotNull PersistentDataAdapterContext persistentDataAdapterContext) {
+        return rune.getName();
     }
 
     @Override
-    public @NotNull List<Rune> fromPrimitive(byte @NotNull [] primitive, @NotNull PersistentDataAdapterContext context) {
-        String data = new String(primitive, StandardCharsets.UTF_8);
-        String[] serializedRunes = data.split(";");
-        List<Rune> runes = new ArrayList<>();
-        for (String serializedRune : serializedRunes) {
-            runeManager.getRune(serializedRune).ifPresent(runes::add);
-        }
-        return runes;
+    public @NotNull Rune fromPrimitive(@NotNull String s, @NotNull PersistentDataAdapterContext persistentDataAdapterContext) {
+        return runeManager.getRune(s).orElseThrow();
     }
 }
