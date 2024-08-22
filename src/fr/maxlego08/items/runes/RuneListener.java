@@ -19,6 +19,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
@@ -36,11 +37,12 @@ public class RuneListener implements Listener {
         if (itemStack == null || !itemStack.hasItemMeta()) return Optional.empty();
         ItemMeta itemMeta = itemStack.getItemMeta();
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
-        if (!persistentDataContainer.has(this.runeManager.getKey(), this.runeManager.getDataType())) {
+        if (!persistentDataContainer.has(this.runeManager.getKey(), PersistentDataType.LIST.listTypeFrom(this.runeManager.getDataType()))) {
             return Optional.empty();
         }
 
-        var runes = persistentDataContainer.getOrDefault(this.runeManager.getKey(), this.runeManager.getDataType(), new ArrayList<>());
+        var runes = persistentDataContainer.getOrDefault(this.runeManager.getKey(), PersistentDataType.LIST.listTypeFrom(this.runeManager.getDataType()), new ArrayList<>());
+        runes = new ArrayList<>(runes);
         return Optional.of(runes);
     }
 
@@ -75,6 +77,7 @@ public class RuneListener implements Listener {
         var optional = getRunes(itemStack);
         if (optional.isEmpty()) return;
 
-       optional.get().forEach(rune -> rune.getType().getActivator().interactBlock(plugin, event, rune.getConfiguration()));
+        RunePipeline pipeline = new RunePipeline(optional.get());
+        pipeline.interactBlock(plugin, event);
     }
 }

@@ -33,7 +33,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     private final ItemsPlugin plugin;
     private final List<Rune> runes = new ArrayList<>();
     private final NamespacedKey namespacedKey;
-    private final RuneDataType runeDataType;
+    private final PersistentDataType<String, Rune> runeDataType;
 
     public ZRuneManager(ItemsPlugin plugin) {
         this.plugin = plugin;
@@ -125,7 +125,8 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         Rune rune = optional.get();
 
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
-        List<Rune> runes = persistentDataContainer.getOrDefault(this.namespacedKey, this.runeDataType, new ArrayList<>());
+        List<Rune> runes = persistentDataContainer.getOrDefault(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), new ArrayList<>());
+        runes = new ArrayList<>(runes);
 
         if (runes.contains(rune)) {
             message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
@@ -148,7 +149,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         itemMeta.setLore(lore);
 
         runes.add(rune);
-        persistentDataContainer.set(this.namespacedKey, this.runeDataType, runes);
+        persistentDataContainer.set(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), runes);
 
         itemStack.setItemMeta(itemMeta);
     }
@@ -169,7 +170,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     }
 
     @Override
-    public PersistentDataType<byte[], List<Rune>> getDataType() {
+    public PersistentDataType<String, Rune> getDataType() {
         return this.runeDataType;
     }
 }

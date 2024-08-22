@@ -163,9 +163,7 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
 
         var world = player.getWorld();
 
-        Iterator<Block> it = origin.iterator();
-        while(it.hasNext()) {
-            Block farmBlock = it.next();
+        for (Block farmBlock : origin) {
             if (!(farmBlock.getBlockData() instanceof Ageable)) continue;
 
             int range = farmingHoeConfiguration.size() / 2;
@@ -183,8 +181,6 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
                 for (int z = -range; z <= range; z++) {
 
                     var block = world.getBlockAt(farmBlock.getX() + x, farmBlock.getY(), farmBlock.getZ() + z);
-
-                    origin.removeIf(b -> b.getLocation().equals(block.getLocation()));
 
                     if (block.getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
 
@@ -233,8 +229,39 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
     }
 
     @Override
-    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneFarmingHoeConfiguration farmingHoeConfiguration) {
+    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent event, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
+        var player = event.getPlayer();
+        var world = player.getWorld();
+        var itemStack = player.getInventory().getItemInMainHand();
+        var block = event.getClickedBlock();
+        if (block == null) return;
 
+        if (!canBecomeSoil(block)) {
+            if (runeFarmingHoeConfiguration.plantSeeds()) {
+                plantSeeds(block, runeFarmingHoeConfiguration, world, event, player);
+            }
+            return;
+        }
+
+        if (!runeFarmingHoeConfiguration.harvest()) return;
+
+        int range = runeFarmingHoeConfiguration.size() / 2;
+        event.setCancelled(true);
+        boolean needToRemoveDamage = false;
+        for (int x = -range; x <= range; x++) {
+            for (int z = -range; z <= range; z++) {
+
+                var soilBlock = world.getBlockAt(block.getX() + x, block.getY(), block.getZ() + z);
+                if (canBecomeSoil(soilBlock)) {
+                    needToRemoveDamage = true;
+                    soilBlock.setType(Material.FARMLAND);
+                }
+            }
+        }
+
+        if (needToRemoveDamage && runeFarmingHoeConfiguration.harvestDamage() >= 1) {
+            itemStack.damage(runeFarmingHoeConfiguration.harvestDamage(), player);
+        }
     }
 
     @Override

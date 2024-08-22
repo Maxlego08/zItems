@@ -4,6 +4,7 @@ import fr.maxlego08.items.ItemsPlugin;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -27,6 +28,12 @@ public class RunePipeline {
         }
 
         return currentBlocks;
+    }
+
+    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent event) {
+        for (Rune rune : runes) {
+            rune.getType().getActivator().interactBlock(plugin, event, rune.getConfiguration());
+        }
     }
 
 }
