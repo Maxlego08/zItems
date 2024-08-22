@@ -24,5 +24,5 @@ public interface RuneManager {
 
     NamespacedKey getKey();
 
-    PersistentDataType<byte[], List<Rune>> getDataType();
+    PersistentDataType<String, Rune> getDataType();
 }
