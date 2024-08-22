@@ -1,6 +1,6 @@
 package fr.maxlego08.items.runes.activators;
 
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
 import org.bukkit.Bukkit;
@@ -70,14 +70,14 @@ public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
     }
 
     @Override
-    public Set<Block> breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneMeltMiningConfiguration configuration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
+    public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, RuneMeltMiningConfiguration configuration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
         return this.meltBlocks(event, origin, itemStack, drops);
     }
 
     @Override
-    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneMeltMiningConfiguration farmingHoeConfiguration) {}
+    public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneMeltMiningConfiguration farmingHoeConfiguration) {}
 
     @Override
     public int getPriority() {
