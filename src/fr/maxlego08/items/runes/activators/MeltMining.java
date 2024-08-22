@@ -16,27 +16,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
 
     private final Map<Material, FurnaceRecipe> caches = new HashMap<>();
 
-    public void meltBlocks(BlockBreakEvent event, Block block, ItemStack itemStack) {
-        meltBlocks(event, Set.of(block), itemStack);
-    }
-
-    public void meltBlocks(BlockBreakEvent event, Set<Block> blocks, ItemStack itemStack) {
+    public Set<Block> meltBlocks(BlockBreakEvent event, Set<Block> blocks, ItemStack itemStack, Map<Location, List<ItemStack>> drops) {
         float totalExperience = 0;
 
         for (Block block : blocks) {
             Location location = block.getLocation().add(0.5, 0.5, 0.5);
             World world = block.getWorld();
-            boolean hasProcessedDrop = false;
 
             for (ItemStack blockDrop : block.getDrops(itemStack)) {
                 Optional<FurnaceRecipe> optionalRecipe = getFurnaceRecipeFor(blockDrop.getType());
@@ -44,21 +35,14 @@ public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
 
                 FurnaceRecipe recipe = optionalRecipe.get();
                 totalExperience += recipe.getExperience();
-                world.dropItemNaturally(location, recipe.getResult().asQuantity(blockDrop.getAmount()));
-                hasProcessedDrop = true;
-            }
-
-            if (!hasProcessedDrop) {
-                block.breakNaturally(itemStack);
-            } else if (!block.equals(event.getBlock())) {
-                block.setType(Material.AIR);
+                drops.put(block.getLocation(), Collections.singletonList(recipe.getResult().asQuantity(blockDrop.getAmount())));
             }
 
             spawnFlameParticles(world, location);
         }
 
         event.setExpToDrop(Math.max(1, (int) totalExperience));
-        event.setDropItems(false);
+        return blocks;
     }
 
     private Optional<FurnaceRecipe> getFurnaceRecipeFor(Material blockType) {
@@ -86,13 +70,17 @@ public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
     }
 
     @Override
-    public void breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneMeltMiningConfiguration configuration) {
+    public Set<Block> breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneMeltMiningConfiguration configuration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
-        var block = event.getBlock();
-        this.meltBlocks(event, block, itemStack);
+        return this.meltBlocks(event, origin, itemStack, drops);
     }
 
     @Override
     public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneMeltMiningConfiguration farmingHoeConfiguration) {}
+
+    @Override
+    public int getPriority() {
+        return 0;
+    }
 }
