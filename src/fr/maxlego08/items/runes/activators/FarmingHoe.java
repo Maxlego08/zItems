@@ -15,10 +15,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
     
@@ -109,20 +108,16 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
      * @param location                The location to drop the items at.
      * @param runeFarmingHoeConfiguration The configuration for the farming hoe.
      */
-    private void dropItem(Player player, Collection<ItemStack> drops, Location location, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
+    private Collection<ItemStack> dropItem(Player player, Collection<ItemStack> drops, Location location, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
         World world = location.getWorld();
         drops.removeIf(dropItemStack -> runeFarmingHoeConfiguration.blacklistMaterials().contains(dropItemStack.getType()));
 
         if (runeFarmingHoeConfiguration.dropItemInInventory()) {
-
             var inventory = player.getInventory();
-
-            var result = inventory.addItem(drops.toArray(new ItemStack[0]));
-            if (result.isEmpty()) return;
-
-            result.values().forEach(itemStackDrop -> world.dropItemNaturally(location, itemStackDrop));
-
-        } else drops.forEach(itemStackDrop -> world.dropItemNaturally(location, itemStackDrop));
+            @NotNull HashMap<Integer, ItemStack> result = inventory.addItem(drops.toArray(new ItemStack[0]));
+            return result.values();
+        }
+        return drops;
     }
 
     /**
@@ -161,75 +156,89 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
     }
 
     @Override
-    public void breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneFarmingHoeConfiguration farmingHoeConfiguration) {
+    public Set<Block> breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneFarmingHoeConfiguration farmingHoeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> dropsOrigin) {
+        Set<Block> blocks = new HashSet<>();
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
 
         var world = player.getWorld();
-        var farmBlock = event.getBlock();
 
-        if (!(farmBlock.getBlockData() instanceof Ageable)) return;
+        Iterator<Block> it = origin.iterator();
+        while(it.hasNext()) {
+            Block farmBlock = it.next();
+            if (!(farmBlock.getBlockData() instanceof Ageable)) continue;
 
-        int range = farmingHoeConfiguration.size() / 2;
+            int range = farmingHoeConfiguration.size() / 2;
 
-        var allowedBlock = farmingHoeConfiguration.allowedCrops();
-        if (!allowedBlock.contains(farmBlock.getType())) return;
+            var allowedBlock = farmingHoeConfiguration.allowedCrops();
+            if (!allowedBlock.contains(farmBlock.getType())) continue;
 
-        event.setCancelled(true);
-        boolean needToRemoveDamage = false;
+            event.setCancelled(true);
+            boolean needToRemoveDamage = false;
 
-        ElapsedTime elapsedTime = new ElapsedTime("Hoe");
-        elapsedTime.start();
+            ElapsedTime elapsedTime = new ElapsedTime("Hoe");
+            elapsedTime.start();
 
-        for (int x = -range; x <= range; x++) {
-            for (int z = -range; z <= range; z++) {
+            for (int x = -range; x <= range; x++) {
+                for (int z = -range; z <= range; z++) {
 
-                var block = world.getBlockAt(farmBlock.getX() + x, farmBlock.getY(), farmBlock.getZ() + z);
+                    var block = world.getBlockAt(farmBlock.getX() + x, farmBlock.getY(), farmBlock.getZ() + z);
 
-                if (block.getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
+                    origin.removeIf(b -> b.getLocation().equals(block.getLocation()));
 
-                    if (!allowedBlock.contains(block.getType())) continue;
+                    if (block.getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
 
-                    if (!plugin.hasAccess(player, block.getLocation())) continue;
+                        if (!allowedBlock.contains(block.getType())) continue;
 
-                    if (farmingHoeConfiguration.eventBlockBreakEvent()) {
-                        var blockEvent = new CustomBlockBreakEvent(block, player);
-                        blockEvent.callEvent();
+                        if (!plugin.hasAccess(player, block.getLocation())) continue;
 
-                        if (blockEvent.isCancelled()) continue;
-                    }
+                        if (farmingHoeConfiguration.eventBlockBreakEvent()) {
+                            var blockEvent = new CustomBlockBreakEvent(block, player);
+                            blockEvent.callEvent();
 
-                    needToRemoveDamage = true;
-                    var drops = block.getDrops(itemStack, player);
+                            if (blockEvent.isCancelled()) continue;
+                        }
 
-                    var dropLocation = switch (farmingHoeConfiguration.dropItemType()) {
-                        case BLOCK -> block.getLocation();
-                        case CENTER -> farmBlock.getLocation();
-                        case PLAYER -> player.getLocation();
-                    };
+                        needToRemoveDamage = true;
+                        var drops = block.getDrops(itemStack, player);
 
-                    dropItem(player, drops, dropLocation, farmingHoeConfiguration);
+                        var dropLocation = switch (farmingHoeConfiguration.dropItemType()) {
+                            case BLOCK -> block.getLocation();
+                            case CENTER -> farmBlock.getLocation();
+                            case PLAYER -> player.getLocation();
+                        };
 
-                    if (farmingHoeConfiguration.autoReplant()) {
-                        ageable.setAge(0);
-                        block.setBlockData(ageable);
-                        block.getState().update();
-                    } else {
-                        block.setType(Material.AIR);
+                        var dropsAfter = dropItem(player, drops, dropLocation, farmingHoeConfiguration);
+                        dropsOrigin.put(dropLocation, new ArrayList<>(dropsAfter));
+
+                        if (farmingHoeConfiguration.autoReplant()) {
+                            ageable.setAge(0);
+                            block.setBlockData(ageable);
+                            block.getState().update();
+                        } else {
+                            blocks.add(block);
+                        }
                     }
                 }
             }
+
+            if (needToRemoveDamage && farmingHoeConfiguration.damage() >= 1) {
+                itemStack.damage(farmingHoeConfiguration.damage(), player);
+            }
+
+            elapsedTime.endDisplay();
         }
 
-        if (needToRemoveDamage && farmingHoeConfiguration.damage() >= 1) {
-            itemStack.damage(farmingHoeConfiguration.damage(), player);
-        }
-
-        elapsedTime.endDisplay();
+        return blocks;
     }
 
     @Override
     public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneFarmingHoeConfiguration farmingHoeConfiguration) {
 
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 }

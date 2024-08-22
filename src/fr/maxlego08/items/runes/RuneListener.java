@@ -4,6 +4,10 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
+import fr.maxlego08.items.api.runes.RunePipeline;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,9 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class RuneListener implements Listener {
 
@@ -52,8 +54,15 @@ public class RuneListener implements Listener {
         var optional = getRunes(itemStack);
         if (optional.isEmpty()) return;
 
-        optional.get().forEach(rune -> rune.getType().getActivator().breakBlocks(plugin, event, rune.getConfiguration()));
-        //TODO : add system to hava possibility to cumulate runes correctly
+        event.setDropItems(false);
+
+        Map<Location, List<ItemStack>> drops = new HashMap<>();
+        RunePipeline pipeline = new RunePipeline(optional.get());
+        Set<Block> blocks = pipeline.breakBlocks(plugin, event, drops);
+        for (Block block : blocks) {
+            block.setType(Material.AIR);
+        }
+        drops.forEach((location, itemStacks) -> itemStacks.forEach(itemStack1 -> location.getWorld().dropItemNaturally(location, itemStack1)));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
