@@ -1,0 +1,20 @@
+type: ENCHANT_APPLICATOR
+
+display-name: "#34eb9bᴘʀᴏᴛᴇᴄᴛɪᴏɴ"
+
+item-name: "#34eb9bᴘʀᴏᴛᴇᴄᴛɪᴏɴ"
+lore:
+  - "&8Allows to augment protection enchantment"
+
+allowed-materials: [ ]
+allowed-tags:
+  - FOOT_ARMOR
+  - LEG_ARMOR
+  - CHEST_ARMOR
+  - HEAD_ARMOR
+
+enchantments:
+  - name: PROTECTION
+    increase: 2
+  - name: FIRE_PROTECTION
+    decrease: 2

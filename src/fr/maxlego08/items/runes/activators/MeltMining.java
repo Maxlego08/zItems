@@ -80,6 +80,9 @@ public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
     public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneMeltMiningConfiguration farmingHoeConfiguration) {}
 
     @Override
+    public void applyOnItems(ItemsPlugin plugin, ItemStack itemStack, RuneMeltMiningConfiguration runeConfiguration) {}
+
+    @Override
     public int getPriority() {
         return 0;
     }

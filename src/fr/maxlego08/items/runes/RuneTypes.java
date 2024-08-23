@@ -3,10 +3,8 @@ package fr.maxlego08.items.runes;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.RuneType;
-import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
+import fr.maxlego08.items.api.runes.configurations.*;
+import fr.maxlego08.items.runes.activators.EnchantApplicator;
 import fr.maxlego08.items.runes.activators.FarmingHoe;
 import fr.maxlego08.items.runes.activators.MeltMining;
 import fr.maxlego08.items.runes.activators.VeinMiner;
@@ -19,6 +17,7 @@ public enum RuneTypes implements RuneType {
     VEIN_MINING(new VeinMiner(), RuneVeinMiningConfiguration.class),
     MELT_MINING(new MeltMining(), RuneMeltMiningConfiguration.class),
     FARMING_HOE(new FarmingHoe(), RuneFarmingHoeConfiguration.class),
+    ENCHANT_APPLICATOR(new EnchantApplicator(), RuneEnchantApplicatorConfiguration.class)
     ;
 
     private final RuneActivator<?> activator;

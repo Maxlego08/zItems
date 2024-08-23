@@ -152,6 +152,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         persistentDataContainer.set(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), runes);
 
         itemStack.setItemMeta(itemMeta);
+        rune.getType().getActivator().applyOnItems(plugin, itemStack, rune.getConfiguration());
     }
 
     private List<String> generateRuneLore(Rune rune) {
