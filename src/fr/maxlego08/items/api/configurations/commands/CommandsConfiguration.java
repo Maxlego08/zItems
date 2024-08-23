@@ -9,12 +9,6 @@ import java.util.Map;
 
 public record CommandsConfiguration(List<ItemCommand> commands) {
 
-
-
-
-
-
-
     public static CommandsConfiguration loadCommandsConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
         List<ItemCommand> commands = new ArrayList<>();
 
