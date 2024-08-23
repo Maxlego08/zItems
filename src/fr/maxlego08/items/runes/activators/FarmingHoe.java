@@ -1,6 +1,6 @@
 package fr.maxlego08.items.runes.activators;
 
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
@@ -156,7 +156,7 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
     }
 
     @Override
-    public Set<Block> breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneFarmingHoeConfiguration farmingHoeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> dropsOrigin) {
+    public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, RuneFarmingHoeConfiguration farmingHoeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> dropsOrigin) {
         Set<Block> blocks = new HashSet<>();
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
@@ -229,7 +229,7 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
     }
 
     @Override
-    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent event, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
+    public void interactBlock(ItemPlugin plugin, PlayerInteractEvent event, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
         var player = event.getPlayer();
         var world = player.getWorld();
         var itemStack = player.getInventory().getItemInMainHand();

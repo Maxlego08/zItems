@@ -1,6 +1,6 @@
 package fr.maxlego08.items.runes.activators;
 
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
 import org.bukkit.Location;
@@ -58,7 +58,7 @@ public class VeinMiner implements RuneActivator<RuneVeinMiningConfiguration> {
     }
 
     @Override
-    public Set<Block> breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, RuneVeinMiningConfiguration configuration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
+    public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, RuneVeinMiningConfiguration configuration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
         var player = event.getPlayer();
         var block = event.getBlock();
         var itemStack = player.getInventory().getItemInMainHand();
@@ -72,7 +72,7 @@ public class VeinMiner implements RuneActivator<RuneVeinMiningConfiguration> {
     }
 
     @Override
-    public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent listener, RuneVeinMiningConfiguration farmingHoeConfiguration) {}
+    public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneVeinMiningConfiguration farmingHoeConfiguration) {}
 
     @Override
     public void applyOnItems(ItemsPlugin plugin, ItemStack itemStack, RuneVeinMiningConfiguration runeConfiguration) {}
