@@ -5,7 +5,6 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.meta.Food;
 import fr.maxlego08.items.zcore.utils.ZUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;

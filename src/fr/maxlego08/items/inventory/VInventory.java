@@ -1,9 +1,11 @@
 package fr.maxlego08.items.inventory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.exceptions.InventoryOpenException;
+import fr.maxlego08.items.zcore.utils.ZUtils;
+import fr.maxlego08.items.zcore.utils.builder.ItemBuilder;
+import fr.maxlego08.items.zcore.utils.inventory.InventoryResult;
+import fr.maxlego08.items.zcore.utils.inventory.ItemButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,11 +14,8 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import fr.maxlego08.items.exceptions.InventoryOpenException;
-import fr.maxlego08.items.zcore.utils.ZUtils;
-import fr.maxlego08.items.zcore.utils.builder.ItemBuilder;
-import fr.maxlego08.items.zcore.utils.inventory.InventoryResult;
-import fr.maxlego08.items.zcore.utils.inventory.ItemButton;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class VInventory extends ZUtils implements Cloneable {
 

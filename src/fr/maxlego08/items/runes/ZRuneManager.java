@@ -6,6 +6,7 @@ import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import fr.maxlego08.items.api.utils.TagRegistry;
+import fr.maxlego08.items.exceptions.ItemEnchantException;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.Material;
@@ -50,6 +51,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 this.plugin.saveResource("runes/vein-mining.yml", false);
                 this.plugin.saveResource("runes/melt-mining.yml", false);
                 this.plugin.saveResource("runes/farming-hoe.yml", false);
+                this.plugin.saveResource("runes/protection.yml", false);
             }
         }
 
@@ -138,6 +140,15 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             return;
         }
 
+        try {
+            itemStack = rune.getType().getActivator().applyOnItems(plugin, itemStack, rune.getConfiguration());
+            itemMeta = itemStack.getItemMeta();
+        } catch (Exception e) {
+            message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
+            return;
+        }
+
+
         List<String> lore = itemMeta.hasLore() ? new ArrayList<>(itemMeta.getLore()) : new ArrayList<>();
 
         if (runes.isEmpty()) {
@@ -152,7 +163,6 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         persistentDataContainer.set(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), runes);
 
         itemStack.setItemMeta(itemMeta);
-        rune.getType().getActivator().applyOnItems(plugin, itemStack, rune.getConfiguration());
     }
 
     private List<String> generateRuneLore(Rune rune) {

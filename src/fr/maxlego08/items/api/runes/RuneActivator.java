@@ -18,7 +18,7 @@ public interface RuneActivator<T extends RuneConfiguration> {
 
     void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, T runeConfiguration);
 
-    void applyOnItems(ItemsPlugin plugin, ItemStack itemStack, T runeConfiguration);
+    ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, T runeConfiguration) throws Exception;
 
     int getPriority();
 }

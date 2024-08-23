@@ -1,25 +1,20 @@
 package fr.maxlego08.items.command;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.logger.Logger;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import fr.maxlego08.items.zcore.utils.commands.CommandType;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandManager extends ZUtils implements CommandExecutor, TabCompleter {
 

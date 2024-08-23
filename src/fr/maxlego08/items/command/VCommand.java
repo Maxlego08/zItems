@@ -1,9 +1,9 @@
 package fr.maxlego08.items.command;
 
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.enums.Permission;
-import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.zcore.utils.commands.Arguments;
 import fr.maxlego08.items.zcore.utils.commands.CollectionBiConsumer;
 import fr.maxlego08.items.zcore.utils.commands.CommandType;
@@ -11,12 +11,7 @@ import fr.maxlego08.items.zcore.utils.commands.Tab;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Abstract class representing a command in the plugin.

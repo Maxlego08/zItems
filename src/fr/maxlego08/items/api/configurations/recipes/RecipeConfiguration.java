@@ -4,14 +4,13 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.utils.TagRegistry;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Tag;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.RecipeChoice;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public record RecipeConfiguration(List<ItemRecipe> recipes) {
 

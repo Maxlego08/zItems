@@ -16,5 +16,5 @@ allowed-tags:
 enchantments:
   - name: PROTECTION
     increase: 2
-  - name: FIRE_PROTECTION
-    decrease: 2
+  - name: UNBREAKING
+    decrease: 1

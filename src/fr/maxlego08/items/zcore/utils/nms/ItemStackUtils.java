@@ -4,13 +4,7 @@ import fr.maxlego08.items.zcore.utils.Base64;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.util.zip.GZIPInputStream;
 

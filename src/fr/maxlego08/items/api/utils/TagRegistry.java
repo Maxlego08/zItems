@@ -4,11 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
-import org.bukkit.inventory.RecipeChoice;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TagRegistry {
 

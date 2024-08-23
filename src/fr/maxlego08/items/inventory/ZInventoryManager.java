@@ -1,17 +1,15 @@
 package fr.maxlego08.items.inventory;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.exceptions.InventoryAlreadyExistException;
+import fr.maxlego08.items.exceptions.InventoryOpenException;
 import fr.maxlego08.items.listener.ListenerAdapter;
 import fr.maxlego08.items.zcore.enums.EnumInventory;
 import fr.maxlego08.items.zcore.enums.Message;
+import fr.maxlego08.items.zcore.logger.Logger;
+import fr.maxlego08.items.zcore.logger.Logger.LogType;
+import fr.maxlego08.items.zcore.utils.inventory.InventoryResult;
+import fr.maxlego08.items.zcore.utils.inventory.ItemButton;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -19,11 +17,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 
-import fr.maxlego08.items.exceptions.InventoryOpenException;
-import fr.maxlego08.items.zcore.logger.Logger;
-import fr.maxlego08.items.zcore.logger.Logger.LogType;
-import fr.maxlego08.items.zcore.utils.inventory.InventoryResult;
-import fr.maxlego08.items.zcore.utils.inventory.ItemButton;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ZInventoryManager extends ListenerAdapter {
 

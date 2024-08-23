@@ -1,6 +1,6 @@
 package fr.maxlego08.items.api.runes.configurations;
 
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -14,7 +14,7 @@ public class RuneVeinMiningConfiguration extends RuneConfiguration {
     private final List<Material> materials;
     private final List<Tag<Material>> tags;
 
-    public RuneVeinMiningConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String runeName) {
+    public RuneVeinMiningConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName) {
         super(plugin, configuration, runeName);
         int blockLimit = configuration.getInt("vein-mining.block-limit");
         List<Material> materials = configuration.getStringList("vein-mining.allowed-materials").stream().map(String::toUpperCase).map(Material::valueOf).toList();

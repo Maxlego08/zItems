@@ -3,11 +3,7 @@ package fr.maxlego08.items.runes.activators;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -80,7 +76,7 @@ public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneMeltMiningConfiguration farmingHoeConfiguration) {}
 
     @Override
-    public void applyOnItems(ItemsPlugin plugin, ItemStack itemStack, RuneMeltMiningConfiguration runeConfiguration) {}
+    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneMeltMiningConfiguration runeConfiguration) {return itemStack;}
 
     @Override
     public int getPriority() {

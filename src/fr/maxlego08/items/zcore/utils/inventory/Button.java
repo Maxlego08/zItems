@@ -1,11 +1,11 @@
 package fr.maxlego08.items.zcore.utils.inventory;
 
-import java.util.Arrays;
-import java.util.List;
-
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
+
+import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class Button extends ZUtils {

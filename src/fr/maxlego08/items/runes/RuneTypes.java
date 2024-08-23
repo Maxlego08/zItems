@@ -1,6 +1,6 @@
 package fr.maxlego08.items.runes;
 
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.*;
@@ -40,9 +40,9 @@ public enum RuneTypes implements RuneType {
     }
 
     @Override
-    public RuneConfiguration getConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String runeName) {
+    public RuneConfiguration getConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName) {
         try {
-            return this.configuration.getConstructor(ItemsPlugin.class, YamlConfiguration.class, String.class).newInstance(plugin, configuration, runeName);
+            return this.configuration.getConstructor(ItemPlugin.class, YamlConfiguration.class, String.class).newInstance(plugin, configuration, runeName);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

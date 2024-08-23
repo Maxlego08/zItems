@@ -1,14 +1,13 @@
 package fr.maxlego08.items.scoreboard;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
+import fr.maxlego08.items.zcore.utils.ZUtils;
+import fr.maxlego08.items.zcore.utils.interfaces.CollectionConsumer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import fr.maxlego08.items.zcore.utils.ZUtils;
-import fr.maxlego08.items.zcore.utils.interfaces.CollectionConsumer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ScoreBoardManager extends ZUtils {
 
