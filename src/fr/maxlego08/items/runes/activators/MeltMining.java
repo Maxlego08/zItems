@@ -11,6 +11,7 @@ import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -76,7 +77,7 @@ public class MeltMining implements RuneActivator<RuneConfiguration> {
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneConfiguration farmingHoeConfiguration) {}
 
     @Override
-    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneConfiguration runeConfiguration) {return itemStack;}
+    public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneConfiguration runeConfiguration) {}
 
     @Override
     public int getPriority() {

@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -265,7 +266,7 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
     }
 
     @Override
-    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneFarmingHoeConfiguration runeConfiguration) {return itemStack;}
+    public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneFarmingHoeConfiguration runeConfiguration) {}
 
     @Override
     public int getPriority() {

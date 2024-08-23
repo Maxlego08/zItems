@@ -24,13 +24,8 @@ public class Unbreakable implements RuneActivator<RuneConfiguration> {
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneConfiguration runeConfiguration) {}
 
     @Override
-    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneConfiguration runeConfiguration) throws Exception {
-        ItemMeta meta = itemStack.getItemMeta();
-        if (meta != null) {
-            meta.setUnbreakable(true);
-            itemStack.setItemMeta(meta);
-        }
-        return itemStack;
+    public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneConfiguration runeConfiguration) throws Exception {
+        itemMeta.setUnbreakable(true);
     }
 
     @Override

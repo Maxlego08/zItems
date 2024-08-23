@@ -142,8 +142,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         }
 
         try {
-            itemStack = rune.getType().getActivator().applyOnItems(plugin, itemStack, rune.getConfiguration());
-            itemMeta = itemStack.getItemMeta();
+            rune.getType().getActivator().applyOnItems(plugin, itemMeta, rune.getConfiguration());
         } catch (Exception e) {
             message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
             return;
