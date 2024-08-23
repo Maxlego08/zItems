@@ -1,3 +1,14 @@
 package fr.maxlego08.items.api.configurations.commands;
 
-public record ItemCommand(CommandSender sender, Action action, String command) {}
+import io.papermc.paper.registry.keys.DamageTypeKeys;
+
+public record ItemCommand(CommandSender sender, Action action, String command, ItemDamage damage) {
+
+    public enum DamageType {
+        AMOUNT,
+        DURABILITY
+    }
+
+    public record ItemDamage(DamageType type, int damage) { }
+
+}
