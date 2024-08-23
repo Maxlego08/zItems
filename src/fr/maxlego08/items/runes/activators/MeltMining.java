@@ -2,7 +2,7 @@ package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
-import fr.maxlego08.items.api.runes.configurations.RuneMeltMiningConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.RecipeChoice;
 
 import java.util.*;
 
-public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
+public class MeltMining implements RuneActivator<RuneConfiguration> {
 
     private final Map<Material, FurnaceRecipe> caches = new HashMap<>();
 
@@ -66,17 +66,17 @@ public class MeltMining implements RuneActivator<RuneMeltMiningConfiguration> {
     }
 
     @Override
-    public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, RuneMeltMiningConfiguration configuration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
+    public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, RuneConfiguration configuration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
         return this.meltBlocks(event, origin, itemStack, drops);
     }
 
     @Override
-    public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneMeltMiningConfiguration farmingHoeConfiguration) {}
+    public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneConfiguration farmingHoeConfiguration) {}
 
     @Override
-    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneMeltMiningConfiguration runeConfiguration) {return itemStack;}
+    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneConfiguration runeConfiguration) {return itemStack;}
 
     @Override
     public int getPriority() {

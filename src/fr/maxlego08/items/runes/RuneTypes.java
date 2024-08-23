@@ -4,10 +4,7 @@ import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.*;
-import fr.maxlego08.items.runes.activators.EnchantApplicator;
-import fr.maxlego08.items.runes.activators.FarmingHoe;
-import fr.maxlego08.items.runes.activators.MeltMining;
-import fr.maxlego08.items.runes.activators.VeinMiner;
+import fr.maxlego08.items.runes.activators.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,9 +12,10 @@ import java.lang.reflect.InvocationTargetException;
 public enum RuneTypes implements RuneType {
 
     VEIN_MINING(new VeinMiner(), RuneVeinMiningConfiguration.class),
-    MELT_MINING(new MeltMining(), RuneMeltMiningConfiguration.class),
+    MELT_MINING(new MeltMining(), RuneConfiguration.class),
     FARMING_HOE(new FarmingHoe(), RuneFarmingHoeConfiguration.class),
-    ENCHANT_APPLICATOR(new EnchantApplicator(), RuneEnchantApplicatorConfiguration.class)
+    ENCHANT_APPLICATOR(new EnchantApplicator(), RuneEnchantApplicatorConfiguration.class),
+    UNBREAKABLE(new Unbreakable(), RuneConfiguration.class),
     ;
 
     private final RuneActivator<?> activator;

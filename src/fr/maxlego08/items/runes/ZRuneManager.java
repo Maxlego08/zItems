@@ -52,6 +52,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 this.plugin.saveResource("runes/melt-mining.yml", false);
                 this.plugin.saveResource("runes/farming-hoe.yml", false);
                 this.plugin.saveResource("runes/protection.yml", false);
+                this.plugin.saveResource("runes/unbreakable.yml", false);
             }
         }
 
