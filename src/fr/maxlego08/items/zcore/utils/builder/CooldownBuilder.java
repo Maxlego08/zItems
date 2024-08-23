@@ -60,15 +60,13 @@ public class CooldownBuilder implements Savable {
 	/**
 	 * 
 	 * @param key
-	 * @param joueur
-	 * @param seconds
 	 */
-	public static void addCooldown(String key, UUID uuid, int seconds) {
+	public static void addCooldown(String key, UUID uuid, long milliseconds) {
 
 		createCooldown(key);
 
-		long next = System.currentTimeMillis() + seconds * 1000L;
-		getCooldownMap(key).put(uuid, Long.valueOf(next));
+		long next = System.currentTimeMillis() + milliseconds;
+		getCooldownMap(key).put(uuid, next);
 	}
 	
 	/**
@@ -77,8 +75,8 @@ public class CooldownBuilder implements Savable {
 	 * @param player
 	 * @param seconds
 	 */
-	public static void addCooldown(String key, Player player, int seconds) {
-		addCooldown(key, player.getUniqueId(), seconds);
+	public static void addCooldown(String key, Player player, long millisecondes) {
+		addCooldown(key, player.getUniqueId(), millisecondes);
 	}
 
 	/**
@@ -92,7 +90,7 @@ public class CooldownBuilder implements Savable {
 		createCooldown(key);
 		Map<UUID, Long> map = cooldowns.get(key);
 
-		return (map.containsKey(uuid)) && (System.currentTimeMillis() <= ((Long) map.get(uuid)).longValue());
+		return (map.containsKey(uuid)) && (System.currentTimeMillis() <= map.get(uuid));
 	}
 
 	/**
@@ -139,7 +137,11 @@ public class CooldownBuilder implements Savable {
 		return TimerBuilder.getStringTime(getCooldown(key, player) / 1000);
 	}
 
-	private static transient CooldownBuilder i = new CooldownBuilder();
+	private static final transient CooldownBuilder i = new CooldownBuilder();
+
+	public static CooldownBuilder getInstance() {
+		return i;
+	}
 
 	@Override
 	public void save(Persist persist) {
