@@ -90,6 +90,7 @@ public class ZItem extends ZUtils implements Item {
                 itemMeta.setCustomModelData(this.configuration.getCustomModelData());
             }
 
+            itemMeta.setFireResistant(this.configuration.isFireResistant());
             itemMeta.setHideTooltip(this.configuration.isHideTooltip());
             if (this.configuration.isHideAdditionalTooltip()) {
                 for (ItemFlag value : ItemFlag.values()) {

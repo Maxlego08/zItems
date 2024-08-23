@@ -25,6 +25,7 @@ import fr.maxlego08.items.zcore.ZPlugin;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.ServicePriority;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,12 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
 
         this.registerCommand("zitems", new CommandItem(this), "items", "zit");
+
+        var servicesManager = this.getServer().getServicesManager();
+        servicesManager.register(ItemManager.class, this.itemManager, this, ServicePriority.Highest);
+        servicesManager.register(RuneManager.class, this.runeManager, this, ServicePriority.Highest);
+        servicesManager.register(ItemPlugin.class, this, this, ServicePriority.Highest);
+        servicesManager.register(Enchantments.class, this.enchantments, this, ServicePriority.Highest);
 
         this.addListener(new PrepareCraftListener(this.itemManager));
         this.addListener(new DisableEnchantsListener(this.itemManager));
