@@ -4,7 +4,6 @@ import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -35,23 +34,23 @@ public class CommandsListener implements Listener {
         if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return;
         Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
         if (itemOptional.isEmpty()) return;
-        Action action = event.getAction();
+        org.bukkit.event.block.Action action = event.getAction();
         Item item = itemOptional.get();
-        List<CommandsConfiguration.ItemCommand> commands = item.getConfiguration().getCommandsConfiguration().commands();
-        CommandsConfiguration.Action itemAction;
+        List<ItemCommand> commands = item.getConfiguration().getCommandsConfiguration().commands();
+        Action itemAction;
 
         if (action.isLeftClick()) {
-            itemAction = CommandsConfiguration.Action.LEFT_CLICK;
+            itemAction = Action.LEFT_CLICK;
         } else if (action.isRightClick()) {
-            itemAction = CommandsConfiguration.Action.RIGHT_CLICK;
+            itemAction = Action.RIGHT_CLICK;
         } else {
             return;
         }
 
-        commands.stream().filter(command -> command.action() == itemAction).forEach(command -> {
+        commands.stream().filter(command -> command.action() == itemAction || command.action() == Action.CLICK).forEach(command -> {
             String commandStr = command.command().replace("%player%", player.getName());
 
-            if(command.sender() == CommandsConfiguration.CommandSender.PLAYER) {
+            if(command.sender() == CommandSender.PLAYER) {
                 player.performCommand(commandStr);
             } else {
                 player.getServer().dispatchCommand(player.getServer().getConsoleSender(), commandStr);

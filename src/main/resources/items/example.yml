@@ -81,7 +81,7 @@ enchantment:
 
 # The item can run command with a right or left click.
 # The command can be run by the CONSOLE or the PLAYER.
-# The action can be LEFT_CLICK or RIGHT_CLICK.
+# The action can be LEFT_CLICK or RIGHT_CLICK or CLICK.
 # %player% is replaced with player name who use the item.
 commands:
   - sender: CONSOLE
