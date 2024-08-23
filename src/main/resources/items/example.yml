@@ -79,6 +79,18 @@ enchantment:
   # If False, no enchantments will be shown in the item tooltip. Default is True.
   show-in-tooltip: true
 
+# The item can run command with a right or left click.
+# The command can be run by the CONSOLE or the PLAYER.
+# The action can be LEFT_CLICK or RIGHT_CLICK.
+# %player% is replaced with player name who use the item.
+commands:
+  - sender: CONSOLE
+    command: "say left click console"
+    action: LEFT_CLICK
+  - sender: PLAYER
+    command: "say right click player"
+    action: RIGHT_CLICK
+
 # You can use this to make any item edible. You must set both nutrition and saturation_modifier to make it work.
 food:
   enable: false

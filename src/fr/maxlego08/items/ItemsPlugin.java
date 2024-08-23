@@ -5,6 +5,7 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
+import fr.maxlego08.items.api.configurations.commands.CommandsListener;
 import fr.maxlego08.items.api.configurations.recipes.PrepareCraftListener;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
@@ -60,6 +61,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         this.addListener(new PrepareCraftListener(this.itemManager));
         this.addListener(new DisableEnchantsListener(this.itemManager));
+        this.addListener(new CommandsListener(this.itemManager));
 
         this.addSave(Config.getInstance());
         this.addSave(new MessageLoader(this));

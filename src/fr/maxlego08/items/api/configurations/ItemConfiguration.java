@@ -6,6 +6,7 @@ import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
+import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
 import fr.maxlego08.items.api.configurations.meta.*;
 import fr.maxlego08.items.api.configurations.recipes.RecipeConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
@@ -74,6 +75,7 @@ public class ItemConfiguration {
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
+    private CommandsConfiguration commandsConfiguration;
     private Food food;
     private ItemRarity itemRarity;
 
@@ -214,6 +216,7 @@ public class ItemConfiguration {
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
         this.recipeConfiguration = RecipeConfiguration.loadRecipe(plugin, configuration, fileName, path);
+        this.commandsConfiguration = CommandsConfiguration.loadCommandsConfiguration(plugin, configuration, fileName, path);
     }
 
     private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
@@ -514,5 +517,9 @@ public class ItemConfiguration {
 
     public RecipeConfiguration getRecipeConfiguration() {
         return recipeConfiguration;
+    }
+
+    public CommandsConfiguration getCommandsConfiguration() {
+        return commandsConfiguration;
     }
 }
