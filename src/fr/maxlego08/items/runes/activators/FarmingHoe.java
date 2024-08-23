@@ -265,6 +265,9 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
     }
 
     @Override
+    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneFarmingHoeConfiguration runeConfiguration) {return itemStack;}
+
+    @Override
     public int getPriority() {
         return 0;
     }

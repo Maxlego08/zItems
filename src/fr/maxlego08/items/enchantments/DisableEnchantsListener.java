@@ -3,7 +3,6 @@ package fr.maxlego08.items.enchantments;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.configurations.meta.ItemEnchantment;
-import fr.maxlego08.items.api.enchantments.Enchantments;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -1,6 +1,5 @@
 package fr.maxlego08.items.api;
 
-import fr.maxlego08.items.listener.ListenerAdapter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

@@ -1,21 +1,19 @@
 package fr.maxlego08.items.zcore.utils.gson;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-
 import fr.maxlego08.items.zcore.ZPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LocationAdapter extends TypeAdapter<Location> {
 

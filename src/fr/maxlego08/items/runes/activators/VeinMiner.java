@@ -75,6 +75,11 @@ public class VeinMiner implements RuneActivator<RuneVeinMiningConfiguration> {
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneVeinMiningConfiguration farmingHoeConfiguration) {}
 
     @Override
+    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneVeinMiningConfiguration runeConfiguration) {
+        return itemStack;
+    }
+
+    @Override
     public int getPriority() {
         return 1;
     }

@@ -1,5 +1,13 @@
 package fr.maxlego08.items.zcore.utils;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import fr.maxlego08.items.zcore.utils.nms.NmsVersion;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
@@ -8,15 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import fr.maxlego08.items.zcore.utils.nms.NmsVersion;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 
 /**
  * Utility class for managing player skins, including fetching textures and signatures.

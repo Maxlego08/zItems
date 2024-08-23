@@ -1,10 +1,10 @@
 package fr.maxlego08.items.zcore.utils.inventory;
 
-import java.util.function.Consumer;
-
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.function.Consumer;
 
 public class ItemButton {
 

@@ -1,6 +1,6 @@
 package fr.maxlego08.items.api.runes;
 
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import fr.maxlego08.items.runes.RuneTypes;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -30,6 +30,6 @@ public interface RuneType {
 
     RuneActivator<?> getActivator();
 
-    RuneConfiguration getConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String runeName);
+    RuneConfiguration getConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName);
 
 }

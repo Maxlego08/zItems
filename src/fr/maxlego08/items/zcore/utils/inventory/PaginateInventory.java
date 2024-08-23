@@ -1,14 +1,14 @@
 package fr.maxlego08.items.zcore.utils.inventory;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.exceptions.InventoryOpenException;
 import fr.maxlego08.items.inventory.VInventory;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class PaginateInventory<T> extends VInventory {
 

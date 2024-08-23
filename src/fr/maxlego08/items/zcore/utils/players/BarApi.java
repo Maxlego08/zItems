@@ -1,8 +1,5 @@
 package fr.maxlego08.items.zcore.utils.players;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import fr.maxlego08.items.zcore.utils.interfaces.StringConsumer;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -11,6 +8,9 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BarApi {
 

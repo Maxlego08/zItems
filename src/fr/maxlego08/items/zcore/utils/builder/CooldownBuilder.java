@@ -1,13 +1,12 @@
 package fr.maxlego08.items.zcore.utils.builder;
 
+import fr.maxlego08.items.zcore.utils.storage.Persist;
+import fr.maxlego08.items.zcore.utils.storage.Savable;
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import org.bukkit.entity.Player;
-
-import fr.maxlego08.items.zcore.utils.storage.Persist;
-import fr.maxlego08.items.zcore.utils.storage.Savable;
 
 public class CooldownBuilder implements Savable {
 

@@ -1,6 +1,6 @@
 package fr.maxlego08.items.api.runes.configurations;
 
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -22,7 +22,7 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
     private final List<Material> allowedPlantSeeds;
     private final boolean eventBlockBreakEvent;
 
-    public RuneFarmingHoeConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String runeName) {
+    public RuneFarmingHoeConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName) {
         super(plugin, configuration, runeName);
 
         RuneFarmingHoeConfiguration.DropItemType dropItemType = RuneFarmingHoeConfiguration.DropItemType.CENTER;

@@ -3,7 +3,6 @@ package fr.maxlego08.items.api.configurations.state;
 import fr.maxlego08.items.api.FakeItem;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemPlugin;
-import org.bukkit.entity.Player;
 
 public class ItemSlotCustomItem implements ItemSlot {
     private final ItemPlugin plugin;

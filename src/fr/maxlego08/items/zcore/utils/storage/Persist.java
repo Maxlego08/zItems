@@ -1,12 +1,12 @@
 package fr.maxlego08.items.zcore.utils.storage;
 
-import java.io.File;
-import java.lang.reflect.Type;
-
+import fr.maxlego08.items.zcore.ZPlugin;
 import fr.maxlego08.items.zcore.enums.Folder;
 import fr.maxlego08.items.zcore.logger.Logger;
 import fr.maxlego08.items.zcore.utils.ZUtils;
-import fr.maxlego08.items.zcore.ZPlugin;
+
+import java.io.File;
+import java.lang.reflect.Type;
 
 public class Persist extends ZUtils {
 
