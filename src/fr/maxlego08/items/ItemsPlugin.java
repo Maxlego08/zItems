@@ -23,6 +23,7 @@ import fr.maxlego08.items.runes.ZRuneManager;
 import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
 import fr.maxlego08.items.zcore.ZPlugin;
+import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -64,6 +65,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addListener(new CommandsListener(this.itemManager));
 
         this.addSave(Config.getInstance());
+        this.addSave(CooldownBuilder.getInstance());
         this.addSave(new MessageLoader(this));
         this.runeManager.loadRunes();
         this.itemManager.loadItems();

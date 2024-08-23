@@ -2,6 +2,7 @@ package fr.maxlego08.items.api.configurations.commands;
 
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
+import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -53,10 +54,19 @@ public class CommandsListener implements Listener {
         for (ItemCommand itemCommand : commands.stream().filter(command -> command.action() == itemAction || command.action() == Action.CLICK).collect(Collectors.toSet())) {
             String commandStr = itemCommand.command().replace("%player%", player.getName());
 
+            if (itemCommand.cooldown() > 0 && CooldownBuilder.isCooldown(this.generateCooldownName(item, itemCommand), player.getUniqueId())) {
+                //TODO add message
+                return;
+            }
+
             if(itemCommand.sender() == CommandSender.PLAYER) {
                 player.performCommand(commandStr);
             } else {
                 player.getServer().dispatchCommand(player.getServer().getConsoleSender(), commandStr);
+            }
+
+            if(itemCommand.cooldown() > 0) {
+                CooldownBuilder.addCooldown(this.generateCooldownName(item, itemCommand), player.getUniqueId(), itemCommand.cooldown());
             }
 
 
@@ -80,6 +90,10 @@ public class CommandsListener implements Listener {
         }
 
 
+    }
+
+    private String generateCooldownName(Item item, ItemCommand itemCommand) {
+        return "command-" + item.getName() + "-" + itemCommand.action().name() + "-" + itemCommand.command().trim();
     }
 
 }

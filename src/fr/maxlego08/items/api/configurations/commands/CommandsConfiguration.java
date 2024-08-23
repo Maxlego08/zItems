@@ -29,6 +29,17 @@ public record CommandsConfiguration(List<ItemCommand> commands) {
             Action action = Action.valueOf(((String )commandMap.get("action")).toUpperCase());
             String command = ((String)commandMap.get("command"));
             ItemCommand.ItemDamage damage = null;
+            long cooldown = 0;
+            if(commandMap.containsKey("cooldown")) {
+                try {
+                    cooldown = Long.parseLong(commandMap.get("cooldown").toString());
+                    if(cooldown < 0) {
+                        throw new IllegalArgumentException("Invalid cooldown in " + fileName + " at " + path);
+                    }
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid cooldown in " + fileName + " at " + path);
+                }
+            }
             if(commandMap.containsKey("damage")) {
                 Map<String, Object> damageMap = (Map<String, Object>) commandMap.get("damage");
                 ItemCommand.DamageType type = ItemCommand.DamageType.valueOf(((String)damageMap.get("type")).toUpperCase());
@@ -48,7 +59,7 @@ public record CommandsConfiguration(List<ItemCommand> commands) {
                 damage = new ItemCommand.ItemDamage(type, damageAmount);
             }
 
-            commands.add(new ItemCommand(sender, action, command, damage));
+            commands.add(new ItemCommand(sender, action, command, damage, cooldown));
         }
 
         return new CommandsConfiguration(commands);
