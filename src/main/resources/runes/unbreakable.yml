@@ -1,0 +1,14 @@
+type: UNBREAKABLE
+
+display-name: "#34eb9bᴜɴʙʀᴇᴀᴋᴀʙʟᴇ"
+
+item-name: "#34eb9bᴜɴʙʀᴇᴀᴋᴀʙʟᴇ"
+lore:
+  - "&8Allows to set unbreakable on items"
+
+allowed-materials: [ ]
+allowed-tags:
+  - FOOT_ARMOR
+  - LEG_ARMOR
+  - CHEST_ARMOR
+  - HEAD_ARMOR

@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -75,9 +76,7 @@ public class VeinMiner implements RuneActivator<RuneVeinMiningConfiguration> {
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneVeinMiningConfiguration farmingHoeConfiguration) {}
 
     @Override
-    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneVeinMiningConfiguration runeConfiguration) {
-        return itemStack;
-    }
+    public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneVeinMiningConfiguration runeConfiguration) {}
 
     @Override
     public int getPriority() {

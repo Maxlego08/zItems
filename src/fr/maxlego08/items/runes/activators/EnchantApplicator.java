@@ -27,12 +27,12 @@ public class EnchantApplicator implements RuneActivator<RuneEnchantApplicatorCon
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneEnchantApplicatorConfiguration runeConfiguration) {}
 
     @Override
-    public ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, RuneEnchantApplicatorConfiguration runeConfiguration) throws ItemEnchantException {
+    public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneEnchantApplicatorConfiguration runeConfiguration) throws ItemEnchantException {
         boolean error = false;
         for (RuneEnchantApplicatorConfiguration.EnchantmentEvolution enchantmentEvolution : runeConfiguration.getEnchantmentEvolutions()) {
             Enchantment enchantment = enchantmentEvolution.enchantment();
             int evolution = enchantmentEvolution.evolution();
-            int level = itemStack.getEnchantments().getOrDefault(enchantment, 0);
+            int level = itemMeta.getEnchants().getOrDefault(enchantment, 0);
             if (level == 0) {
                 error = true;
                 break;
@@ -47,20 +47,17 @@ public class EnchantApplicator implements RuneActivator<RuneEnchantApplicatorCon
         if (error) {
             throw new ItemEnchantException("Enchantment not found");
         } else {
-            ItemMeta meta = itemStack.getItemMeta();
             for (RuneEnchantApplicatorConfiguration.EnchantmentEvolution enchantmentEvolution : runeConfiguration.getEnchantmentEvolutions()) {
                 Enchantment enchantment = enchantmentEvolution.enchantment();
                 int evolution = enchantmentEvolution.evolution();
-                int level = itemStack.getEnchantments().getOrDefault(enchantment, 0);
+                int level = itemMeta.getEnchants().getOrDefault(enchantment, 0);
 
                 if (level + evolution == 0) {
-                    meta.removeEnchant(enchantment);
+                    itemMeta.removeEnchant(enchantment);
                 } else {
-                    meta.addEnchant(enchantment, level + evolution, true);
+                    itemMeta.addEnchant(enchantment, level + evolution, true);
                 }
             }
-            itemStack.setItemMeta(meta);
-            return itemStack;
         }
     }
 

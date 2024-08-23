@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ public interface RuneActivator<T extends RuneConfiguration> {
 
     void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, T runeConfiguration);
 
-    ItemStack applyOnItems(ItemPlugin plugin, ItemStack itemStack, T runeConfiguration) throws Exception;
+    void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, T runeConfiguration) throws Exception;
 
     int getPriority();
 }
