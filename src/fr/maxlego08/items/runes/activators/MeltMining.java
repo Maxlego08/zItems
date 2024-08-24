@@ -1,21 +1,18 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
-import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class MeltMining implements RuneActivator<RuneConfiguration> {
+public class MeltMining extends RuneActivatorHelper<RuneConfiguration> {
 
     private final Map<Material, FurnaceRecipe> caches = new HashMap<>();
 
@@ -72,12 +69,6 @@ public class MeltMining implements RuneActivator<RuneConfiguration> {
         var itemStack = player.getInventory().getItemInMainHand();
         return this.meltBlocks(event, origin, itemStack, drops);
     }
-
-    @Override
-    public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneConfiguration farmingHoeConfiguration) {}
-
-    @Override
-    public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneConfiguration runeConfiguration) {}
 
     @Override
     public int getPriority() {

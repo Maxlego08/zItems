@@ -11,15 +11,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
-public class VeinMiner implements RuneActivator<RuneVeinMiningConfiguration> {
+public class VeinMiner extends RuneActivatorHelper<RuneVeinMiningConfiguration> {
 
     /**
      * Cette méthode prend un bloc de départ et renvoie un ensemble de tous les blocs connectés du même type.
@@ -71,17 +65,10 @@ public class VeinMiner implements RuneActivator<RuneVeinMiningConfiguration> {
         var itemStack = player.getInventory().getItemInMainHand();
         if (!configuration.contains(block.getType())) return origin;
         var blocks = this.getVeinBlocks(block, configuration.blockLimit());
-        blocks.removeIf(veinBlock -> !plugin.hasAccess(player, veinBlock.getLocation()) || !configuration.contains(veinBlock.getType()));
+        this.isValidTargetBlock(plugin, player, block, origin, configuration);
+        blocks.removeIf(veinBlock -> !this.isValidTargetBlock(plugin, player, veinBlock, origin, configuration));
         blocks.forEach(veinBlock -> drops.put(veinBlock.getLocation(), new ArrayList<>(veinBlock.getDrops(itemStack))));
         return blocks;
-    }
-
-    @Override
-    public void interactBlock(ItemPlugin plugin, PlayerInteractEvent listener, RuneVeinMiningConfiguration farmingHoeConfiguration) {
-    }
-
-    @Override
-    public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneVeinMiningConfiguration runeConfiguration) {
     }
 
     @Override
