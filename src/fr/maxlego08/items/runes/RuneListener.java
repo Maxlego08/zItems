@@ -70,8 +70,6 @@ public class RuneListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
         if(event.getHand() != EquipmentSlot.HAND) return;
-        if (event.useInteractedBlock() == Event.Result.DENY || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
         var optional = getRunes(itemStack);

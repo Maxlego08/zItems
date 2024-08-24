@@ -1,0 +1,25 @@
+type: HAMMER
+
+display-name: "#34eb9bʜᴀᴍᴍᴇʀ"
+
+item-name: "#34eb9bʜᴀᴍᴍᴇʀ"
+lore:
+  - "&8Allows to dig tunnel"
+
+allowed-materials: [ ]
+allowed-tags:
+  - PICKAXES
+
+depth: 7
+width: 3
+height: 5
+
+#Add damage to the item for each block broken
+damage: true
+
+# Activate the BlockBreakEvent when the player will use the hoe will allow to check on each block if he has permission
+# to break it and to indicate to other plugins that the player to break a block.
+# For the jobs/quest/other plugins this can be very useful if zItems does not implement its plugin methods.
+# Attention, if you have a big server it can hurt the performance of having so many BlockBreakEvent !
+# It is advisable to implement the plugins you need, if there are any missing come on discord.
+enable-block-break-event: true
