@@ -1,33 +1,72 @@
+# The type of the rune.
+# This defines the general category of the rune.
+# https://zitems.groupez.dev/runes/types
 type: HAMMER
 
+# Display the name of the rune.
+# This is the name that will appear when the player hovers over the item.
 display-name: "#34eb9bʜᴀᴍᴍᴇʀ"
 
+# Name of the item associated with the rune.
+# This is the name that the item itself will display in the player's inventory.
+# Typically, this would match the display-name, but can be customized.
 item-name: "#34eb9bʜᴀᴍᴍᴇʀ"
+
+# Lore of the item.
+# The lore is the description that appears under the item name.
+# It provides additional context or information about the item's abilities or origin.
 lore:
   - "&8Allows to dig tunnel"
 
+# Allowed materials for applying the rune.
+# This defines which materials the rune can be applied to.
+# If left empty, it will allow all materials unless restricted by tags.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 allowed-materials: [ ]
+
+# Allowed material tags for applying the rune.
+# Tags are predefined groups of materials in Minecraft.
+# For example, "PICKAXES" includes all types of pickaxes.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/tag/Tag.html
 allowed-tags:
   - PICKAXES
 
-depth: 3
+# Number of blocks in width that the rune affects.
+# This defines how many blocks wide the effect of the rune will be.
+# For example, a value of 3 would mean the effect spans three blocks wide.
 width: 3
+
+# Number of blocks in height that the rune affects.
+# This defines the vertical reach of the rune's effect.
+# A value of 3 would allow the effect to span three blocks high.
 height: 3
 
-# Add damage to the item for each block broken
-# You can define a number for the amount of damage to apply on the item
-# To apply the broken block number you must set damage to max
-damage: 1
-# damage: max # Allows defining the amount of damage to the number of broken blocks
+# Number of blocks in depth that the rune affects.
+# This defines how far the rune's effect extends in depth
+# For example, a depth of 1 would affect only the block immediately in front.
+depth: 1
 
-# Activate the BlockBreakEvent when the player uses the hoe will allow checking on each block if he has permission
-# to break it and to indicate to other plugins that the player to break a block.
-# For the jobs/quest/other plugins, this can be very useful if zItems does not implement its plugin methods.
-# Attention, if you have a big server, it can hurt the performance of having so many BlockBreakEvent!
-# It is advisable to implement the plugins you need, if there are any missing come on discord.
+# Damage to apply to the item for each block broken.
+# You can set a specific number here to define how much damage the item takes per block.
+# If set to 'max', the item will take damage equivalent to the number of blocks broken.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemStack.html#setDurability-short-
+damage: 1
+# damage: max # Un-comment this line to set damage equal to the number of blocks broken.
+
+# Enable or disable the BlockBreakEvent when the rune is used.
+# When true, this will trigger the BlockBreakEvent for each block affected by the rune.
+# This can be useful for compatibility with other plugins like jobs, quests, or economy systems.
+# However, enabling this on large servers may cause performance issues due to the high number of events fired.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/BlockBreakEvent.html
 enable-block-break-event: true
 
 hammer:
+  # Allowed materials for using the hammer.
+  # This defines what materials the hammer can affect when used.
+  # Similar to the global allowed-materials but specific to this rune type.
   allowed-materials:
     - STONE
+
+  # Allowed material tags for using the hammer.
+  # Tags that the hammer can interact with, specific to this rune type.
   allowed-tags: [ ]
