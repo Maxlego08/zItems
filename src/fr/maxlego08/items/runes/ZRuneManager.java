@@ -147,12 +147,13 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         ItemMeta itemMeta = itemStack.getItemMeta();
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
 
-        if (!persistentDataContainer.has(Item.ITEM_KEY, PersistentDataType.STRING)) return;
-        Optional<Item> itemOptional = plugin.getItemManager().getItem(persistentDataContainer.get(Item.ITEM_KEY, PersistentDataType.STRING));
-        if (itemOptional.isPresent()) {
-            Item item = itemOptional.get();
-            if(item.getConfiguration().getDisableRunes().contains(rune)) {
-                throw new RuneNotAllowedException();
+        if (persistentDataContainer.has(Item.ITEM_KEY, PersistentDataType.STRING)) {
+            Optional<Item> itemOptional = plugin.getItemManager().getItem(persistentDataContainer.get(Item.ITEM_KEY, PersistentDataType.STRING));
+            if (itemOptional.isPresent()) {
+                Item item = itemOptional.get();
+                if(item.getConfiguration().getDisableRunes().contains(rune)) {
+                    throw new RuneNotAllowedException();
+                }
             }
         }
 
