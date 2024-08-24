@@ -1,10 +1,12 @@
 package fr.maxlego08.items.runes;
 
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.api.runes.exceptions.*;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.exceptions.ItemEnchantException;
 import fr.maxlego08.items.zcore.enums.Message;
@@ -119,34 +121,56 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             return;
         }
 
+        var rune = optional.get();
+
         ItemStack itemStack = player.getInventory().getItemInMainHand();
+
+        try {
+            this.applyRune(itemStack, rune);
+        } catch (RuneException e) {
+            switch (e) {
+                case NoMetaException ignored -> message(player, Message.ITEM_HAVE_NOT_META);
+                case ItemContainsAlreadyRuneException ignored -> message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
+                case RuneNotAllowedException ignored -> message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
+                case RuneAppliedException ignored -> message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
+                default -> throw new IllegalStateException("Unexpected value: " + e);
+            }
+        }
+    }
+
+    @Override
+    public void applyRune(ItemStack itemStack, Rune rune) throws RuneException {
         if (itemStack.isEmpty()) {
-            message(player, Message.ITEM_HAVE_NOT_META);
-            return;
+            throw new NoMetaException();
         }
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-        Rune rune = optional.get();
-
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
+
+        if (!persistentDataContainer.has(Item.ITEM_KEY, PersistentDataType.STRING)) return;
+        Optional<Item> itemOptional = plugin.getItemManager().getItem(persistentDataContainer.get(Item.ITEM_KEY, PersistentDataType.STRING));
+        if (itemOptional.isPresent()) {
+            Item item = itemOptional.get();
+            if(item.getConfiguration().getDisableRunes().contains(rune)) {
+                throw new RuneNotAllowedException();
+            }
+        }
+
         List<Rune> runes = persistentDataContainer.getOrDefault(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), new ArrayList<>());
         runes = new ArrayList<>(runes);
 
         if (runes.contains(rune)) {
-            message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
-            return;
+            throw new ItemContainsAlreadyRuneException();
         }
 
         if(!rune.isAllowed(itemStack.getType())) {
-            message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
-            return;
+           throw new RuneNotAllowedException();
         }
 
         try {
             rune.getType().getActivator().applyOnItems(plugin, itemMeta, rune.getConfiguration());
         } catch (Exception e) {
-            message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
-            return;
+            throw new RuneAppliedException();
         }
 
 

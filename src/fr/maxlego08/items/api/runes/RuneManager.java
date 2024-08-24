@@ -1,7 +1,9 @@
 package fr.maxlego08.items.api.runes;
 
+import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
@@ -21,6 +23,8 @@ public interface RuneManager {
     List<Rune> getRunes(RuneType runeType);
 
     void applyRune(Player player, String runName);
+
+    void applyRune(ItemStack itemStack, Rune rune) throws RuneException;
 
     NamespacedKey getKey();
 

@@ -10,6 +10,7 @@ import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
 import fr.maxlego08.items.api.configurations.meta.*;
 import fr.maxlego08.items.api.configurations.recipes.RecipeConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
+import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import org.bukkit.Color;
@@ -37,6 +38,7 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ItemConfiguration {
 
@@ -63,6 +65,8 @@ public class ItemConfiguration {
     private final boolean enchantmentGlint;
     private final List<ItemEnchantment> enchantments;
     private final List<ItemEnchantment> disableEnchantments;
+    private final List<Rune> runes;
+    private final List<Rune> disableRunes;
     private final boolean enchantmentShowInTooltip;
     private final List<AttributeConfiguration> attributes;
     private final boolean attributeShowInTooltip;
@@ -156,6 +160,18 @@ public class ItemConfiguration {
                 }
             }
         }
+
+        List<String> runesList = configuration.getStringList(path + "rune.runes");
+        this.runes = runesList.stream()
+                .map(runeName -> plugin.getRuneManager().getRune(runeName)
+                        .orElseThrow(() -> new IllegalArgumentException("Rune " + runeName + " was not found for the item " + fileName)))
+                .collect(Collectors.toList());
+
+        List<String> runesDisableList = configuration.getStringList(path + "rune.disable-runes");
+        this.disableRunes = runesDisableList.stream()
+                .map(runeName -> plugin.getRuneManager().getRune(runeName)
+                        .orElseThrow(() -> new IllegalArgumentException("Rune " + runeName + " was not found for the item " + fileName)))
+                .collect(Collectors.toList());
 
         // Load food
         if (configuration.contains(path + "food")) {
@@ -521,5 +537,13 @@ public class ItemConfiguration {
 
     public CommandsConfiguration getCommandsConfiguration() {
         return commandsConfiguration;
+    }
+
+    public List<Rune> getDisableRunes() {
+        return disableRunes;
+    }
+
+    public List<Rune> getRunes() {
+        return runes;
     }
 }
