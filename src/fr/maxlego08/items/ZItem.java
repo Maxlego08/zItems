@@ -4,6 +4,8 @@ import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.meta.Food;
+import fr.maxlego08.items.api.runes.Rune;
+import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
@@ -115,6 +117,15 @@ public class ZItem extends ZUtils implements Item {
             }
 
             itemStack.setItemMeta(itemMeta);
+
+            for (Rune rune : this.configuration.getRunes()) {
+                try {
+                    this.plugin.getRuneManager().applyRune(itemStack, rune);
+                } catch (RuneException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         } else {
             plugin.getLogger().severe("ItemMeta is null !");
         }

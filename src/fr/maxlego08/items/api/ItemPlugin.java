@@ -3,6 +3,7 @@ package fr.maxlego08.items.api;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
+import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -19,6 +20,8 @@ public interface ItemPlugin extends Plugin {
     TrimHelper getTrimHelper();
 
     ItemManager getItemManager();
+
+    RuneManager getRuneManager();
 
     List<BlockAccess> getBlockAccess();
 
