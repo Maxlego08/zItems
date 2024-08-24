@@ -10,12 +10,15 @@ allowed-materials: [ ]
 allowed-tags:
   - PICKAXES
 
-depth: 7
+depth: 3
 width: 3
-height: 5
+height: 3
 
-#Add damage to the item for each block broken
-damage: true
+# Add damage to the item for each block broken
+# You can define a number for the number of damage to apply on the item
+# To apply the broken block number you must set damage to max
+damage: 1
+# damage: max # Allows to define the number of damage to the number of broken block
 
 # Activate the BlockBreakEvent when the player will use the hoe will allow to check on each block if he has permission
 # to break it and to indicate to other plugins that the player to break a block.

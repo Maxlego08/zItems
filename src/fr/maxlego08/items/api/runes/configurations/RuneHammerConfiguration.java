@@ -9,7 +9,8 @@ public class RuneHammerConfiguration extends RuneConfiguration {
     private final int width;
     private final int depth;
     private final boolean eventBlockBreakEvent;
-    private final boolean damage;
+    private final int damage;
+    private final boolean isMaxDamage;
 
     public RuneHammerConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName) {
         super(plugin, configuration, runeName);
@@ -18,7 +19,9 @@ public class RuneHammerConfiguration extends RuneConfiguration {
         this.width = configuration.getInt("width");
         this.depth = configuration.getInt("depth");
         this.eventBlockBreakEvent = configuration.getBoolean("enable-block-break-event");
-        this.damage = configuration.getBoolean("damage");
+        String damage = configuration.getString("damage");
+        this.isMaxDamage = damage != null && damage.equalsIgnoreCase("max");
+        this.damage = configuration.getInt("damage", 0);
     }
 
     public int getHeight() {
@@ -37,7 +40,11 @@ public class RuneHammerConfiguration extends RuneConfiguration {
         return eventBlockBreakEvent;
     }
 
-    public boolean isDamage() {
+    public int getDamage() {
         return damage;
+    }
+
+    public boolean isMaxDamage() {
+        return isMaxDamage;
     }
 }
