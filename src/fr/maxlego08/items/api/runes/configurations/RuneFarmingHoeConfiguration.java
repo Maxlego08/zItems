@@ -20,7 +20,6 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
     private final int damage;
     private final int harvestDamage;
     private final List<Material> allowedPlantSeeds;
-    private final boolean eventBlockBreakEvent;
 
     public RuneFarmingHoeConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName) {
         super(plugin, configuration, runeName);
@@ -35,7 +34,6 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
         boolean dropItemInInventory = configuration.getBoolean("add-item-in-inventory", false);
         boolean harvest = configuration.getBoolean("harvest", false);
         boolean plantSeeds = configuration.getBoolean("plant-seeds", false);
-        boolean eventBlockBreakEvent = configuration.getBoolean("enable-block-break-event", true);
 
         List<Material> blacklistMaterials = stringListToMaterialList(configuration.getStringList("drop-blacklist"));
         List<Material> allowedCrops = stringListToMaterialList(configuration.getStringList("allowed-crops"));
@@ -66,7 +64,7 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
         this.plantSeeds = plantSeeds;
         this.harvestDamage = harvestDamage;
         this.allowedPlantSeeds = allowedPlantSeeds;
-        this.eventBlockBreakEvent = eventBlockBreakEvent;
+        this.eventBlockBreakEvent = this.loadEventBlockBreakEvent("enable-block-break-event");
     }
 
     private List<Material> stringListToMaterialList(List<String> strings) {
@@ -121,10 +119,6 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
 
     public List<Material> allowedPlantSeeds() {
         return allowedPlantSeeds;
-    }
-
-    public boolean eventBlockBreakEvent() {
-        return eventBlockBreakEvent;
     }
 
     public enum DropItemType {

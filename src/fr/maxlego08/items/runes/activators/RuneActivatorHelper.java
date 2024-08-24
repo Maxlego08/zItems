@@ -4,7 +4,6 @@ import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneHammerConfiguration;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -40,7 +39,7 @@ public abstract class RuneActivatorHelper<T extends RuneConfiguration> implement
         itemStack.damage(damage, livingEntity);
     }
 
-    protected boolean triggerBlockBreakEvent(RuneHammerConfiguration runeConfiguration, Block targetBlock, Player player) {
+    protected boolean triggerBlockBreakEvent(T runeConfiguration, Block targetBlock, Player player) {
         if (runeConfiguration.isEventBlockBreakEvent()) {
             CustomBlockBreakEvent customBlockBreakEvent = new CustomBlockBreakEvent(targetBlock, player);
             customBlockBreakEvent.callEvent();

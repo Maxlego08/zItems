@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
+public class FarmingHoe extends RuneActivatorHelper<RuneFarmingHoeConfiguration> {
     
     /**
      * Plants seeds in a specified area around a given block.
@@ -191,12 +191,7 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
 
                         if (!plugin.hasAccess(player, block.getLocation())) continue;
 
-                        if (farmingHoeConfiguration.eventBlockBreakEvent()) {
-                            var blockEvent = new CustomBlockBreakEvent(block, player);
-                            blockEvent.callEvent();
-
-                            if (blockEvent.isCancelled()) continue;
-                        }
+                        if(this.triggerBlockBreakEvent(farmingHoeConfiguration, block, player)) continue;
 
                         needToRemoveDamage = true;
                         var drops = block.getDrops(itemStack, player);

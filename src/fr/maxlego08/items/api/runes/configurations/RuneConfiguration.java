@@ -15,6 +15,7 @@ public abstract class RuneConfiguration {
     protected final ItemPlugin plugin;
     protected final YamlConfiguration configuration;
     protected final String runeName;
+    protected boolean eventBlockBreakEvent = false;
     protected List<Material> materials = new ArrayList<>();
     protected List<Tag<Material>> tags = new ArrayList<>();
 
@@ -22,6 +23,10 @@ public abstract class RuneConfiguration {
         this.plugin = plugin;
         this.configuration = configuration;
         this.runeName = runeName;
+    }
+
+    protected boolean loadEventBlockBreakEvent(String path) {
+        return configuration.getBoolean(path);
     }
 
     protected List<Material> loadMaterials(String path) {
@@ -71,5 +76,9 @@ public abstract class RuneConfiguration {
 
     public List<Tag<Material>> getTags() {
         return tags;
+    }
+
+    public boolean isEventBlockBreakEvent() {
+        return eventBlockBreakEvent;
     }
 }
