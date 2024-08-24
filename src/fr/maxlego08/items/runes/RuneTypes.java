@@ -16,6 +16,7 @@ public enum RuneTypes implements RuneType {
     FARMING_HOE(new FarmingHoe(), RuneFarmingHoeConfiguration.class),
     ENCHANT_APPLICATOR(new EnchantApplicator(), RuneEnchantApplicatorConfiguration.class),
     UNBREAKABLE(new Unbreakable(), RuneConfiguration.class),
+    HAMMER(new Hammer(), RuneHammerConfiguration.class),
     ;
 
     private final RuneActivator<?> activator;

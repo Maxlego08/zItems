@@ -12,6 +12,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -231,6 +233,8 @@ public class FarmingHoe implements RuneActivator<RuneFarmingHoeConfiguration> {
 
     @Override
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent event, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
+        if (event.useInteractedBlock() == Event.Result.DENY || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
         var player = event.getPlayer();
         var world = player.getWorld();
         var itemStack = player.getInventory().getItemInMainHand();
