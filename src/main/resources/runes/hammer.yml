@@ -10,7 +10,7 @@ allowed-materials: [ ]
 allowed-tags:
   - PICKAXES
 
-depth: 300
+depth: 3
 width: 3
 height: 3
 

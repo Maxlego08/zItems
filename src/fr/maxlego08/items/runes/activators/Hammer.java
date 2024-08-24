@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +25,7 @@ public class Hammer extends RuneActivatorHelper<RuneHammerConfiguration> {
         Player player = event.getPlayer();
         BlockFace face = getAdjustedBlockFace(player);
         int nbBlocks = processBlocks(plugin, player, runeConfiguration, origin, drops, block, face);
+        if (nbBlocks == 0) return new HashSet<>();
 
         event.setCancelled(true); // Need to cancel the event for don't apply the damage to the item
 
