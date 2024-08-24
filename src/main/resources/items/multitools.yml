@@ -16,20 +16,20 @@ tool-component:
   # Amount of durability to be removed from the tool each time a block is broken.
   damage-per-block: 1
 
-  # Default mining speed of this tool. This value is used by the tool if no rule explicitly overrides it. 1.0 is standard mining speed.
+  # Default mining speed of this tool. The tool uses this value if no rule explicitly overrides it. 1.0 is standard mining speed.
   default-mining-speed: 5.0
 
   rules:
     tags:
-      - tag: MINEABLE/PICKAXE
+      - tag: MINEABLE_PICKAXE
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/SHOVEL
+      - tag: MINEABLE_SHOVEL
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/HOE
+      - tag: MINEABLE_HOE
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/AXE
+      - tag: MINEABLE_AXE
         speed: 6.0
         correct-for-drops: true

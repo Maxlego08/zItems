@@ -26,7 +26,7 @@ auto-replant: true
 # PLAYER - The player’s location
 drop-item-type: CENTER
 
-# Allows to add items in the player’s inventory
+# Allows adding items in the player’s inventory
 # If the player has no space in his inventory, the items will drop to the ground.
 add-item-in-inventory: true
 

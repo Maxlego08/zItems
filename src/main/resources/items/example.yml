@@ -529,16 +529,16 @@ tool-component:
 
   rules:
     tags:
-      - tag: MINEABLE/PICKAXE
+      - tag: MINEABLE_PICKAXE
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/SHOVEL
+      - tag: MINEABLE_SHOVEL
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/HOE
+      - tag: MINEABLE_HOE
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/AXE
+      - tag: MINEABLE_AXE
         speed: 6.0
         correct-for-drops: true
     materials:
@@ -565,37 +565,37 @@ tool-component:
         correct-for-drops: true
 
 recipes:
-  - type: smithing_transform
-    template:
-      item: minecraft:glass
-    base:
-      tag: planks
-    addition:
-      item: minecraft:glass
-  - type: blasting
-    category: blocks
-    group: example
-    ingredient: # List or string
-      item: minecraft:glass
-    cookingtime: 100
-    experience: 10
-  - type: crafting_shapeless
-    category: redstone
-    ingredients:
-      - item: minecraft:glass
-      - tag: planks
-  - type: crafting_shaped
-    category: building
-    pattern:
-      - " A "
-      - "A1A"
-      - " A "
-    ingredients:
-      1:
-        tag: planks
-      A:
-        item: minecraft:glass
-  - type: stone_cutting
-    amount: 2
-    ingredient:
-      item: minecraft:glass
+#  - type: smithing_transform
+#    template:
+#      item: minecraft:glass
+#    base:
+#      tag: planks
+#    addition:
+#      item: minecraft:glass
+#  - type: blasting
+#    category: blocks
+#    group: example
+#    ingredient: # List or string
+#      item: minecraft:glass
+#    cookingtime: 100
+#    experience: 10
+#  - type: crafting_shapeless
+#    category: redstone
+#    ingredients:
+#      - item: minecraft:glass
+#      - tag: planks
+#  - type: crafting_shaped
+#    category: building
+#    pattern:
+#      - " A "
+#      - "A1A"
+#      - " A "
+#    ingredients:
+#      1:
+#        tag: planks
+#      A:
+#        item: minecraft:glass
+#  - type: stone_cutting
+#    amount: 2
+#    ingredient:
+#      item: minecraft:glass

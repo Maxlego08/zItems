@@ -1,15 +1,14 @@
 package fr.maxlego08.items.api.utils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TagRegistry {
 
-    /*private static final Map<String, Tag<Material>> tagMap = new HashMap<>();
+    private static final Map<String, Tag<Material>> tagMap = new HashMap<>();
 
     static {
         register("ACACIA_LOGS", Tag.ACACIA_LOGS);
@@ -203,17 +202,7 @@ public class TagRegistry {
         tagMap.put(key, tag);
     }
 
-    public static Tag<Material> getTags(String key) {
-        return tagMap.get(key);
-    }*/
-
     public static Tag<Material> getTag(String key) {
-        for (String type : List.of(Tag.REGISTRY_BLOCKS, Tag.REGISTRY_ITEMS)) {
-            Tag<Material> tag = Bukkit.getTag(type.trim().toLowerCase(), NamespacedKey.minecraft(key.toLowerCase()), Material.class);
-            if (tag != null) {
-                return tag;
-            }
-        }
-        throw new IllegalArgumentException("Invalid tag type");
+        return tagMap.get(key);
     }
 }
