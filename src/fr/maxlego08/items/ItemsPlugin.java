@@ -112,7 +112,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
     @Override
     public boolean hasAccess(Player player, Location location) {
-        return this.blockAccesses.stream().allMatch(blockAccess -> blockAccess.hasAccess(player, location));
+        return this.blockAccesses.isEmpty() || this.blockAccesses.stream().allMatch(blockAccess -> blockAccess.hasAccess(player, location));
     }
 
     public Enchantments getEnchantments() {

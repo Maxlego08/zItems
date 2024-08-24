@@ -10,19 +10,24 @@ allowed-materials: [ ]
 allowed-tags:
   - PICKAXES
 
-depth: 3
+depth: 300
 width: 3
 height: 3
 
 # Add damage to the item for each block broken
-# You can define a number for the number of damage to apply on the item
+# You can define a number for the amount of damage to apply on the item
 # To apply the broken block number you must set damage to max
 damage: 1
-# damage: max # Allows to define the number of damage to the number of broken block
+# damage: max # Allows defining the amount of damage to the number of broken blocks
 
-# Activate the BlockBreakEvent when the player will use the hoe will allow to check on each block if he has permission
+# Activate the BlockBreakEvent when the player uses the hoe will allow checking on each block if he has permission
 # to break it and to indicate to other plugins that the player to break a block.
-# For the jobs/quest/other plugins this can be very useful if zItems does not implement its plugin methods.
-# Attention, if you have a big server it can hurt the performance of having so many BlockBreakEvent !
+# For the jobs/quest/other plugins, this can be very useful if zItems does not implement its plugin methods.
+# Attention, if you have a big server, it can hurt the performance of having so many BlockBreakEvent!
 # It is advisable to implement the plugins you need, if there are any missing come on discord.
 enable-block-break-event: true
+
+hammer:
+  allowed-materials:
+    - STONE
+  allowed-tags: [ ]

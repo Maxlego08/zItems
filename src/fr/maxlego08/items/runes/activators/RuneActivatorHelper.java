@@ -49,7 +49,7 @@ public abstract class RuneActivatorHelper<T extends RuneConfiguration> implement
         return false;
     }
 
-    protected boolean isValidTargetBlock(ItemPlugin plugin, Player player, Block targetBlock, Set<Block> origin) {
-        return targetBlock != null && !origin.contains(targetBlock) && !targetBlock.getType().isAir() && plugin.hasAccess(player, targetBlock.getLocation());
+    protected boolean isValidTargetBlock(ItemPlugin plugin, Player player, Block targetBlock, Set<Block> origin, T configuration) {
+        return targetBlock != null && !origin.contains(targetBlock) && !targetBlock.getType().isAir() && plugin.hasAccess(player, targetBlock.getLocation()) && configuration.contains(targetBlock.getType());
     }
 }

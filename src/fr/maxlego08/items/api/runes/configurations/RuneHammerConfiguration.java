@@ -1,7 +1,11 @@
 package fr.maxlego08.items.api.runes.configurations;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.util.List;
 
 public class RuneHammerConfiguration extends RuneConfiguration {
 
@@ -22,6 +26,9 @@ public class RuneHammerConfiguration extends RuneConfiguration {
         String damage = configuration.getString("damage");
         this.isMaxDamage = damage != null && damage.equalsIgnoreCase("max");
         this.damage = configuration.getInt("damage", 0);
+
+        this.materials = this.loadMaterials("hammer.allowed-materials");
+        this.tags = this.loadTags("hammer.allowed-tags");
     }
 
     public int getHeight() {

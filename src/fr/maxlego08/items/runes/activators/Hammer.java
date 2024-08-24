@@ -28,7 +28,6 @@ public class Hammer extends RuneActivatorHelper<RuneHammerConfiguration> {
         event.setCancelled(true); // Need to cancel the event for don't apply the damage to the item
 
         int damage = runeConfiguration.isMaxDamage() ? nbBlocks : runeConfiguration.getDamage();
-        System.out.println(" Damage : " + nbBlocks + " - > " + damage);
         if (damage > 0) applyDamageToItem(player.getInventory().getItemInMainHand(), damage, player);
 
         return origin;
@@ -44,7 +43,7 @@ public class Hammer extends RuneActivatorHelper<RuneHammerConfiguration> {
             for (int h = -height / 2; h <= height / 2; h++) {
                 for (int w = -width / 2; w <= width / 2; w++) {
                     Block targetBlock = getRelativeBlock(block, face, player.getLocation().getYaw(), d, h, w);
-                    if (targetBlock != null && isValidTargetBlock(plugin, player, targetBlock, origin)) {
+                    if (targetBlock != null && isValidTargetBlock(plugin, player, targetBlock, origin, runeConfiguration)) {
                         origin.add(targetBlock);
                         nbBlocks++;
                         if (!triggerBlockBreakEvent(runeConfiguration, targetBlock, player)) {
