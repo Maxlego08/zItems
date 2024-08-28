@@ -92,7 +92,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         ingredients[0] = new ItemRecipe.Ingredient(Helper.getRecipeChoiceFromString(this.plugin, "item|" + template), template, '-');
         ingredients[2] = new ItemRecipe.Ingredient(addition, "zitems:" + runeItem.getName(), '-');
         materials.forEach(material -> {
-            ingredients[1] = new ItemRecipe.Ingredient(new RecipeChoice.MaterialChoice(material), "material: " + material.name().toLowerCase(), '-');
+            ingredients[1] = new ItemRecipe.Ingredient(new RecipeChoice.MaterialChoice(material), "minecraft: " + material.name().toLowerCase(), '-');
             ItemStack result = new ItemStack(material);
             try {
                 this.plugin.getRuneManager().applyRune(result, rune);
