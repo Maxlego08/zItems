@@ -2,6 +2,9 @@ package fr.maxlego08.items.api.configurations.recipes;
 
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
+import fr.maxlego08.items.api.runes.Rune;
+import fr.maxlego08.items.api.runes.RuneManager;
+import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -15,17 +18,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PrepareCraftListener implements Listener {
 
+    private final RuneManager runeManager;
     private final ItemManager itemManager;
 
-    public PrepareCraftListener(ItemManager itemManager) {
+    public PrepareCraftListener(RuneManager runeManager, ItemManager itemManager) {
+        this.runeManager = runeManager;
         this.itemManager = itemManager;
     }
 
@@ -59,6 +61,57 @@ public class PrepareCraftListener implements Listener {
             if(!isSimilar(item, itemRecipe.ingredients()[0])) {
                 event.setCancelled(true);
                 return;
+            }
+        }
+    }
+
+    @EventHandler
+    public void onSmithingRune(PrepareSmithingEvent event) throws RuneException {
+        SmithingRecipe recipe = (SmithingRecipe) event.getInventory().getRecipe();
+        if(recipe == null)  {
+            return;
+        }
+
+        for (Map.Entry<NamespacedKey, ItemRecipe> namespacedKeyItemRecipeEntry : this.runeManager.getRecipesUseRunes().entrySet()) {
+            NamespacedKey key = namespacedKeyItemRecipeEntry.getKey();
+            ItemRecipe itemRecipe = namespacedKeyItemRecipeEntry.getValue();
+            if(!recipe.getKey().equals(key)) {
+                continue;
+            }
+            ItemStack template = event.getInventory().getInputTemplate();
+            ItemStack base = event.getInventory().getInputEquipment();
+            ItemStack addition = event.getInventory().getInputMineral();
+
+            if(!isSimilar(template, itemRecipe.ingredients()[0])
+                    || !isSimilar(base, itemRecipe.ingredients()[1])
+                    || !isSimilar(addition, itemRecipe.ingredients()[2])) {
+                event.setResult(new ItemStack(Material.AIR));
+            }
+
+            //check if base is custom item and set result with custom item and rune
+            if(base != null && base.hasItemMeta() && addition != null && addition.hasItemMeta()) {
+                ItemMeta meta = base.getItemMeta();
+                PersistentDataContainer container = meta.getPersistentDataContainer();
+                if(!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) {
+                    return;
+                }
+
+                Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
+                //get rune from addition
+                if(itemOptional.isEmpty()) {
+                    return;
+                }
+
+                ItemMeta additionMeta = addition.getItemMeta();
+                PersistentDataContainer additionContainer = additionMeta.getPersistentDataContainer();
+                if(!additionContainer.has(this.runeManager.getRuneRepresentKey(), this.runeManager.getDataType())) {
+                    return;
+                }
+
+                Rune rune  = additionContainer.get(this.runeManager.getRuneRepresentKey(), this.runeManager.getDataType());
+                ItemStack result = itemOptional.get().build((Player) event.getView().getPlayer(), 1);
+                this.runeManager.applyRune(result, rune);
+                event.setResult(result);
             }
         }
     }
@@ -108,7 +161,11 @@ public class PrepareCraftListener implements Listener {
     }
 
     private boolean isSimilar(ItemStack item, ItemRecipe.Ingredient itemIngredient) {
-        if (itemIngredient.ingredientName().contains("zitems")) {
+       if(item == null || item.getType() == Material.AIR) {
+           return false;
+       }
+
+       if (itemIngredient.ingredientName().contains("zitems")) {
             if (!item.hasItemMeta()) {
                 return false;
             }
@@ -218,13 +275,13 @@ public class PrepareCraftListener implements Listener {
 
     private ItemStack setCustomResultWithPlaceholders(ItemStack result, Player player) {
         ItemMeta meta = result.getItemMeta();
-        if (meta == null) return null;
+        if (meta == null) return result;
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return null;
+        if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return result;
 
         Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
-        if (itemOptional.isEmpty()) return null;
+        if (itemOptional.isEmpty()) return result;
         Item itemResult = itemOptional.get();
         return itemResult.build(player, result.getAmount());
     }

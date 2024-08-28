@@ -2,13 +2,16 @@ package fr.maxlego08.items.runes;
 
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.Item;
+import fr.maxlego08.items.api.ItemType;
+import fr.maxlego08.items.api.configurations.recipes.ItemRecipe;
+import fr.maxlego08.items.api.configurations.recipes.RecipeType;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import fr.maxlego08.items.api.runes.exceptions.*;
+import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TagRegistry;
-import fr.maxlego08.items.exceptions.ItemEnchantException;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.Material;
@@ -17,6 +20,7 @@ import org.bukkit.Tag;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -25,10 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ZRuneManager extends ZUtils implements RuneManager {
@@ -36,11 +37,15 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     private final ItemsPlugin plugin;
     private final List<Rune> runes = new ArrayList<>();
     private final NamespacedKey namespacedKey;
+    private final NamespacedKey runeNamespacedKey;
     private final PersistentDataType<String, Rune> runeDataType;
+    private final Map<NamespacedKey, ItemRecipe> recipesUseRunes = new HashMap<>();
+
 
     public ZRuneManager(ItemsPlugin plugin) {
         this.plugin = plugin;
         this.namespacedKey = new NamespacedKey(plugin, "runes");
+        this.runeNamespacedKey = new NamespacedKey(plugin, "rune-represent");
         this.runeDataType = new RuneDataType(this);
     }
 
@@ -66,6 +71,40 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    @Override
+    public void loadCraftWithRunes() {
+        this.plugin.getItemManager().getItems()
+                .stream()
+                .filter(item -> item.getConfiguration().getItemType() == ItemType.RUNE)
+                .filter(item -> item.getConfiguration().getItemRuneConfiguration().enableCrafting())
+                .forEach(this::createRecipeWithRuneItem);
+    }
+
+    private void createRecipeWithRuneItem(Item runeItem) {
+        Rune rune = runeItem.getConfiguration().getItemRuneConfiguration().rune();
+        String template = runeItem.getConfiguration().getItemRuneConfiguration().template();
+        Set<Material> materials = new HashSet<>(rune.getMaterials());
+        rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
+        RecipeChoice addition = new RecipeChoice.MaterialChoice(runeItem.build(null, 1).getType());
+        ItemRecipe.Ingredient[] ingredients = new ItemRecipe.Ingredient[3];
+        ingredients[0] = new ItemRecipe.Ingredient(Helper.getRecipeChoiceFromString(this.plugin, "item|" + template), template, '-');
+        ingredients[2] = new ItemRecipe.Ingredient(addition, "zitems:" + runeItem.getName(), '-');
+        materials.forEach(material -> {
+            ingredients[1] = new ItemRecipe.Ingredient(new RecipeChoice.MaterialChoice(material), "minecraft: " + material.name().toLowerCase(), '-');
+            ItemStack result = new ItemStack(material);
+            try {
+                this.plugin.getRuneManager().applyRune(result, rune);
+            } catch (RuneException e) {
+                throw new RuntimeException(e);
+            }
+            NamespacedKey runeKey = this.getRuneKey(rune, material);
+            ItemRecipe itemRecipe = new ItemRecipe("", "", RecipeType.SMITHING_TRANSFORM, 1, ingredients, new String[0], 0, 0);
+            this.recipesUseRunes.put(runeKey, itemRecipe);
+            this.plugin.getServer().addRecipe(itemRecipe.toBukkitRecipe(runeKey, result));
+        });
+
     }
 
     @Override
@@ -207,7 +246,28 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     }
 
     @Override
+    public NamespacedKey getRuneRepresentKey() {
+        return this.runeNamespacedKey;
+    }
+
+    @Override
     public PersistentDataType<String, Rune> getDataType() {
         return this.runeDataType;
+    }
+
+    @Override
+    public void deleteCrafts() {
+        for (NamespacedKey key : this.recipesUseRunes.keySet()) {
+            this.plugin.getServer().removeRecipe(key);
+        }
+    }
+
+    private NamespacedKey getRuneKey(Rune rune, Material material) {
+        return new NamespacedKey(this.plugin, "rune_" + rune.getName().toLowerCase() + "_" + material.name().toLowerCase() + "_smithing_craft");
+    }
+
+    @Override
+    public Map<NamespacedKey, ItemRecipe> getRecipesUseRunes() {
+        return recipesUseRunes;
     }
 }

@@ -3,6 +3,7 @@ package fr.maxlego08.items.api.configurations.recipes;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -44,27 +45,6 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
         return new RecipeConfiguration(recipes);
     }
 
-    private static RecipeChoice getRecipeChoiceFromString(ItemPlugin plugin, String ingredient) {
-        String[] ingredientArray = ingredient.split("\\|");
-        switch (ingredientArray[0].trim()) {
-            case "item" -> {
-                String[] data = ingredientArray[1].trim().split(":");
-                if (data[0].equalsIgnoreCase("minecraft")) {
-                    return new RecipeChoice.MaterialChoice(Material.valueOf(data[1].trim().toUpperCase()));
-                } else if (data[0].equalsIgnoreCase("zitems")) {
-                    Item ingredientItem = plugin.getItemManager().getItem(data[1].trim()).orElseThrow(() -> new IllegalArgumentException("Invalid item name"));
-                    return new RecipeChoice.MaterialChoice(ingredientItem.build(null, 1).getType());
-                } else {
-                    throw new IllegalArgumentException("Invalid item type");
-                }
-            }
-            case "tag" -> {
-                return new RecipeChoice.MaterialChoice(TagRegistry.getTag(ingredientArray[1].trim().toLowerCase()));
-            }
-            default -> throw new IllegalArgumentException("Invalid ingredient type");
-        }
-    }
-
     private static ItemRecipe getSmithingTransformRecipe(ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
         ItemRecipe.Ingredient[] ingredients = new ItemRecipe.Ingredient[3];
 
@@ -74,7 +54,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
                 throw new IllegalArgumentException("Missing key " + key + " in smithing transform recipe");
             }
             Map<String, String> ingredient = (Map<String, String>) recipeConfig.get(key);
-            RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
+            RecipeChoice choice = Helper.getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
             ingredients[i++] = new ItemRecipe.Ingredient(choice, ingredient.get(ingredient.keySet().toArray()[0]), '-');
         }
 
@@ -84,7 +64,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
     private static ItemRecipe getStonecuttingRecipe(ItemPlugin plugin, Map<String, Object> recipeConfig, int amount) {
         String group = (String) recipeConfig.getOrDefault("group", "");
         Map<String, String> ingredient = (Map<String, String>) recipeConfig.get("ingredient");
-        RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
+        RecipeChoice choice = Helper.getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
         return new ItemRecipe(group, "", RecipeType.STONE_CUTTING, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, ingredient.get(ingredient.keySet().toArray()[0]), '-')}, new String[0], 0, 0);
     }
 
@@ -96,7 +76,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
         int cookingTime = (int) recipeConfig.getOrDefault("cooking-time", 200);
         float experience = ((Number) recipeConfig.getOrDefault("experience", 0)).floatValue();
         Map<String, String> ingredient = (Map<String, String>) recipeConfig.get("ingredient");
-        RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
+        RecipeChoice choice = Helper.getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
         return new ItemRecipe(group, category, type, amount, new ItemRecipe.Ingredient[]{new ItemRecipe.Ingredient(choice, ingredient.get(ingredient.keySet().toArray()[0]), '-')}, new String[0], cookingTime, experience);
     }
 
@@ -107,7 +87,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
 
         List<Map<String, String>> ingredientsMap = (List<Map<String, String>>) recipeConfig.get("ingredients");
         for (Map<String, String> ingredient : ingredientsMap) {
-            RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
+            RecipeChoice choice = Helper.getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
             ingredients.add(new ItemRecipe.Ingredient(choice, ingredient.get(ingredient.keySet().toArray()[0]), '-'));
         }
         return new ItemRecipe(group, category, RecipeType.CRAFTING_SHAPELESS, amount, ingredients.toArray(new ItemRecipe.Ingredient[0]), new String[0], 0, 0);
@@ -124,7 +104,7 @@ public record RecipeConfiguration(List<ItemRecipe> recipes) {
         for (Map.Entry<Object, Object> stringObjectEntry : ingredientsMap.entrySet()) {
             String sign = String.valueOf(stringObjectEntry.getKey());
             Map<String, String> ingredient = (Map<String, String>) stringObjectEntry.getValue();
-            RecipeChoice choice = getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
+            RecipeChoice choice = Helper.getRecipeChoiceFromString(plugin, ingredient.keySet().toArray()[0] + "|" + ingredient.get(ingredient.keySet().toArray()[0]));
             ingredients.add(new ItemRecipe.Ingredient(choice, ingredient.get(ingredient.keySet().toArray()[0]), sign.charAt(0)));
         }
 

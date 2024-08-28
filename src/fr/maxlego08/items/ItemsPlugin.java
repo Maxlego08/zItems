@@ -60,7 +60,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         servicesManager.register(ItemPlugin.class, this, this, ServicePriority.Highest);
         servicesManager.register(Enchantments.class, this.enchantments, this, ServicePriority.Highest);
 
-        this.addListener(new PrepareCraftListener(this.itemManager));
+        this.addListener(new PrepareCraftListener(this.runeManager, this.itemManager));
         this.addListener(new DisableEnchantsListener(this.itemManager));
         this.addListener(new CommandsListener(this.itemManager));
 
@@ -69,6 +69,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addSave(new MessageLoader(this));
         this.runeManager.loadRunes();
         this.itemManager.loadItems();
+        this.runeManager.loadCraftWithRunes();
 
         // Rune listener
         this.addListener(new RuneListener(this, this.runeManager));

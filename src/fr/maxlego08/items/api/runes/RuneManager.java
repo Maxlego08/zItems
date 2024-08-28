@@ -1,5 +1,6 @@
 package fr.maxlego08.items.api.runes;
 
+import fr.maxlego08.items.api.configurations.recipes.ItemRecipe;
 import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -8,11 +9,14 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface RuneManager {
 
     void loadRunes();
+
+    void loadCraftWithRunes();
 
     void loadRune(File file);
 
@@ -28,5 +32,11 @@ public interface RuneManager {
 
     NamespacedKey getKey();
 
+    NamespacedKey getRuneRepresentKey();
+
     PersistentDataType<String, Rune> getDataType();
+
+    void deleteCrafts();
+
+    Map<NamespacedKey, ItemRecipe> getRecipesUseRunes();
 }
