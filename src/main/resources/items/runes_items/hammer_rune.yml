@@ -1,0 +1,7 @@
+type: RUNE
+material: PAPER
+
+represent-rune: "hammer"
+template: "minecraft:IRON_INGOT"
+
+display-name: "&eHammer Rune"

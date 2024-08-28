@@ -13,9 +13,7 @@ public record ItemRecipe(String group, String category, RecipeType recipeType, i
         return this.recipeType.getNamespacedKey(item.getName());
     }
 
-    public Recipe toBukkitRecipe(Item item) {
-        NamespacedKey key = getNamespacedKey(item);
-        ItemStack result = item.build(null, amount);
+    public Recipe toBukkitRecipe(NamespacedKey key, ItemStack result) {
         return switch (this.recipeType) {
             case CRAFTING_SHAPED -> {
                 var shapedRecipe = new ShapedRecipe(key, result);
@@ -95,7 +93,13 @@ public record ItemRecipe(String group, String category, RecipeType recipeType, i
         };
     }
 
+    public Recipe toBukkitRecipe(Item item) {
+        NamespacedKey key = getNamespacedKey(item);
+        ItemStack result = item.build(null, amount);
+        return this.toBukkitRecipe(key, result);
+    }
 
-    record Ingredient(RecipeChoice choice, String ingredientName, char sign) {
+
+    public record Ingredient(RecipeChoice choice, String ingredientName, char sign) {
     }
 }

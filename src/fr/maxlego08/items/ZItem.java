@@ -2,6 +2,7 @@ package fr.maxlego08.items;
 
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
+import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.meta.Food;
 import fr.maxlego08.items.api.runes.Rune;
@@ -114,6 +115,10 @@ public class ZItem extends ZUtils implements Item {
 
             if (this.configuration.getItemRarity() != null) {
                 itemMeta.setRarity(this.configuration.getItemRarity());
+            }
+
+            if(this.configuration.getItemType() == ItemType.RUNE) {
+                persistentDataContainer.set(this.plugin.getRuneManager().getRuneRepresentKey(), this.plugin.getRuneManager().getDataType(), this.configuration.getItemRuneConfiguration().rune());
             }
 
             itemStack.setItemMeta(itemMeta);

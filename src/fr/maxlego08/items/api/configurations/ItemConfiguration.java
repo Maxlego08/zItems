@@ -10,6 +10,7 @@ import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
 import fr.maxlego08.items.api.configurations.meta.*;
 import fr.maxlego08.items.api.configurations.recipes.RecipeConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
+import fr.maxlego08.items.api.runes.ItemRuneConfiguration;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TrimHelper;
@@ -80,6 +81,7 @@ public class ItemConfiguration {
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
     private CommandsConfiguration commandsConfiguration;
+    private ItemRuneConfiguration itemRuneConfiguration;
     private Food food;
     private ItemRarity itemRarity;
 
@@ -233,6 +235,11 @@ public class ItemConfiguration {
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
         this.recipeConfiguration = RecipeConfiguration.loadRecipe(plugin, configuration, fileName, path);
         this.commandsConfiguration = CommandsConfiguration.loadCommandsConfiguration(plugin, configuration, fileName, path);
+
+        if (this.itemType == ItemType.RUNE) {
+            this.itemRuneConfiguration = ItemRuneConfiguration.loadItemRuneConfiguration(plugin, configuration, fileName, path);
+        }
+
     }
 
     private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
@@ -545,5 +552,12 @@ public class ItemConfiguration {
 
     public List<Rune> getRunes() {
         return runes;
+    }
+
+    public ItemRuneConfiguration getItemRuneConfiguration() {
+        if(this.itemType != ItemType.RUNE || this.itemRuneConfiguration == null) {
+            throw new IllegalArgumentException("Item is not a rune item or the rune configuration is null");
+        }
+        return itemRuneConfiguration;
     }
 }

@@ -1,9 +1,34 @@
 package fr.maxlego08.items.api.utils;
 
+import fr.maxlego08.items.api.Item;
+import fr.maxlego08.items.api.ItemPlugin;
 import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.RecipeChoice;
 
 public class Helper {
+
+    public static RecipeChoice getRecipeChoiceFromString(ItemPlugin plugin, String ingredient) {
+        String[] ingredientArray = ingredient.split("\\|");
+        switch (ingredientArray[0].trim()) {
+            case "item" -> {
+                String[] data = ingredientArray[1].trim().split(":");
+                if (data[0].equalsIgnoreCase("minecraft")) {
+                    return new RecipeChoice.MaterialChoice(Material.valueOf(data[1].trim().toUpperCase()));
+                } else if (data[0].equalsIgnoreCase("zitems")) {
+                    Item ingredientItem = plugin.getItemManager().getItem(data[1].trim()).orElseThrow(() -> new IllegalArgumentException("Invalid item name"));
+                    return new RecipeChoice.MaterialChoice(ingredientItem.build(null, 1).getType());
+                } else {
+                    throw new IllegalArgumentException("Invalid item type");
+                }
+            }
+            case "tag" -> {
+                return new RecipeChoice.MaterialChoice(TagRegistry.getTag(ingredientArray[1].trim().toLowerCase()));
+            }
+            default -> throw new IllegalArgumentException("Invalid ingredient type");
+        }
+    }
 
     public static int between(int value, int min, int max) {
         return value > max ? max : Math.max(value, min);

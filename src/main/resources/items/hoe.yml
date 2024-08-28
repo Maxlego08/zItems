@@ -1,4 +1,7 @@
-type: FARMING_HOE
 material: NETHERITE_HOE
 display-name: "&eFarming Hoe"
 max-damage: 6000
+
+rune:
+  runes:
+    - FARMING-HOE

@@ -2,21 +2,27 @@ package fr.maxlego08.items;
 
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
+import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
+import fr.maxlego08.items.api.runes.Rune;
+import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.SmithingRecipe;
+import org.bukkit.inventory.SmithingTransformRecipe;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ZItemManager extends ZUtils implements ItemManager {
@@ -46,6 +52,12 @@ public class ZItemManager extends ZUtils implements ItemManager {
                 this.plugin.saveResource("items/hammer.yml", false);
             }
         }
+        File runeFolder = new File(folder, "runes_items");
+        if(!runeFolder.exists()) {
+            if(runeFolder.mkdirs()) {
+                this.plugin.saveResource("items/runes_items/hammer_rune.yml", false);
+            }
+        }
 
         this.deleteCrafts();
 
@@ -59,13 +71,13 @@ public class ZItemManager extends ZUtils implements ItemManager {
 
         // Must create a recipe after all registrations to get custom items from the List when ingredient is custom
         this.items.forEach(item -> item.getConfiguration().createRecipe(item, this.plugin));
+
+
     }
 
     @Override
     public void loadItem(File file) {
-
         try {
-
             String itemName = file.getName().replace(".yml", "");
             YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
             ItemConfiguration itemConfiguration = new ItemConfiguration(plugin, configuration, file.getPath(), "");
@@ -115,5 +127,6 @@ public class ZItemManager extends ZUtils implements ItemManager {
     @Override
     public void deleteCrafts() {
         this.items.forEach(item -> item.getConfiguration().deleteRecipe(item, this.plugin));
+        this.plugin.getRuneManager().deleteCrafts();
     }
 }

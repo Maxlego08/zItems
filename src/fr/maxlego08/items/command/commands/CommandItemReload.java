@@ -21,6 +21,7 @@ public class CommandItemReload extends VCommand {
         plugin.reloadFiles();
         plugin.getRuneManager().loadRunes();
         plugin.getItemManager().loadItems();
+        plugin.getRuneManager().loadCraftWithRunes();
         message(sender, Message.RELOAD);
 
         return CommandType.SUCCESS;
