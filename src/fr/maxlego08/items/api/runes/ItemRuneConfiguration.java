@@ -13,7 +13,7 @@ public record ItemRuneConfiguration(boolean enableCrafting, Rune rune, String te
             throw new IllegalArgumentException("The item " + fileName + " does not have a represent-rune");
         }
 
-        var runeName = configuration.getString(path + "represent-rune");
+        var runeName = configuration.getString(path + "represent-rune").toLowerCase();
         Rune rune = plugin.getRuneManager().getRune(runeName)
                 .orElseThrow(() -> new IllegalArgumentException("Rune " + runeName + " was not found for the item " + fileName));
 
@@ -21,7 +21,7 @@ public record ItemRuneConfiguration(boolean enableCrafting, Rune rune, String te
             throw new IllegalArgumentException("The item " + fileName + " does not have a template");
         }
 
-        String template = configuration.getString(path + "template", "ERROR");
+        String template = configuration.getString(path + "template", "ERROR").toLowerCase();
 
         return new ItemRuneConfiguration(enableCrafting, rune, template);
     }
