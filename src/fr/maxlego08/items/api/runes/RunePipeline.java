@@ -22,6 +22,7 @@ public class RunePipeline {
     public Set<Block> breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, Map<Location, List<ItemStack>> drops) {
         Set<Block> currentBlocks = new HashSet<>();
         currentBlocks.add(event.getBlock());
+        drops.put(event.getBlock().getLocation(), new ArrayList<>(event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand())));
 
         for (Rune rune : runes) {
             currentBlocks = new HashSet<>(rune.getType().getActivator().breakBlocks(plugin, event, rune.getConfiguration(), new HashSet<>(currentBlocks), drops));
