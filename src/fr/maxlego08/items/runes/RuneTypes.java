@@ -23,6 +23,7 @@ public enum RuneTypes implements RuneType {
     UNBREAKABLE(new Unbreakable(), EmptyConfiguration.class),
     HAMMER(new Hammer(), RuneHammerConfiguration.class),
     SILK_SPAWNER(new SilkSpawner(), EmptyConfiguration.class),
+    ABSORPTION(new Absorption(), EmptyConfiguration.class),
     ;
 
     private final RuneActivator<?> activator;

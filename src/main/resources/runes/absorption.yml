@@ -1,0 +1,11 @@
+type: ABSORPTION
+
+display-name: "#34eb9bᴀʙsᴏʀᴘᴛɪᴏɴ"
+
+item-name: "#34eb9bᴀʙsᴏʀᴘᴛɪᴏɴ"
+lore:
+  - "&8Allows to pick up items directly in inventory"
+
+allowed-materials: [ ]
+allowed-tags:
+  - ITEMS_PICKAXES
