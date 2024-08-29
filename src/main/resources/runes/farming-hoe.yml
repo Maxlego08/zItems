@@ -8,7 +8,7 @@ lore:
 
 allowed-materials: []
 allowed-tags:
-  - HOES
+  - ITEMS_HOES
 
 # Diameter of the hoe, the number must be odd
 size: 3

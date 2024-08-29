@@ -28,7 +28,7 @@ allowed-materials: [ ]
 # "PICKAXES" indicates that this rune is only applicable to pickaxes.
 # Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/tag/Tag.html
 allowed-tags:
-  - PICKAXES
+  - ITEMS_PICKAXES
 
 vein-mining:
   # Maximum number of blocks in the vein that can be mined in one action.
