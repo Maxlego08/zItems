@@ -13,15 +13,26 @@ import fr.maxlego08.items.runes.activators.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public enum RuneTypes implements RuneType {
 
-    VEIN_MINING(new VeinMiner(), RuneVeinMiningConfiguration.class),
+    VEIN_MINING(new VeinMiner(), RuneVeinMiningConfiguration.class) {
+        @Override
+        public List<RuneType> getIncompatibles() {
+            return List.of(HAMMER);
+        }
+    },
     MELT_MINING(new MeltMining(), EmptyConfiguration.class),
     FARMING_HOE(new FarmingHoe(), RuneFarmingHoeConfiguration.class),
     ENCHANT_APPLICATOR(new EnchantApplicator(), RuneEnchantApplicatorConfiguration.class),
     UNBREAKABLE(new Unbreakable(), EmptyConfiguration.class),
-    HAMMER(new Hammer(), RuneHammerConfiguration.class),
+    HAMMER(new Hammer(), RuneHammerConfiguration.class) {
+        @Override
+        public List<RuneType> getIncompatibles() {
+            return List.of(VEIN_MINING);
+        }
+    },
     SILK_SPAWNER(new SilkSpawner(), EmptyConfiguration.class),
     ABSORPTION(new Absorption(), EmptyConfiguration.class),
     ;
@@ -34,6 +45,10 @@ public enum RuneTypes implements RuneType {
         this.configuration = configuration;
     }
 
+    @Override
+    public List<RuneType> getIncompatibles() {
+        return List.of();
+    }
 
     @Override
     public String getName() {
