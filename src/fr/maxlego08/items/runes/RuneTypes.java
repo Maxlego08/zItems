@@ -9,12 +9,7 @@ import fr.maxlego08.items.api.runes.configurations.RuneEnchantApplicatorConfigur
 import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
 import fr.maxlego08.items.api.runes.configurations.RuneHammerConfiguration;
 import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
-import fr.maxlego08.items.runes.activators.EnchantApplicator;
-import fr.maxlego08.items.runes.activators.FarmingHoe;
-import fr.maxlego08.items.runes.activators.Hammer;
-import fr.maxlego08.items.runes.activators.MeltMining;
-import fr.maxlego08.items.runes.activators.Unbreakable;
-import fr.maxlego08.items.runes.activators.VeinMiner;
+import fr.maxlego08.items.runes.activators.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,6 +22,7 @@ public enum RuneTypes implements RuneType {
     ENCHANT_APPLICATOR(new EnchantApplicator(), RuneEnchantApplicatorConfiguration.class),
     UNBREAKABLE(new Unbreakable(), EmptyConfiguration.class),
     HAMMER(new Hammer(), RuneHammerConfiguration.class),
+    SILK_SPAWNER(new SilkSpawner(), EmptyConfiguration.class),
     ;
 
     private final RuneActivator<?> activator;

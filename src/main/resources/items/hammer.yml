@@ -27,15 +27,15 @@ tool-component:
 
   rules:
     tags:
-      - tag: MINEABLE/PICKAXE
+      - tag: MINEABLE_PICKAXE
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/SHOVEL
+      - tag: MINEABLE_SHOVEL
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/HOE
+      - tag: MINEABLE_HOE
         speed: 6.0
         correct-for-drops: true
-      - tag: MINEABLE/AXE
+      - tag: MINEABLE_AXE
         speed: 6.0
         correct-for-drops: true

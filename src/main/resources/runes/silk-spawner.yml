@@ -1,0 +1,11 @@
+type: SILK_SPAWNER
+
+display-name: "#34eb9bsɪʟᴋ sᴘᴀᴡɴᴇʀ"
+
+item-name: "#34eb9bsɪʟᴋ sᴘᴀᴡɴᴇʀ"
+lore:
+  - "&8Allows to pick up spawners"
+
+allowed-materials: [ ]
+allowed-tags:
+  - PICKAXES
