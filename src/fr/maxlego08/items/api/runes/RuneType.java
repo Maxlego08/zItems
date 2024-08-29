@@ -26,6 +26,8 @@ public interface RuneType {
         return runeTypes.stream().filter(runeType -> runeType.getName().equalsIgnoreCase(name)).findFirst();
     }
 
+    List<RuneType> getIncompatibles();
+
     String getName();
 
     RuneActivator<?> getActivator();

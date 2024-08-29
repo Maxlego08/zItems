@@ -66,7 +66,7 @@ public class PrepareCraftListener implements Listener {
     }
 
     @EventHandler
-    public void onSmithingRune(PrepareSmithingEvent event) throws RuneException {
+    public void onSmithingRune(PrepareSmithingEvent event) {
         SmithingRecipe recipe = (SmithingRecipe) event.getInventory().getRecipe();
         if(recipe == null)  {
             return;
@@ -88,30 +88,23 @@ public class PrepareCraftListener implements Listener {
                 event.setResult(new ItemStack(Material.AIR));
             }
 
-            //check if base is custom item and set result with custom item and rune
             if(base != null && base.hasItemMeta() && addition != null && addition.hasItemMeta()) {
-                ItemMeta meta = base.getItemMeta();
-                PersistentDataContainer container = meta.getPersistentDataContainer();
-                if(!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) {
-                    return;
-                }
-
-                Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
-                //get rune from addition
-                if(itemOptional.isEmpty()) {
-                    return;
-                }
-
+                ItemStack result = base.clone();
                 ItemMeta additionMeta = addition.getItemMeta();
                 PersistentDataContainer additionContainer = additionMeta.getPersistentDataContainer();
                 if(!additionContainer.has(this.runeManager.getRuneRepresentKey(), this.runeManager.getDataType())) {
                     return;
                 }
-
                 Rune rune  = additionContainer.get(this.runeManager.getRuneRepresentKey(), this.runeManager.getDataType());
-                ItemStack result = itemOptional.get().build((Player) event.getView().getPlayer(), 1);
-                this.runeManager.applyRune(result, rune);
-                event.setResult(result);
+                try {
+                    this.runeManager.applyRune(result, rune);
+                } catch (RuneException e) {
+                    event.setResult(new ItemStack(Material.AIR));
+                    return;
+                }
+                ItemStack newResult =
+                        this.setCustomResultWithPlaceholders(result, (Player) event.getView().getPlayer());
+                event.setResult(newResult);
             }
         }
     }
@@ -283,6 +276,17 @@ public class PrepareCraftListener implements Listener {
         Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
         if (itemOptional.isEmpty()) return result;
         Item itemResult = itemOptional.get();
-        return itemResult.build(player, result.getAmount());
+        ItemStack newResult = itemResult.build(player, result.getAmount());
+        ItemMeta itemMeta = result.getItemMeta();
+        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
+        List<Rune> runes = persistentDataContainer.getOrDefault(this.runeManager.getKey(), PersistentDataType.LIST.listTypeFrom(this.runeManager.getDataType()), new ArrayList<>());
+        for (Rune rune : runes) {
+            try {
+                this.runeManager.applyRune(newResult, rune);
+            } catch (RuneException e) {
+               throw new RuntimeException(e);
+            }
+        }
+        return newResult;
     }
 }

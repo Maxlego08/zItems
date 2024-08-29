@@ -115,6 +115,6 @@ public class Hammer extends RuneActivatorHelper<RuneHammerConfiguration> {
 
     @Override
     public int getPriority() {
-        return 0;
+        return 1;
     }
 }
