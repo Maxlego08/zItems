@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.spawner.Spawner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,10 @@ public class SilkSpawner extends RuneActivatorHelper<EmptyConfiguration> {
             itemSpawner.setSpawnedType(type);
             blockStateMeta.setBlockState(itemSpawner);
             item.setItemMeta(blockStateMeta);
-            drops.get(block.getLocation()).add(item);
+
+            List<ItemStack> dropsAfter = drops.getOrDefault(block.getLocation(), new ArrayList<>());
+            dropsAfter.add(item);
+            drops.put(block.getLocation(), dropsAfter);
         });
         return origin;
     }
