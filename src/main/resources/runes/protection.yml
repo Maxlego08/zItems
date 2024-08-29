@@ -8,10 +8,10 @@ lore:
 
 allowed-materials: [ ]
 allowed-tags:
-  - FOOT_ARMOR
-  - LEG_ARMOR
-  - CHEST_ARMOR
-  - HEAD_ARMOR
+  - ITEMS_FOOT_ARMOR
+  - ITEMS_LEG_ARMOR
+  - ITEMS_CHEST_ARMOR
+  - ITEMS_HEAD_ARMOR
 
 enchantments:
   - name: PROTECTION

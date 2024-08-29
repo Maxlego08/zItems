@@ -29,7 +29,7 @@ allowed-materials: [ ]
 # For example, "PICKAXES" includes all types of pickaxes.
 # Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/tag/Tag.html
 allowed-tags:
-  - PICKAXES
+  - ITEMS_PICKAXES
 
 # Number of blocks in width that the rune affects.
 # This defines how many blocks wide the effect of the rune will be.
