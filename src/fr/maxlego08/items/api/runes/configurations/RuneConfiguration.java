@@ -15,9 +15,10 @@ public abstract class RuneConfiguration {
     protected final ItemPlugin plugin;
     protected final YamlConfiguration configuration;
     protected final String runeName;
-    protected boolean eventBlockBreakEvent = false;
+    protected List<String> incompatibleRunes = new ArrayList<>();
     protected List<Material> materials = new ArrayList<>();
     protected List<Tag<Material>> tags = new ArrayList<>();
+    protected boolean eventBlockBreakEvent = false;
 
     public RuneConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName) {
         this.plugin = plugin;
@@ -76,6 +77,10 @@ public abstract class RuneConfiguration {
 
     public List<Tag<Material>> getTags() {
         return tags;
+    }
+
+    public List<String> getIncompatibleRunes() {
+        return incompatibleRunes;
     }
 
     public boolean isEventBlockBreakEvent() {

@@ -83,31 +83,6 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 .forEach(this::createRecipeWithRuneItem);
     }
 
-    private void createRecipeWithRuneItem(Item runeItem) {
-        Rune rune = runeItem.getConfiguration().getItemRuneConfiguration().rune();
-        String template = runeItem.getConfiguration().getItemRuneConfiguration().template();
-        Set<Material> materials = new HashSet<>(rune.getMaterials());
-        rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
-        RecipeChoice addition = new RecipeChoice.MaterialChoice(runeItem.build(null, 1).getType());
-        ItemRecipe.Ingredient[] ingredients = new ItemRecipe.Ingredient[3];
-        ingredients[0] = new ItemRecipe.Ingredient(Helper.getRecipeChoiceFromString(this.plugin, "item|" + template), template, '-');
-        ingredients[2] = new ItemRecipe.Ingredient(addition, "zitems:" + runeItem.getName(), '-');
-        materials.forEach(material -> {
-            ingredients[1] = new ItemRecipe.Ingredient(new RecipeChoice.MaterialChoice(material), "minecraft: " + material.name().toLowerCase(), '-');
-            ItemStack result = new ItemStack(material);
-            try {
-                this.plugin.getRuneManager().applyRune(result, rune);
-            } catch (RuneException e) {
-                throw new RuntimeException(e);
-            }
-            NamespacedKey runeKey = this.getRuneKey(rune, material);
-            ItemRecipe itemRecipe = new ItemRecipe("", "", RecipeType.SMITHING_TRANSFORM, 1, ingredients, new String[0], 0, 0);
-            this.recipesUseRunes.put(runeKey, itemRecipe);
-            this.plugin.getServer().addRecipe(itemRecipe.toBukkitRecipe(runeKey, result));
-        });
-
-    }
-
     @Override
     public void loadRune(File file) {
 
@@ -204,6 +179,10 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             throw new ItemContainsAlreadyRuneException();
         }
 
+        if(runes.stream().anyMatch(r -> r.getConfiguration().getIncompatibleRunes().contains(rune.getName()))) {
+            throw new RuneNotAllowedException();
+        }
+
         if(!rune.isAllowed(itemStack.getType())) {
            throw new RuneNotAllowedException();
         }
@@ -231,16 +210,6 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         itemStack.setItemMeta(itemMeta);
     }
 
-    private List<String> generateRuneLore(Rune rune) {
-        List<String> runeLore = Message.RUNE_LORE.getMessages();
-        List<String> formattedLore = new ArrayList<>();
-
-        runeLore.forEach(line -> formattedLore.add(color(line)));
-        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
-
-        return formattedLore;
-    }
-
     @Override
     public NamespacedKey getKey() {
         return this.namespacedKey;
@@ -263,12 +232,48 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         }
     }
 
-    private NamespacedKey getRuneKey(Rune rune, Material material) {
-        return new NamespacedKey(this.plugin, "rune_" + rune.getName().toLowerCase() + "_" + material.name().toLowerCase() + "_smithing_craft");
-    }
-
     @Override
     public Map<NamespacedKey, ItemRecipe> getRecipesUseRunes() {
         return recipesUseRunes;
+    }
+
+    private List<String> generateRuneLore(Rune rune) {
+        List<String> runeLore = Message.RUNE_LORE.getMessages();
+        List<String> formattedLore = new ArrayList<>();
+
+        runeLore.forEach(line -> formattedLore.add(color(line)));
+        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+
+        return formattedLore;
+    }
+
+
+    private void createRecipeWithRuneItem(Item runeItem) {
+        Rune rune = runeItem.getConfiguration().getItemRuneConfiguration().rune();
+        String template = runeItem.getConfiguration().getItemRuneConfiguration().template();
+        Set<Material> materials = new HashSet<>(rune.getMaterials());
+        rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
+        RecipeChoice addition = new RecipeChoice.MaterialChoice(runeItem.build(null, 1).getType());
+        ItemRecipe.Ingredient[] ingredients = new ItemRecipe.Ingredient[3];
+        ingredients[0] = new ItemRecipe.Ingredient(Helper.getRecipeChoiceFromString(this.plugin, "item|" + template), template, '-');
+        ingredients[2] = new ItemRecipe.Ingredient(addition, "zitems:" + runeItem.getName(), '-');
+        materials.forEach(material -> {
+            ingredients[1] = new ItemRecipe.Ingredient(new RecipeChoice.MaterialChoice(material), "minecraft: " + material.name().toLowerCase(), '-');
+            ItemStack result = new ItemStack(material);
+            try {
+                this.plugin.getRuneManager().applyRune(result, rune);
+            } catch (RuneException e) {
+                throw new RuntimeException(e);
+            }
+            NamespacedKey runeKey = this.getRuneKey(rune, material);
+            ItemRecipe itemRecipe = new ItemRecipe("", "", RecipeType.SMITHING_TRANSFORM, 1, ingredients, new String[0], 0, 0);
+            this.recipesUseRunes.put(runeKey, itemRecipe);
+            this.plugin.getServer().addRecipe(itemRecipe.toBukkitRecipe(runeKey, result));
+        });
+
+    }
+
+    private NamespacedKey getRuneKey(Rune rune, Material material) {
+        return new NamespacedKey(this.plugin, "rune_" + rune.getName().toLowerCase() + "_" + material.name().toLowerCase() + "_smithing_craft");
     }
 }
