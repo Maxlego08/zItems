@@ -179,7 +179,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             throw new ItemContainsAlreadyRuneException();
         }
 
-        if(runes.stream().anyMatch(r -> r.getConfiguration().getIncompatibleRunes().contains(rune.getName()))) {
+        if(runes.stream().anyMatch(r -> r.getType().getIncompatibles().contains(rune.getType()))) {
             throw new RuneNotAllowedException();
         }
 
