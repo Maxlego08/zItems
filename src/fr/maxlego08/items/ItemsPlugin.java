@@ -91,7 +91,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         List.of(
                 new Hooks(Plugins.JOBS, new JobsHook(this.runeManager))
                 // ToDo, add more hook
-        ).forEach(hooks -> this.hookManager.registerHook(this.getLogger()::info, hooks.plugins(), hooks.hook()));
+        ).forEach(hooks -> this.hookManager.registerHook(hooks.plugins(), hooks.hook()));
 
         this.getServer().getScheduler().runTask(this, () -> {
             //Load one tick later to permit addon to register hooks

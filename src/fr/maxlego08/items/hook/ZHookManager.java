@@ -7,7 +7,6 @@ import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ZHookManager implements HookManager {
@@ -21,8 +20,7 @@ public class ZHookManager implements HookManager {
     }
 
     @Override
-    public void registerHook(Consumer<String> log, Plugins plugin, Hook hook) {
-        log.accept("Register hook for " + plugin.getName());
+    public void registerHook(Plugins plugin, Hook hook) {
         this.hooks.put(plugin, hook);
     }
 
@@ -30,6 +28,7 @@ public class ZHookManager implements HookManager {
     public void loadHooks(Function<Plugins, Boolean> isEnable) {
         hooks.forEach((plugin, hook) -> {
             if (isEnable.apply(plugin)) {
+                this.plugin.getLogger().info("Hook for plugin " + plugin.getName() + " is enabled");
                 this.plugin.getServer().getPluginManager().registerEvents(hook, this.plugin);
             }
         });

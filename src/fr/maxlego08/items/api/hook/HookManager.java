@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 public interface HookManager {
 
-    void registerHook(Consumer<String> log, Plugins plugin, Hook hook);
+    void registerHook(Plugins plugin, Hook hook);
 
     void loadHooks(Function<Plugins, Boolean> isEnable);
 }
