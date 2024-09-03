@@ -46,16 +46,6 @@ public class RuneListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
-        this.onPlayerEvent(event);
-    }
-
-    public void onPlayerEvent(PlayerEvent event) {
-        var player = event.getPlayer();
-        var itemStack = player.getInventory().getItemInMainHand();
-        var optional = this.runeManager.getRunes(itemStack);
-        if (optional.isEmpty()) return;
-
-        RunePipeline pipeline = new RunePipeline(this.runeManager, optional.get());
-        pipeline.pipeline(plugin, event);
+        this.runeManager.onPlayerEvent(event);
     }
 }

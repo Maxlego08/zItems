@@ -7,6 +7,7 @@ import fr.maxlego08.items.api.configurations.recipes.ItemRecipe;
 import fr.maxlego08.items.api.configurations.recipes.RecipeType;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
+import fr.maxlego08.items.api.runes.RunePipeline;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import fr.maxlego08.items.api.runes.exceptions.*;
@@ -19,6 +20,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -253,6 +255,17 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     @Override
     public Map<NamespacedKey, ItemRecipe> getRecipesUseRunes() {
         return recipesUseRunes;
+    }
+
+    @Override
+    public <T extends PlayerEvent> void onPlayerEvent(T event) {
+        var player = event.getPlayer();
+        var itemStack = player.getInventory().getItemInMainHand();
+        var optional = this.getRunes(itemStack);
+        if (optional.isEmpty()) return;
+
+        RunePipeline pipeline = new RunePipeline(this, optional.get());
+        pipeline.pipeline(plugin, event);
     }
 
     private List<String> generateRuneLore(Rune rune) {

@@ -89,7 +89,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         //Register all internal hooks
         List.of(
-                new Hooks(Plugins.JOBS, new JobsHook(this))
+                new Hooks(Plugins.JOBS, new JobsHook(this.runeManager))
                 // ToDo, add more hook
         ).forEach(hooks -> this.hookManager.registerHook(this.getLogger()::info, hooks.plugins(), hooks.hook()));
 
