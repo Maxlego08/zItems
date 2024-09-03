@@ -58,10 +58,8 @@ public class RuneListener implements Listener {
 
         var runes = optional.get();
 
-
-        if(runes.stream().anyMatch(rune -> !rune.getConfiguration().contains(event.getBlock().getType()))) {
-            return;
-        }
+        runes.removeIf(rune -> !rune.getConfiguration().contains(event.getBlock().getType()));
+        if(runes.isEmpty()) return;
 
         Map<Location, List<ItemStack>> drops = new HashMap<>();
         RunePipeline pipeline = new RunePipeline(runes);
