@@ -22,7 +22,7 @@ public class ZHookManager implements HookManager {
 
     @Override
     public void registerHook(Consumer<String> log, Plugins plugin, Hook hook) {
-        log.accept("<&>eRegister hook for " + plugin.getName());
+        log.accept("Register hook for " + plugin.getName());
         this.hooks.put(plugin, hook);
     }
 

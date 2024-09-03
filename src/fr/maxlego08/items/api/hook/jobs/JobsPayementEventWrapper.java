@@ -4,8 +4,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 
-public class JobsPayementEventWrapper extends Event implements Cancellable {
+public class JobsPayementEventWrapper extends PlayerEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -18,16 +19,11 @@ public class JobsPayementEventWrapper extends Event implements Cancellable {
     }
 
     private boolean cancelled = false;
-    private final Player player;
     private double amount;
 
     public JobsPayementEventWrapper(Player player, double amount) {
-        this.player = player;
+        super(player);
         this.amount = amount;
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 
     public double getAmount() {

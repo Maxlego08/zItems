@@ -10,6 +10,7 @@ import fr.maxlego08.items.api.configurations.recipes.PrepareCraftListener;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
+import fr.maxlego08.items.api.hook.Hooks;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.command.commands.CommandItem;
@@ -17,10 +18,9 @@ import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
 import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
-import fr.maxlego08.items.hook.Hooks;
 import fr.maxlego08.items.hook.ZHookManager;
-import fr.maxlego08.items.hook.JobsHook;
-import fr.maxlego08.items.hook.WorldGuardAccess;
+import fr.maxlego08.items.hook.jobs.JobsHook;
+import fr.maxlego08.items.hook.worlds.WorldGuardHook;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.runes.RuneListener;
 import fr.maxlego08.items.runes.ZRuneManager;
@@ -46,6 +46,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private final Enchantments enchantments = new ZEnchantments();
     private final List<BlockAccess> blockAccesses = new ArrayList<>();
     private ItemComponent itemComponent;
+    private RuneListener runeListener;
 
     @Override
     public void onEnable() {
@@ -78,20 +79,22 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.runeManager.loadCraftWithRunes();
 
         // Rune listener
-        this.addListener(new RuneListener(this, this.runeManager));
+        this.addListener(this.runeListener = new RuneListener(this, this.runeManager));
 
         this.loadFiles();
 
         if (this.isEnable(Plugins.WORLDGUARD)) {
-            this.registerBlockAccess(new WorldGuardAccess());
+            this.registerBlockAccess(new WorldGuardHook());
         }
 
         //Register all internal hooks
-        Arrays.asList(Hooks.values())
-                .forEach(hooks -> this.hookManager.registerHook(this.getLog()::log, hooks.getPlugin(), hooks.getHook()));
+        List.of(
+                new Hooks(Plugins.JOBS, new JobsHook(this))
+                // ToDo, add more hook
+        ).forEach(hooks -> this.hookManager.registerHook(this.getLogger()::info, hooks.plugins(), hooks.hook()));
 
         this.getServer().getScheduler().runTask(this, () -> {
-            //Load one tick later to permits addon to register hooks
+            //Load one tick later to permit addon to register hooks
             this.hookManager.loadHooks(this::isEnable);
         });
 
@@ -150,5 +153,9 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
     public RuneManager getRuneManager() {
         return runeManager;
+    }
+
+    public RuneListener getRuneListener() {
+        return runeListener;
     }
 }

@@ -1,4 +1,4 @@
-package fr.maxlego08.items.hook;
+package fr.maxlego08.items.hook.worlds;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
@@ -11,7 +11,7 @@ import fr.maxlego08.items.api.hook.BlockAccess;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class WorldGuardAccess implements BlockAccess {
+public class WorldGuardHook implements BlockAccess {
     @Override
     public boolean hasAccess(Player player, Location location) {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
