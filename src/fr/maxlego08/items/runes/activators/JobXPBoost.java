@@ -9,7 +9,6 @@ public class JobXPBoost extends RuneActivatorHelper<RuneXPBoostConfiguration>{
     @Override
     public void jobsGainExperience(ItemPlugin plugin, JobsExpGainEventWrapper event, RuneXPBoostConfiguration runeConfiguration) {
         event.setExp(event.getExp() * runeConfiguration.getXpBoost());
-        System.out.println("JobXPBoost");
     }
 
     @Override
