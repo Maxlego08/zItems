@@ -1,41 +1,76 @@
-# Prendre les component tool type des autres items pour facilité la configuration pour des multi tools
-
+# Material type of the tool.
+# "NETHERITE_PICKAXE" defines that the base item is a Netherite Pickaxe in Minecraft.
+# This will be the item that appears in the player's inventory and has the characteristics of a Netherite Pickaxe.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 material: NETHERITE_PICKAXE
+
+# Display name of the item in-game.
+# This name will appear when the player hovers over the item in their inventory.
 display-name: "#307fc9ʜᴀᴍᴍᴇʀ"
+
+# Lore of the item.
+# The lore is a description that appears under the item name, providing additional context or information.
+# The "&8" color code sets the text to dark gray.
 lore:
   - "&8Allows to break an area of blocks"
 
+# Maximum stack size for the item.
+# Defines how many of this item can be stacked in a single inventory slot.
+# Since this is a tool, it’s set to 1, meaning each item takes one slot.
 max-stack-size: 1
 
+# Maximum durability of the tool.
+# This value determines how many uses the tool can withstand before it breaks.
 max-damage: 3000
 
+# Rune configuration for the item.
+# This section allows the item to have special runes that give it unique abilities or effects.
 rune:
   runes:
+    # List of active runes associated with the item.
     - HAMMER
   disable-runes:
+    # List of runes that are disabled for this item.
     - VEIN-MINING
 
+# Tool component configuration.
+# This section enables advanced customization of the tool's behavior, including durability loss, mining speed, and specific rules.
 tool-component:
 
+  # Enable or disable the tool component functionality.
+  # When true, it allows the customization features below to take effect.
   enable: true
 
   # Amount of durability to be removed from the tool each time a block is broken.
+  # A value of 1 means the tool loses 1 durability point for each block it breaks.
   damage-per-block: 1
 
-  # Default mining speed of this tool. This value is used by the tool if no rule explicitly overrides it. 1.0 is standard mining speed.
+  # Default mining speed of this tool.
+  # The tool uses this value if no specific rules override it. 1.0 is the standard Minecraft mining speed.
+  # A value of 5.0 means the tool mines at five times the normal speed by default.
   default-mining-speed: 5.0
 
+  # Rules for different mining scenarios.
+  # This section allows the tool to behave differently depending on the type of block it is used on, defined by tags.
   rules:
     tags:
+      # Rule for blocks that are mineable with a pickaxe.
+      # The tool will mine these blocks at a speed of 6.0 and will correctly drop the appropriate items.
       - tag: MINEABLE_PICKAXE
         speed: 6.0
         correct-for-drops: true
+      # Rule for blocks that are mineable with a shovel.
+      # Similar to the pickaxe rule, but applied to blocks that typically require a shovel.
       - tag: MINEABLE_SHOVEL
         speed: 6.0
         correct-for-drops: true
+      # Rule for blocks that are mineable with a hoe.
+      # Applies to blocks that are best mined with a hoe, using the same speed and drop correction.
       - tag: MINEABLE_HOE
         speed: 6.0
         correct-for-drops: true
+      # Rule for blocks that are mineable with an axe.
+      # This rule is for blocks that require an axe, using the same speed and drop correction as other tools.
       - tag: MINEABLE_AXE
         speed: 6.0
         correct-for-drops: true

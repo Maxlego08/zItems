@@ -1,7 +1,21 @@
+# Material type of the item.
+# "NETHERITE_HOE" defines that the base item is a Netherite Hoe in Minecraft.
+# This will be the item that appears in the player's inventory and has the characteristics of a Netherite Hoe.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 material: NETHERITE_HOE
+
+# Display name of the item in-game.
+# This name will appear when the player hovers over the item in their inventory.
 display-name: "&eFarming Hoe"
+
+# Maximum durability of the tool.
+# This value determines how many uses the tool can withstand before it breaks.
 max-damage: 6000
 
+# Rune configuration for the item.
+# This section allows the item to have special runes or enchantments that give it unique abilities or effects.
 rune:
   runes:
+    # List of runes associated with the item.
+    # "FARMING-HOE" could be a custom rune that provides special abilities related to farming, such as increased crop yield or automatic planting.
     - FARMING-HOE

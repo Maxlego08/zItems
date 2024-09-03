@@ -1,16 +1,29 @@
+# Material type of the item.
+# "DIAMOND_CHESTPLATE" defines that the base item is a Diamond Chestplate in Minecraft.
+# This will be the item that appears in the player's inventory and has the characteristics of a Diamond Chestplate.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 material: DIAMOND_CHESTPLATE
 
+# Trim configuration for the chestplate.
+# Trims are decorative patterns applied to armor pieces in Minecraft, using specific materials and patterns.
 trim:
-  enable: true
-  # QUARTZ, IRON, NETHERITE, REDSTONE, COPPER; GOLD; EMERALD, DIAMOND, LAPIS, AMETHYST
+  enable: true  # Enable or disable the trim functionality.
+
+  # Material used for the trim.
+  # "quartz" is one of the available materials for trimming, providing a unique look to the chestplate.
+  # Other options include: QUARTZ, IRON, NETHERITE, REDSTONE, COPPER, GOLD, EMERALD, DIAMOND, LAPIS, AMETHYST.
   material: quartz
-  # SENTRY, DUNE, COAST, WILD, WARD, EYE, VEX, TIDE, SNOUT, RIB, SPIRE, WAYFINDER, SHAPER, SILENCE, RAISER, HOST
+
+  # Pattern used for the trim.
+  # "dune" is the pattern applied to the chestplate. Each pattern gives a different decorative design.
+  # Other options include: SENTRY, DUNE, COAST, WILD, WARD, EYE, VEX, TIDE, SNOUT, RIB, SPIRE, WAYFINDER, SHAPER, SILENCE, RAISER, HOST.
   pattern: dune
 
-# All items can be given Modifiers which affect various Attributes of the player/mob which wears or holds them.
+# Attribute modification configuration for the item.
+# Attributes affect the player's or mob's stats, such as armor, attack damage, or movement speed.
 attribute:
   attributes:
-    - attribute: GENERIC_ARMOR
-      operation: add_number
-      amount: 25.0
-      slot: ARMOR
+    - attribute: GENERIC_ARMOR  # The type of attribute to modify. GENERIC_ARMOR increases the armor value.
+      operation: add_number  # The operation defines how the value is applied. "add_number" adds the amount directly to the base value.
+      amount: 25.0  # The amount of armor to add. This value significantly increases the wearer's armor rating.
+      slot: ARMOR  # Specifies that this attribute applies when the item is worn in any armor slot.
