@@ -64,6 +64,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 this.plugin.saveResource("runes/silk-spawner.yml", false);
                 this.plugin.saveResource("runes/absorption.yml", false);
                 this.plugin.saveResource("runes/xp-boost.yml", false);
+                this.plugin.saveResource("runes/job-xp-boost.yml", false);
             }
         }
 

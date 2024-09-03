@@ -31,6 +31,7 @@ public enum RuneTypes implements RuneType {
     SILK_SPAWNER(new SilkSpawner(), EmptyConfiguration.class),
     ABSORPTION(new Absorption(), EmptyConfiguration.class),
     XP_BOOST(new XPBoost(), RuneXPBoostConfiguration.class),
+    JOB_XP_BOOST(new JobXPBoost(), RuneXPBoostConfiguration.class)
     ;
 
     private final RuneActivator<?> activator;

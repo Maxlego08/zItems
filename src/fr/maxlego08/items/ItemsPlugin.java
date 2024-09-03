@@ -16,6 +16,8 @@ import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
 import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
+import fr.maxlego08.items.hook.HookManager;
+import fr.maxlego08.items.hook.JobsHook;
 import fr.maxlego08.items.hook.WorldGuardAccess;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.runes.RuneListener;
@@ -37,6 +39,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private final TrimHelper trimHelper = new TrimHelper();
     private final ItemManager itemManager = new ZItemManager(this);
     private final RuneManager runeManager = new ZRuneManager(this);
+    private final HookManager hookManager = new HookManager(this);
     private final Enchantments enchantments = new ZEnchantments();
     private final List<BlockAccess> blockAccesses = new ArrayList<>();
     private ItemComponent itemComponent;
@@ -78,6 +81,10 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         if (this.isEnable(Plugins.WORLDGUARD)) {
             this.registerBlockAccess(new WorldGuardAccess());
+        }
+
+        if(this.isEnable(Plugins.JOBS)) {
+            this.hookManager.registerHook(new JobsHook());
         }
 
         this.postEnable();

@@ -92,5 +92,11 @@
             <version>7.2.14</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.Zrips</groupId>
+            <artifactId>Jobs</artifactId>
+            <version>v5.2.2.3</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

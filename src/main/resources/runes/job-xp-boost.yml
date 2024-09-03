@@ -1,0 +1,13 @@
+type: JOB_XP_BOOST
+
+display-name: "#34eb9bᴊᴏʙ-xᴘ-ʙᴏᴏsᴛ"
+
+item-name: "#34eb9bᴊᴏʙ-xᴘ-ʙᴏᴏsᴛ"
+lore:
+  - "&8Allows to gain more experience for your job"
+
+allowed-materials: [ ]
+allowed-tags:
+  - ITEMS_PICKAXES
+
+xp-boost: 2.0

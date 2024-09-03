@@ -2,6 +2,7 @@ package fr.maxlego08.items.runes;
 
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
+import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RunePipeline;
@@ -84,5 +85,16 @@ public class RuneListener implements Listener {
 
         RunePipeline pipeline = new RunePipeline(optional.get());
         pipeline.interactBlock(plugin, event);
+    }
+
+    @EventHandler
+    public void onJobsGainExp(JobsExpGainEventWrapper event) {
+        var player = event.getPlayer();
+        var itemStack = player.getInventory().getItemInMainHand();
+        var optional = getRunes(itemStack);
+        if (optional.isEmpty()) return;
+
+        RunePipeline pipeline = new RunePipeline(optional.get());
+        pipeline.jobsGainExp(plugin, event);
     }
 }

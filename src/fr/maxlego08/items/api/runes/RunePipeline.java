@@ -1,6 +1,7 @@
 package fr.maxlego08.items.api.runes;
 
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -19,6 +20,8 @@ public class RunePipeline {
     }
 
 
+
+
     public Set<Block> breakBlocks(ItemsPlugin plugin, BlockBreakEvent event, Map<Location, List<ItemStack>> drops) {
 
         Set<Block> currentBlocks = new HashSet<>();
@@ -35,6 +38,12 @@ public class RunePipeline {
     public void interactBlock(ItemsPlugin plugin, PlayerInteractEvent event) {
         for (Rune rune : runes) {
             rune.getType().getActivator().interactBlock(plugin, event, rune.getConfiguration());
+        }
+    }
+
+    public void jobsGainExp(ItemsPlugin plugin, JobsExpGainEventWrapper event) {
+        for (Rune rune : runes) {
+            rune.getType().getActivator().jobsGainExperience(plugin, event, rune.getConfiguration());
         }
     }
 
