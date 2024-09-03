@@ -10,6 +10,7 @@ public enum Plugins {
 	TRANSLATIONAPI("TranslationAPI"),
 	ZTRANSLATOR("zTranslator"),
 	WORLDGUARD("WorldGuard"),
+	JOBS("Jobs"),
 	
 	;
 

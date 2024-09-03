@@ -2,6 +2,8 @@ package fr.maxlego08.items.runes;
 
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
+import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
+import fr.maxlego08.items.api.hook.jobs.JobsPayementEventWrapper;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RunePipeline;
@@ -33,45 +35,21 @@ public class RuneListener implements Listener {
         this.runeManager = runeManager;
     }
 
-    private Optional<List<Rune>> getRunes(ItemStack itemStack) {
-        if (itemStack == null || !itemStack.hasItemMeta()) return Optional.empty();
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
-        if (!persistentDataContainer.has(this.runeManager.getKey(), PersistentDataType.LIST.listTypeFrom(this.runeManager.getDataType()))) {
-            return Optional.empty();
-        }
-
-        var runes = persistentDataContainer.getOrDefault(this.runeManager.getKey(), PersistentDataType.LIST.listTypeFrom(this.runeManager.getDataType()), new ArrayList<>());
-        runes = new ArrayList<>(runes);
-        return Optional.of(runes);
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
-
         if (event.isCancelled() || event instanceof CustomBlockBreakEvent) return;
 
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
-        var optional = getRunes(itemStack);
+        var optional = this.runeManager.getRunes(itemStack);
         if (optional.isEmpty()) return;
 
-        var runes = optional.get();
-
+        var runes = new ArrayList<>(optional.get());
         runes.removeIf(rune -> !rune.getConfiguration().contains(event.getBlock().getType()));
         if(runes.isEmpty()) return;
 
-        Map<Location, List<ItemStack>> drops = new HashMap<>();
-        RunePipeline pipeline = new RunePipeline(runes);
-        Set<Block> blocks = pipeline.breakBlocks(plugin, event, drops);
-        if (blocks.isEmpty()) return;
-
-        event.setDropItems(false);
-
-        for (Block block : blocks) {
-            block.setType(Material.AIR);
-        }
-        drops.forEach((location, itemStacks) -> itemStacks.forEach(itemStack1 -> location.getWorld().dropItemNaturally(location, itemStack1)));
+        RunePipeline pipeline = new RunePipeline(this.runeManager, runes);
+        pipeline.pipeline(plugin, event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -79,10 +57,32 @@ public class RuneListener implements Listener {
         if(event.getHand() != EquipmentSlot.HAND) return;
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
-        var optional = getRunes(itemStack);
+        var optional = this.runeManager.getRunes(itemStack);
         if (optional.isEmpty()) return;
 
-        RunePipeline pipeline = new RunePipeline(optional.get());
-        pipeline.interactBlock(plugin, event);
+        RunePipeline pipeline = new RunePipeline(this.runeManager, optional.get());
+        pipeline.pipeline(plugin, event);
+    }
+
+    @EventHandler
+    public void onJobsGainExp(JobsExpGainEventWrapper event) {
+        var player = event.getPlayer();
+        var itemStack = player.getInventory().getItemInMainHand();
+        var optional = this.runeManager.getRunes(itemStack);
+        if (optional.isEmpty()) return;
+
+        RunePipeline pipeline = new RunePipeline(this.runeManager, optional.get());
+        pipeline.pipeline(plugin, event);
+    }
+
+    @EventHandler
+    public void onJobsGainMoney(JobsPayementEventWrapper event) {
+        var player = event.getPlayer();
+        var itemStack = player.getInventory().getItemInMainHand();
+        var optional = this.runeManager.getRunes(itemStack);
+        if (optional.isEmpty()) return;
+
+        RunePipeline pipeline = new RunePipeline(this.runeManager, optional.get());
+        pipeline.pipeline(plugin, event);
     }
 }

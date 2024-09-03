@@ -2,6 +2,8 @@ package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
+import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
+import fr.maxlego08.items.api.hook.jobs.JobsPayementEventWrapper;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import org.bukkit.Location;
@@ -19,6 +21,12 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class RuneActivatorHelper<T extends RuneConfiguration> implements RuneActivator<T> {
+
+    @Override
+    public void jobsGainMoney(ItemPlugin plugin, JobsPayementEventWrapper event, T runeConfiguration) {}
+
+    @Override
+    public void jobsGainExperience(ItemPlugin plugin, JobsExpGainEventWrapper event, T runeConfiguration) {}
 
     @Override
     public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, T runeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {

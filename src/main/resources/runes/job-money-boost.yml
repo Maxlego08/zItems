@@ -1,0 +1,13 @@
+type: JOB_MONEY_BOOST
+
+display-name: "#34eb9bᴊᴏʙ-ᴍᴏɴᴇʏ-ʙᴏᴏsᴛ"
+
+item-name: "#34eb9bᴊᴏʙ-ᴍᴏɴᴇʏ-ʙᴏᴏsᴛ"
+lore:
+  - "&8Allows to gain more money for your job"
+
+allowed-materials: [ ]
+allowed-tags:
+  - ITEMS_PICKAXES
+
+money-boost: 2.0

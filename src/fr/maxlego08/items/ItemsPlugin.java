@@ -9,6 +9,7 @@ import fr.maxlego08.items.api.configurations.commands.CommandsListener;
 import fr.maxlego08.items.api.configurations.recipes.PrepareCraftListener;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
+import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.command.commands.CommandItem;
@@ -16,6 +17,9 @@ import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
 import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
+import fr.maxlego08.items.hook.Hooks;
+import fr.maxlego08.items.hook.ZHookManager;
+import fr.maxlego08.items.hook.JobsHook;
 import fr.maxlego08.items.hook.WorldGuardAccess;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.runes.RuneListener;
@@ -30,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemsPlugin extends ZPlugin implements ItemPlugin {
@@ -37,6 +42,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private final TrimHelper trimHelper = new TrimHelper();
     private final ItemManager itemManager = new ZItemManager(this);
     private final RuneManager runeManager = new ZRuneManager(this);
+    private final HookManager hookManager = new ZHookManager(this);
     private final Enchantments enchantments = new ZEnchantments();
     private final List<BlockAccess> blockAccesses = new ArrayList<>();
     private ItemComponent itemComponent;
@@ -79,6 +85,15 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         if (this.isEnable(Plugins.WORLDGUARD)) {
             this.registerBlockAccess(new WorldGuardAccess());
         }
+
+        //Register all internal hooks
+        Arrays.asList(Hooks.values())
+                .forEach(hooks -> this.hookManager.registerHook(this.getLog()::log, hooks.getPlugin(), hooks.getHook()));
+
+        this.getServer().getScheduler().runTask(this, () -> {
+            //Load one tick later to permits addon to register hooks
+            this.hookManager.loadHooks(this::isEnable);
+        });
 
         this.postEnable();
     }
@@ -127,6 +142,10 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     @Override
     public Item createItem(String name, ItemConfiguration itemConfiguration) {
         return new ZItem(this, name, itemConfiguration);
+    }
+
+    public HookManager getHookManager() {
+        return hookManager;
     }
 
     public RuneManager getRuneManager() {

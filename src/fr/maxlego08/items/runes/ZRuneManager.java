@@ -63,6 +63,9 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 this.plugin.saveResource("runes/hammer.yml", false);
                 this.plugin.saveResource("runes/silk-spawner.yml", false);
                 this.plugin.saveResource("runes/absorption.yml", false);
+                this.plugin.saveResource("runes/xp-boost.yml", false);
+                this.plugin.saveResource("runes/job-xp-boost.yml", false);
+                this.plugin.saveResource("runes/job-money-boost.yml", false);
             }
         }
 
@@ -209,6 +212,20 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         persistentDataContainer.set(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), runes);
 
         itemStack.setItemMeta(itemMeta);
+    }
+
+    @Override
+    public Optional<List<Rune>> getRunes(ItemStack itemStack) {
+        if (itemStack == null || !itemStack.hasItemMeta()) return Optional.empty();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
+        if (!persistentDataContainer.has(this.getKey(), PersistentDataType.LIST.listTypeFrom(this.getDataType()))) {
+            return Optional.empty();
+        }
+
+        var runesList = persistentDataContainer.getOrDefault(this.getKey(), PersistentDataType.LIST.listTypeFrom(this.getDataType()), new ArrayList<>());
+        runesList = new ArrayList<>(runesList);
+        return Optional.of(runesList);
     }
 
     @Override

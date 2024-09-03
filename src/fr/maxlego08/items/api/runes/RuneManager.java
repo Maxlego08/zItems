@@ -5,9 +5,12 @@ import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +28,8 @@ public interface RuneManager {
     List<Rune> getRunes();
 
     List<Rune> getRunes(RuneType runeType);
+
+    Optional<List<Rune>> getRunes(ItemStack itemStack);
 
     void applyRune(Player player, String runName);
 
