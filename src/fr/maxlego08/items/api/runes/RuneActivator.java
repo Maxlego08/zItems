@@ -7,6 +7,7 @@ import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 public interface RuneActivator<T extends RuneConfiguration> {
+
+    void onEntityDeath(ItemPlugin plugin, EntityDeathEvent event, T runeConfiguration);
 
     void jobsGainMoney(ItemPlugin plugin, JobsPayementEventWrapper event, T runeConfiguration);
 

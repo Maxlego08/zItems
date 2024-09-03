@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -37,6 +38,21 @@ public class RuneListener implements Listener {
         runes.removeIf(rune -> !rune.getConfiguration().contains(event.getBlock().getType()));
         if (runes.isEmpty()) return;
 
+        RunePipeline pipeline = new RunePipeline(this.runeManager, runes);
+        pipeline.pipeline(plugin, event);
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        var entity = event.getEntity();
+        var killer = entity.getKiller();
+        if (killer == null) return;
+
+        var itemStack = killer.getInventory().getItemInMainHand();
+        var optional = this.runeManager.getRunes(itemStack);
+        if (optional.isEmpty()) return;
+
+        var runes = new ArrayList<>(optional.get());
         RunePipeline pipeline = new RunePipeline(this.runeManager, runes);
         pipeline.pipeline(plugin, event);
     }
