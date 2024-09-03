@@ -1,0 +1,13 @@
+type: XP_BOOST
+
+display-name: "#34eb9bxᴘ-ʙᴏᴏsᴛ"
+
+item-name: "#34eb9bxᴘ-ʙᴏᴏsᴛ"
+lore:
+  - "&8Allows to gain more experience"
+
+allowed-materials: [ ]
+allowed-tags:
+  - ITEMS_PICKAXES
+
+xp-boost: 2.0

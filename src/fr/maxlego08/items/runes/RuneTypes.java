@@ -3,12 +3,7 @@ package fr.maxlego08.items.runes;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.RuneType;
-import fr.maxlego08.items.api.runes.configurations.EmptyConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneEnchantApplicatorConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneHammerConfiguration;
-import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
+import fr.maxlego08.items.api.runes.configurations.*;
 import fr.maxlego08.items.runes.activators.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -35,6 +30,7 @@ public enum RuneTypes implements RuneType {
     },
     SILK_SPAWNER(new SilkSpawner(), EmptyConfiguration.class),
     ABSORPTION(new Absorption(), EmptyConfiguration.class),
+    XP_BOOST(new XPBoost(), RuneXPBoostConfiguration.class),
     ;
 
     private final RuneActivator<?> activator;
