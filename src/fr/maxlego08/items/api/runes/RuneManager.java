@@ -4,6 +4,7 @@ import fr.maxlego08.items.api.configurations.recipes.ItemRecipe;
 import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -44,4 +45,6 @@ public interface RuneManager {
     void deleteCrafts();
 
     Map<NamespacedKey, ItemRecipe> getRecipesUseRunes();
+
+    <T extends PlayerEvent> void onPlayerEvent(T event);
 }
