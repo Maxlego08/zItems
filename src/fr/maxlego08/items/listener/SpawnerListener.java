@@ -24,7 +24,7 @@ public class SpawnerListener extends ListenerAdapter {
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta instanceof BlockStateMeta blockStateMeta) {
-            if (blockStateMeta instanceof CreatureSpawner creatureSpawner) {
+            if (blockStateMeta.getBlockState() instanceof CreatureSpawner creatureSpawner) {
                 EntityType entity = creatureSpawner.getSpawnedType();
                 if (block.getState() instanceof CreatureSpawner spawner) {
                     spawner.setSpawnedType(entity);

@@ -10,7 +10,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.spawner.Spawner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +22,16 @@ public class SilkSpawner extends RuneActivatorHelper<EmptyConfiguration> {
     public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, EmptyConfiguration runeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
         origin.stream().filter(block -> block.getType() == Material.SPAWNER).forEach(block -> {
             CreatureSpawner spawner = (CreatureSpawner) block.getState();
-            ItemStack item = new ItemStack(Material.SPAWNER);
+            ItemStack itemStack = new ItemStack(Material.SPAWNER);
             EntityType type = spawner.getSpawnedType();
-            BlockStateMeta blockStateMeta = (BlockStateMeta) item.getItemMeta();
+            BlockStateMeta blockStateMeta = (BlockStateMeta) itemStack.getItemMeta();
             CreatureSpawner itemSpawner = (CreatureSpawner) blockStateMeta.getBlockState();
             itemSpawner.setSpawnedType(type);
             blockStateMeta.setBlockState(itemSpawner);
-            item.setItemMeta(blockStateMeta);
+            itemStack.setItemMeta(blockStateMeta);
 
             List<ItemStack> dropsAfter = drops.getOrDefault(block.getLocation(), new ArrayList<>());
-            dropsAfter.add(item);
+            dropsAfter.add(itemStack);
             drops.put(block.getLocation(), dropsAfter);
         });
         return origin;
