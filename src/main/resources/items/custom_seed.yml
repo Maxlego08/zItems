@@ -1,0 +1,26 @@
+# Material type of the item.
+# "WHEAT_SEEDS" defines that the base item is Wheat Seeds in Minecraft.
+# This will be the item that appears in the player's inventory and has the characteristics of Wheat Seeds.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+material: WHEAT_SEEDS
+
+# Display name of the item in-game.
+# This name will appear when the player hovers over the item in their inventory.
+display-name: "&eGrow Wheat"
+
+# Block data meta configuration.
+# This section allows for advanced customization of the block's state when the item is used.
+block-data-meta:
+
+  # Enable or disable the block data meta functionality.
+  # When true, it allows the customization features below to take effect.
+  enable: true
+
+  # Material that the Wheat Seeds will transform into or interact with.
+  # "WHEAT" indicates that the item will interact with or grow into a wheat crop.
+  material: WHEAT
+
+  # The age of the wheat crop.
+  # "max" indicates that the wheat will be fully grown when the item is used.
+  # This ensures that the wheat is ready for harvesting immediately after planting.
+  age: max

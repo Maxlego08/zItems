@@ -1,0 +1,601 @@
+material: iron_sword
+
+# Overrides the default maximum stack size of this item. Choose a number between 1 and 99. max-stack-size must be 1 if max-damage is set.
+max-stack-size: 2
+
+# Display name override for an item. This can be changed or removed in an anvil. They are styled with italics by default but you can turn italics off. They can show labels where applicable (for example: banner markers, names in item frames). The custom name will take priority over item-name.
+display-name: '&6&lExample Item'
+
+# When present, replaces default item name with contained chat component. It does not take priority over custom_name if both are set. An item-name can't be changed or removed in an anvil. item-name is not styled with italics. item-name does not show labels where applicable (for example: banner markers, names in item frames)
+item-name: 'Example Item'
+
+# The Lore for the item. Text can be displayed on multiple lines. By default, lore is purple and in italics.
+lore:
+  - '&7This is an example item.'
+  - '&7It is used for demonstration purposes.'
+
+# Controls the maximum amount of damage an item can take. If not present, the item cannot be damaged. For this to work, you need to make this item a tool if it is not already and then set it's initial damage (usually 0). max-stack-size must be 1 if max-damage is set.
+max-damage: 2567
+
+# The absolute amount of damage or use this item has taken.
+damage: 20
+
+# Number of enchantment levels to add to the base level cost when repairing, combining, or renaming this item with an Anvil.
+repair-cost: 10
+
+unbreakable: # Tools, armor and weapons set with this won't lose durability when used.
+  enabled: false
+  # If False, an 'Unbreakable' line will not be included in the tooltip. Default is True.
+  show-in-tooltip: true
+
+# If true, this item will not burn in fire
+fire-resistant: true
+
+# The item model property identifier.
+custom-model-data: 1234
+
+# Determines the default color of its name. This enum is ordered from least rare to most rare.
+# COMMON - White item name.
+# EPIC - Light purple item name.
+# RARE - Aqua item name.
+# UNCOMMON - Yellow item name.
+rarity: RARE
+
+# If present, it will completely hide whole item tooltip (that includes item name). The tooltip will be still visible and searchable in creative mode.
+hide-tooltip: true
+
+# If True, disables 'additional' tooltip part which comes from the item type.
+hide-additional-tooltip: false
+
+# ToDo - No possible with spigot API for the moment !
+# Determines which blocks that blocks with this tag can be placed against in adventure mode.
+can-place-on:
+  blocks:
+    - minecraft:stone
+    - minecraft:cobblestone
+    - tag:badlands_terracotta
+  # If False, the 'Can be placed on' line will not be included in the tooltip. Default is True.
+
+  show-in-tooltip: true
+
+# ToDo - No possible with spigot API for the moment !
+# The only blocks this item may break when used by a player in adventure mode.
+can-break:
+  blocks:
+    - minecraft:stone
+    - minecraft:cobblestone
+  # If False, the 'Can break' line will not be included in the tooltip. Default is True.
+  show-in-tooltip: true
+
+enchantment:
+
+  glint: true
+
+  enchantments:
+    - enchantment: sharpness
+      level: 1
+    - enchantment: durability
+      level: 1
+  # If False, no enchantments will be shown in the item tooltip. Default is True.
+  show-in-tooltip: true
+
+# The item can run command with a right or left click.
+# The command can be run by the CONSOLE or the PLAYER.
+# The action can be LEFT_CLICK or RIGHT_CLICK or CLICK.
+# %player% is replaced with player name who use the item.
+# damage key is optional, if set, the item get damaged when the command is run.
+# damage type can be AMOUNT or DURABILITY. AMOUNT is the number of item to remove, DURABILITY is the number of durability to remove.
+# You can set damage to 'all' to break item when the command is run or to remove all amount of the item.
+commands:
+  - sender: CONSOLE
+    command: "say left click console"
+    action: LEFT_CLICK
+    cooldown: 10000
+    damage:
+      type: AMOUNT
+      quantity: 1
+  - sender: PLAYER
+    command: "say right click player"
+    action: RIGHT_CLICK
+    cooldown: 10000
+    damage:
+      type: DURABILITY
+      quantity: 1
+
+# You can use this to make any item edible. You must set both nutrition and saturation_modifier to make it work.
+food:
+  enable: false
+  # Non-negative integer, number of food points to restore when eaten. This field must be set along with saturation.
+  nutrition: 10
+  # Amount of saturation to restore when eaten. This field must be set along with nutrition.
+  saturation: 10
+  # If true, this food can be eaten even if not hungry
+  can-always-eat: true
+  # The number of seconds that it takes to eat this food item.
+  eat-seconds: 1
+  # Use this control to set the effects and probability for the effect to be applied when the food is eaten.
+  effects:
+    - type: ABSORPTION
+      # Set the probability of this effect between 0 and 1.
+      probability: 0.5
+      # The amplifier of the effect. Set to at least 0 along with the duration to enable the effect.
+      amplifier: 1
+      # The duration of the effect in ticks. Set to -1 to make the effect permanent.
+      duration: 10
+      # Particles are displayed by default.
+      show-particles: true
+      # Set if the effect icon is to be shown.
+      show-icon: true
+      # Whether this is an effect provided by a beacon and therefore should be less intrusive on the screen.
+      # Optional, and defaults to off.
+      ambient: true
+  # When this food item is eaten, it converts to this item.
+  using-converts-to: example_food
+
+# The item can be set to play in a jukebox.
+jukebox-playable: # The namespaced song the item will play. For example, minecraft:precipice
+  song: minecraft:precipice
+  # If false, the name of the song will not be shown in the tooltip for the item.
+  show-in-tooltip: true
+
+# All items can be given Modifiers which affect various Attributes of the player/mob which wears or holds them.
+attribute:
+  attributes:
+    - attribute: GENERIC_ARMOR
+      operation: add_number
+      amount: 1.0
+      slot: mainhand
+    - attribute: GENERIC_ATTACK_SPEED
+      operation: add_number
+      amount: 1.0
+      slot: mainhand
+  # If False. The attributes will not show on the item tooltip. Default is True.
+  show-in-tooltip: true
+
+# Only work for armors!
+trim:
+  enable: false
+  # QUARTZ, IRON, NETHERITE, REDSTONE, COPPER; GOLD; EMERALD, DIAMOND, LAPIS, AMETHYST
+  material: QUARTZ
+  # SENTRY, DUNE, COAST, WILD, WARD, EYE, VEX, TIDE, SNOUT, RIB, SPIRE, WAYFINDER, SHAPER, SILENCE, RAISER, HOST
+  pattern: DUNE
+
+armor-stand:
+  enable: false
+  invisible: true
+  no_base_plate: false
+  show_arms: true
+  small: false
+  marker: true
+
+axolotl-bucket:
+  enable: false
+  variant: BLUE
+
+banner-meta:
+  enable: false
+  patterns:
+    - color: BLACK
+      pattern: STRIPE_DOWNRIGHT
+    - color: RED
+      pattern: STRIPE_DOWNLEFT
+
+# Allows defining the content of a block when it will be placed, you have all possible values for all types of blocks below
+# More informations here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/data/BlockData.html
+block-data-meta:
+
+  enable: false
+
+  material: WHEAT
+
+  # Only for directional block
+  # NORTH, EAST, SOUTH, WEST, UP, DOWN
+  block-face: NORTH
+
+  # Only for water logged block
+  # true or false
+  waterlogged: false
+
+  # Only for ageable block
+  # You can use "max" to define the max age of the block
+  age: 3
+
+  # Represents the redstone power level currently being emitted or transmitted via this block. May not be over 9000 or the maximum power (usually 15).
+  # You can use "max" to define the max power of the block
+  power: 15
+
+  # Denotes whether a tripwire hook or string forms a complete tripwire circuit and is ready to trigger.
+  # Updating the property on a tripwire hook will change the texture to indicate a connected string,
+  # but will not have any effect when used on the tripwire string itself.
+  # It may however still be used to check whether the string forms a circuit.
+  attached: false
+
+  # Represents the size of the leaves on this bamboo block.
+  # NONE, SMALL, LARGE
+  bamboo-leaves: NONE
+
+  # Represents the growth stage of a sapling. When the sapling reaches maximum stage it will attempt to grow into a tree as the next stage.
+  # You can use "max" to define the max stage of the block
+  stage: 0
+
+  # Denotes whether this block is currently opened.
+  open: false
+
+  # Represents the axis along whilst this block is oriented.
+  # Some blocks such as the portal block may not be able to be placed in all orientations.
+  # X, Y, Z
+  axis: X
+
+  # Represents the level of honey contained in a bee nest or beehive.
+  honey-level: 0
+
+  # Represents if the block is powered by redstone.
+  powered: false
+
+  # Represents which half of a two block tall material this block is.
+  # TOP, BOTTOM
+  half: TOP
+
+  # Represents if brewing stand has a bottle in the slot.
+  bottles:
+    0: false
+    1: false
+    2: false
+
+  # Represents how far uncovered by brush the block is.
+  dusted: 0
+
+  # Represents if a force will be applied on entities moving through this block.
+  drag: false
+
+  # Represents how many bites have been eat on cake
+  # More the value is big more the cake is eaten
+  bites: 0
+
+  # Represents if the campfire is a signal fire and make more smoke
+  signal-fire: false
+
+  # Represents how many candle on the block
+  candles: 1
+
+  # Represents if cave plant have berries
+  berries: false
+
+  # Represents if the chest is a single or the part of the double chest
+  # SINGLE, LEFT, RIGHT
+  chest-type: SINGLE
+
+  # Represents if Command block is conditional
+  conditional: false
+
+  # Represents the mode of the comparator
+  # COMPARE, SUBTRACT
+  comparator-mode: COMPARE
+
+  # Represents if crafter is crafting
+  crafter-crafting: false
+
+  # Represents if crafter is triggered
+  crafter-triggered: false
+
+  # Represents the orientation of the crafter
+  # DOWN_EAST, DOWN_NORTH, DOWN_SOUTH, DOWN_WEST, UP_EAST, UP_NORTH, UP_SOUTH, UP_WEST, WEST_UP, EAST_UP, NORTH_UP, SOUTH_UP
+  crafter-orientation: DOWN_NORTH
+
+  # Represents if the daylight detector is inverted
+  inverted: false
+
+  # Indicates which hinge this door is attached to and will rotate around when opened.
+  # LEFT, RIGHT
+  hinge: LEFT
+
+  # Denotes whether this end portal frame has been activated by having an eye of ender placed in it.
+  eye: true
+
+  # The 'moisture' level of farmland indicates how close it is to a water source (if any).
+  # A higher moisture level leads, to faster growth of crops on this block, but cannot be higher than maximum moisture value.
+  # You can use "max" to define the max stage of the block
+  moisture: max
+
+  # Indicates if the fence gate is attached to a wall, and if true the texture is lowered by a small amount to blend in better.
+  in_wall: false
+
+  # Denotes whether the lantern is hanging from a block.
+  hanging: 0
+
+  # Is the number of entities which may hatch from these eggs.
+  hatch: 0
+
+  # Is the direction the block is facing.
+  # DOWN_EAST, DOWN_NORTH, DOWN_SOUTH, DOWN_WEST, UP_EAST, UP_NORTH, UP_SOUTH, UP_WEST, WEST_UP, EAST_UP, NORTH_UP, SOUTH_UP
+  jigsaw-orientation: UP_EAST
+
+  # Represents the amount of fluid contained within this block, either by itself or inside a cauldron.
+  # In the case of water and lava blocks the levels have special meanings: a level of 0 corresponds to a source block,
+  # 1-7 regular fluid heights, and 8-15 to "falling" fluids. All falling fluids have the same behaviour,
+  # but the level corresponds to that of the block above them, equal to this.level - 8
+  # Note that counterintuitively, an adjusted level of 1 is the highest level, whilst 7 is the lowest.
+  # May not be higher than maximum level.
+  # You can use "max" to define the max stage of the block
+  level: 0
+
+  # Denotes whether this block (either a redstone torch or furnace) is currently lit - that is not burned out.
+  lit: 0
+
+  # Encompasses the 'north', 'east', 'south', 'west', 'up', 'down' boolean flags which are used to set which faces of the block textures are displayed on.
+  # Some blocks may not be able to have faces on all directions.
+  face:
+    NORTH: false
+    EAST: false
+    SOUTH: false
+    WEST: false
+    UP: false
+    DOWN: false
+
+  # Type of sound made when this note block is activated.
+  instrument: SNARE_DRUM
+
+  # Specified tuned pitch that the instrument will be played in.
+  note: 5
+
+  # Represents the number of petals.
+  flower-amount: 1
+
+  # Denotes whether the piston head is currently extended or not.
+  extended: false
+
+  # Denotes this piston head is shorter than the usual amount because it is currently retracting.
+  short: false
+
+  # Represents the dripstone thickness.
+  # TIP_MERGE, TIP, FRUSTUM, MIDDLE, BASE
+  thickness: TIP_MERGE
+
+  # Represents the dripstone orientation.
+  vertical-direction: DOWN
+
+  # Represents the current layout of a minecart rail.
+  # Some types of rail may not be able to be laid out in all shapes.
+  # NORTH_SOUTH, EAST_WEST, ASCENDING_EAST, ASCENDING_WEST, ASCENDING_NORTH, ASCENDING_SOUTH, SOUTH_EAST, SOUTH_WEST, NORTH_WEST, NORTH_EAST
+  rail-shape: NORTH_SOUTH
+
+  # Is the propagation delay of a repeater, i.e. how many ticks before it will be activated from a current change and propagate it to the next block.
+  repeater-delay: 1
+
+  # Denotes whether the repeater is in the locked state or not.
+  # A locked repeater will not change its output until it is unlocked. In game, a locked repeater is created by having a constant current perpendicularly entering the block.
+  repeater-locked: false
+
+  # Represents the amount of times the anchor may still be used.
+  charges: 0
+
+  # Represents the current rotation of this block.
+  rotation: NORTH
+
+  # Indicates whether the scaffolding is floating or not.
+  scaffolding-bottom: false
+
+  # Indicates the distance from a scaffolding block placed above a 'bottom' scaffold.
+  scaffolding-distance: 0
+
+  # Indicates whether the sculk catalyst is actively spreading the sculk or not.
+  bloom: false
+
+  # Indicates the current operational phase of the sensor.
+  # INACTIVE, ACTIVE, COOLDOWN
+  phase: INACTIVE
+
+  # Indicates whether the sculk shrieker can summon the warden.
+  shrieker-shrieking: false
+
+  # Indicated whether the sculk shrieker is shrieking or not.
+  shrieker-can-summon: false
+
+  # Indicates the number of pickles in this block.
+  pickles: 1
+
+  # Represents what state the slab is in - either top, bottom, or a double slab occupying the full block.
+  # TOP, BOTTOM, DOUBLE
+  slab-type: TOP
+
+  # Represents the amount of layers of snow which are present in this block.
+  layers: 1
+
+  # Denotes whether this block has a snow covered side and top texture (normally because the block above is snow).
+  snowy: false
+
+  # Represents the texture and bounding box shape of these stairs.
+  # STRAIGHT, INNER_LEFT, INNER_RIGHT, OUTER_LEFT, OUTER_RIGHT
+  stairs-shape: STRAIGHT
+
+  # Indicates whether this TNT will explode on punching.
+  unstable: false
+
+  # Represents the type of piston which this (technical) block corresponds to.
+  # NORMAL, STICKY
+  technical-piston-type: NORMAL
+
+  # Denotes that the tripwire was broken with shears and will not subsequently produce a current when destroyed.
+  disarmed: false
+
+  # Indicates the current operational phase of the spawner.
+  # INACTIVE, WAITING_FOR_PLAYERS, ACTIVE, WAITING_FOR_REWARD_EJECTION, EJECTING_REWARD, COOLDOWN
+  trial-spawner-state: WAITING_FOR_PLAYERS
+
+  # Indicates if the block has ominous effects.
+  trial-spawner-ominous: false
+
+  # The number of eggs which appear in this block.
+  eggs: 1
+
+  # Indicates the current operational phase of the vault block.
+  # INACTIVE, ACTIVE, UNLOCKING, EJECTING
+  vault-state: INACTIVE
+
+  # Indicates if the block has ominous effects.
+  vault-ominous: false
+
+  # Denotes whether the well has a center post.
+  wall-up: false
+
+  # Encompasses the 'north', 'east', 'south', 'west', height flags which are used to set the height of a wall.
+  wall-height:
+    NORTH: false
+
+# Allows defining the content of a block with the state block
+# More informations here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/BlockState.html
+block-state-meta:
+
+  enable: false
+
+  # Allows defining the contents of a container (Chest, Barrel, Dropper etc.)
+  # More informations here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/Container.html
+  #
+  # To define items in the container, you must key the slot to use and then the content of the slot
+  container:
+    0: # Slot 0
+      custom-item: "custom_seed" # Allows using the configuration of another item
+      amount: 5 # The Number of times you want the custom item will take over the amount defined in the other configuration
+    1: # Slot 1
+      # You can define an item as you will do in a configuration file, the same elements are available
+      material: DIAMOND
+      amount: 16
+    5: # Slot 5
+      material: STONE
+      display-name: "<rainbow>Heyy"
+
+  #
+  # More informations here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/Sign.html
+  sign:
+    waxed: true
+    FRONT:
+      glow: false
+      lines:
+        - index: 0
+          line: "<click:suggest_command:/test><red>line 1"
+        - index: 1
+          line: "line 2"
+        - index: 2
+          line: "line 3"
+        - index: 3
+          line: "line 4"
+    BACK:
+      glow: true
+      lines:
+        - index: 0
+          line: "line 5"
+        - index: 1
+          line: "line 6"
+        - index: 2
+          line: "line 7"
+        - index: 3
+          line: "line 8"
+
+potion-meta:
+  enable: false
+  color: 45,55,45
+
+  # AWKWARD, FIRE_RESISTANCE, HARMING, HEALING, INFESTED, INVISIBILITY, LEAPING, LONG_FIRE_RESISTANCE, LONG_INVISIBILITY,
+  # LONG_LEAPING, LONG_NIGHT_VISION, LONG_POISON, LONG_REGENERATION, LONG_SLOW_FALLING, LONG_SLOWNESS, LONG_STRENGTH,
+  # LONG_SWIFTNESS, LONG_TURTLE_MASTER, LONG_WATER_BREATHING, LONG_WEAKNESS, LUCK, MUNDANE, NIGHT_VISION, OOZING, POISON,
+  # REGENERATION, SLOW_FALLING, SLOWNESS, STRENGTH, STRONG_HARMING, STRONG_HEALING, STRONG_LEAPING, STRONG_POISON,
+  # STRONG_REGENERATION, STRONG_SLOWNESS, STRONG_STRENGTH, STRONG_SWIFTNESS, STRONG_TURTLE_MASTER, SWIFTNESS, THICK,
+  # TURTLE_MASTER, WATER, WATER_BREATHING, WEAKNESS, WEAVING, WIND_CHARGED
+  base-potion-type: WATER_BREATHING
+
+  # List of types of potions available :
+  # - SPEED, SLOWNESS, HASTE, MINING_FATIGUE, STRENGTH, INSTANT_HEALTH, INSTANT_DAMAGE, JUMP_BOOST, NAUSEA, REGENERATION
+  # - RESISTANCE, FIRE_RESISTANCE, WATER_BREATHING, INVISIBILITY, BLINDNESS, NIGHT_VISION, HUNGER, WEAKNESS, POISON, WITHER
+  # - HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, UNLUCK, SLOW_FALLING, CONDUIT_POWER, DOLPHINS_GRACE
+  # - BAD_OMEN, HERO_OF_THE_VILLAGE, DARKNESS, TRIAL_OMEN, RAID_OMEN, WIND_CHARGED, WEAVING, OOZING, INFESTED
+  custom-effect:
+    - overwrite: true # true if any existing effect of the same type should be overwritten
+      type: STRENGTH
+      duration: 600
+      amplifier: 4
+      ambient: false
+      particles: false
+      icon: false
+
+tool-component:
+
+  enable: true
+
+  # Amount of durability to be removed from the tool each time a block is broken.
+  damage-per-block: 1
+
+  # Default mining speed of this tool. This value is used by the tool if no rule explicitly overrides it. 1.0 is standard mining speed.
+  default-mining-speed: 5.0
+
+  rules:
+    tags:
+      - tag: MINEABLE_PICKAXE
+        speed: 6.0
+        correct-for-drops: true
+      - tag: MINEABLE_SHOVEL
+        speed: 6.0
+        correct-for-drops: true
+      - tag: MINEABLE_HOE
+        speed: 6.0
+        correct-for-drops: true
+      - tag: MINEABLE_AXE
+        speed: 6.0
+        correct-for-drops: true
+    materials:
+      - materials:
+          - GLASS
+          - WHITE_STAINED_GLASS
+          - ORANGE_STAINED_GLASS
+          - MAGENTA_STAINED_GLASS
+          - LIGHT_BLUE_STAINED_GLASS
+          - YELLOW_STAINED_GLASS
+          - LIME_STAINED_GLASS
+          - PINK_STAINED_GLASS
+          - GRAY_STAINED_GLASS
+          - LIGHT_GRAY_STAINED_GLASS
+          - CYAN_STAINED_GLASS
+          - PURPLE_STAINED_GLASS
+          - BLUE_STAINED_GLASS
+          - BROWN_STAINED_GLASS
+          - GREEN_STAINED_GLASS
+          - RED_STAINED_GLASS
+          - BLACK_STAINED_GLASS
+          - BEDROCK
+        speed: 8.0
+        correct-for-drops: true
+
+recipes:
+#  - type: smithing_transform
+#    template:
+#      item: minecraft:glass
+#    base:
+#      tag: planks
+#    addition:
+#      item: minecraft:glass
+#  - type: blasting
+#    category: blocks
+#    group: example
+#    ingredient: # List or string
+#      item: minecraft:glass
+#    cookingtime: 100
+#    experience: 10
+#  - type: crafting_shapeless
+#    category: redstone
+#    ingredients:
+#      - item: minecraft:glass
+#      - tag: planks
+#  - type: crafting_shaped
+#    category: building
+#    pattern:
+#      - " A "
+#      - "A1A"
+#      - " A "
+#    ingredients:
+#      1:
+#        tag: planks
+#      A:
+#        item: minecraft:glass
+#  - type: stone_cutting
+#    amount: 2
+#    ingredient:
+#      item: minecraft:glass

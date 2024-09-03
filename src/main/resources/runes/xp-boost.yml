@@ -1,0 +1,40 @@
+# Type of the rune.
+# "XP_BOOST" indicates that this rune provides an experience (XP) multiplier effect.
+# When applied, it boosts the amount of XP the player earns from activities like mining or combat.
+type: XP_BOOST
+
+# Display the name of the rune.
+# This is the name that will appear when the player hovers over the item.
+display-name: "#34eb9bxᴘ-ʙᴏᴏsᴛ"
+
+# Name of the item associated with the rune.
+# This is the name that the item itself will display in the player's inventory.
+# Typically, this would match the display-name, but can be customized.
+item-name: "#34eb9bxᴘ-ʙᴏᴏsᴛ"
+
+# Lore of the item.
+# The lore is the description that appears under the item name.
+# It provides additional context or information about the item's abilities or origin.
+lore:
+  - "&8Allows to gain more experience"
+
+# Allowed materials for applying the rune.
+# This defines which materials the rune can be applied to.
+# If left empty, it will allow all materials unless restricted by tags.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+allowed-materials: [ ]
+
+# Allowed material tags for applying the rune.
+# Tags are predefined groups of materials in Minecraft.
+# "PICKAXES" indicates that this rune is only applicable to pickaxes.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/tag/Tag.html
+allowed-tags:
+  - ITEMS_PICKAXES
+
+# The XP boost multiplier.
+# This value determines how much extra experience the player earns.
+# For example, a value of 2.0 means the player will earn double the usual amount of XP.
+# Adjust this value to control the strength of the XP boost effect.
+xp-boost: 2.0
+
+# ToDo, add entity boost, add per block and entity boost

@@ -1,0 +1,36 @@
+material: SAND
+
+# Overrides the default maximum stack size of this item. Choose a number between 1 and 99. max-stack-size must be 1 if max-damage is set.
+max-stack-size: 3
+
+# You can use this to make any item edible. You must set both nutrition and saturation_modifier to make it work.
+food:
+  enable: true
+  # Non-negative integer, number of food points to restore when eaten. This field must be set along with saturation.
+  nutrition: 50
+  # Amount of saturation to restore when eaten. This field must be set along with nutrition.
+  saturation: 50
+  # Set to true so wolves can eat it.
+  is-meat: true
+  # If true, this food can be eaten even if not hungry
+  can-always-eat: true
+  # The number of seconds that it takes to eat this food item.
+  eat-seconds: 1
+  # Use this control to set the effects and probability for the effect to be applied when the food is eaten.
+  effects:
+    - type: ABSORPTION
+      # Set the probability of this effect between 0 and 1.
+      probability: 0.5
+      # The amplifier of the effect. Set to at least 0 along with the duration to enable the effect.
+      amplifier: 1
+      # The duration of the effect in ticks. Set to -1 to make the effect permanent.
+      duration: 10
+      # Particles are displayed by default.
+      show-particles: true
+      # Set if the effect icon is to be shown.
+      show-icon: true
+      # Whether this is an effect provided by a beacon and therefore should be less intrusive on the screen.
+      # Optional, and defaults to off.
+      ambient: true
+  # When this food item is eaten, it converts to this item.
+  using-converts-to: empty_item

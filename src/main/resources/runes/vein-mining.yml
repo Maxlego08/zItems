@@ -1,0 +1,58 @@
+# The type of the rune.
+# This defines the general category of the rune.
+# https://zitems.groupez.dev/runes/types
+type: VEIN_MINING
+
+# Display name of the rune in-game.
+# This name appears when the player hovers over the item.
+display-name: "#34eb9bᴠᴇɪɴ ᴍɪɴɪɴɢ"
+
+# Name of the item associated with the rune.
+# This name appears in the player's inventory.
+# It can be the same as the display name or customized separately.
+item-name: "#34eb9bᴠᴇɪɴ ᴍɪɴɪɴɢ"
+
+# Lore of the item.
+# This is the description that appears under the item's name, providing additional details.
+lore:
+  - "&8Allows to mine ore veins"
+
+# Allowed materials for applying the rune.
+# Defines which materials the rune can be applied to.
+# If left empty, it defaults to allowing all materials unless restricted by tags.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+allowed-materials: [ ]
+
+# Allowed material tags for applying the rune.
+# Tags are predefined groups of materials in Minecraft.
+# "PICKAXES" indicates that this rune is only applicable to pickaxes.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/tag/Tag.html
+allowed-tags:
+  - ITEMS_PICKAXES
+
+vein-mining:
+  # Maximum number of blocks in the vein that can be mined in one action.
+  # This setting limits the total number of connected ore blocks that can be mined at once.
+  # A high value like 100 can allow large veins to be mined but may impact performance on large servers !
+  block-limit: 8
+
+  # Allowed materials for vein mining.
+  # Specifies the individual ore blocks that can be mined using this rune.
+  # Players can only mine veins containing these specific materials.
+  allowed-materials:
+    - NETHER_QUARTZ_ORE
+    - NETHER_GOLD_ORE
+    - ANCIENT_DEBRIS
+
+  # Allowed material tags for vein mining.
+  # Tags include groups of ores that can be mined together.
+  # These tags cover a variety of ores like gold, iron, diamond, etc., allowing the rune to mine veins of these ores.
+  allowed-tags:
+    - GOLD_ORES
+    - IRON_ORES
+    - DIAMOND_ORES
+    - REDSTONE_ORES
+    - LAPIS_ORES
+    - COAL_ORES
+    - EMERALD_ORES
+    - COPPER_ORES

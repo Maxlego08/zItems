@@ -1,0 +1,16 @@
+type: RUNE
+material: PAPER
+
+
+# Represent the rune name this item represent
+represent-rune: HAMMER
+
+# Represent if you want to create recipe in smithing table to apply this rune on an item
+enable-crafting: true
+
+# if enable-crafting is false, this is not necessary
+# it's represente the template item use when you apply this rune item on an item
+# You can use zitems:ITEM_NAME or minecraft:MATERIAL_NAME
+template: "minecraft:IRON_INGOT"
+
+display-name: "&eHammer Rune"
