@@ -42,9 +42,4 @@ public class JobsHook implements Hook {
         }
         event.setAmount(jobsPayementEvent.getAmount());
     }
-
-    @Override
-    public String getName() {
-        return "Jobs";
-    }
 }

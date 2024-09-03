@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -67,6 +68,11 @@ public class RunePipeline {
             }
             case BlockBreakEvent blockBreakEvent -> {
                 handleBreak(plugin, blockBreakEvent);
+            }
+            case EntityDeathEvent entityDeathEvent -> {
+                for (Rune rune : runes) {
+                    rune.getType().getActivator().onEntityDeath(plugin, entityDeathEvent, rune.getConfiguration());
+                }
             }
             default -> throw new IllegalStateException("Unexpected value: " + event);
         }

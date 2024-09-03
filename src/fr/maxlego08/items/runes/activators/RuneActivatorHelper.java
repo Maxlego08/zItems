@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,6 +22,9 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class RuneActivatorHelper<T extends RuneConfiguration> implements RuneActivator<T> {
+
+    @Override
+    public void onEntityDeath(ItemPlugin plugin, EntityDeathEvent event, T runeConfiguration) {}
 
     @Override
     public void jobsGainMoney(ItemPlugin plugin, JobsPayementEventWrapper event, T runeConfiguration) {}
