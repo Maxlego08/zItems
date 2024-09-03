@@ -215,6 +215,20 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     }
 
     @Override
+    public Optional<List<Rune>> getRunes(ItemStack itemStack) {
+        if (itemStack == null || !itemStack.hasItemMeta()) return Optional.empty();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
+        if (!persistentDataContainer.has(this.getKey(), PersistentDataType.LIST.listTypeFrom(this.getDataType()))) {
+            return Optional.empty();
+        }
+
+        var runesList = persistentDataContainer.getOrDefault(this.getKey(), PersistentDataType.LIST.listTypeFrom(this.getDataType()), new ArrayList<>());
+        runesList = new ArrayList<>(runesList);
+        return Optional.of(runesList);
+    }
+
+    @Override
     public NamespacedKey getKey() {
         return this.namespacedKey;
     }
