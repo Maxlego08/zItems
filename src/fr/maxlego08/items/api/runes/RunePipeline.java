@@ -2,6 +2,7 @@ package fr.maxlego08.items.api.runes;
 
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
+import fr.maxlego08.items.api.hook.jobs.JobsPayementEventWrapper;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -44,6 +45,12 @@ public class RunePipeline {
     public void jobsGainExp(ItemsPlugin plugin, JobsExpGainEventWrapper event) {
         for (Rune rune : runes) {
             rune.getType().getActivator().jobsGainExperience(plugin, event, rune.getConfiguration());
+        }
+    }
+
+    public void jobsGainMoney(ItemsPlugin plugin, JobsPayementEventWrapper event) {
+        for (Rune rune : runes) {
+            rune.getType().getActivator().jobsGainMoney(plugin, event, rune.getConfiguration());
         }
     }
 
