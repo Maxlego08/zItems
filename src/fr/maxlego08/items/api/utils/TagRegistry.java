@@ -31,6 +31,6 @@ public class TagRegistry {
     }
 
     public static Tag<Material> getTag(String key) {
-        return tagMap.get(key);
+        return tagMap.get(key.toUpperCase());
     }
 }

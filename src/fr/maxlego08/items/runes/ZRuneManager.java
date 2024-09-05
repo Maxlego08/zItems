@@ -287,7 +287,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
         RecipeChoice addition = new RecipeChoice.MaterialChoice(runeItem.build(null, 1).getType());
         ItemRecipe.Ingredient[] ingredients = new ItemRecipe.Ingredient[3];
-        ingredients[0] = new ItemRecipe.Ingredient(Helper.getRecipeChoiceFromString(this.plugin, "item|" + template), template, '-');
+        ingredients[0] = new ItemRecipe.Ingredient(Helper.getRecipeChoiceFromString(this.plugin, "item|" + template, runeItem.getName()), template, '-');
         ingredients[2] = new ItemRecipe.Ingredient(addition, "zitems:" + runeItem.getName(), '-');
         materials.forEach(material -> {
             ingredients[1] = new ItemRecipe.Ingredient(new RecipeChoice.MaterialChoice(material), "minecraft: " + material.name().toLowerCase(), '-');

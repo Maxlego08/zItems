@@ -9,7 +9,7 @@ import org.bukkit.inventory.RecipeChoice;
 
 public class Helper {
 
-    public static RecipeChoice getRecipeChoiceFromString(ItemPlugin plugin, String ingredient) {
+    public static RecipeChoice getRecipeChoiceFromString(ItemPlugin plugin, String ingredient, String fileName) {
         String[] ingredientArray = ingredient.split("\\|");
         switch (ingredientArray[0].trim()) {
             case "item" -> {
@@ -19,14 +19,20 @@ public class Helper {
                 } else if (data[0].equalsIgnoreCase("zitems")) {
                     Item ingredientItem = plugin.getItemManager().getItem(data[1].trim()).orElseThrow(() -> new IllegalArgumentException("Invalid item name"));
                     return new RecipeChoice.MaterialChoice(ingredientItem.build(null, 1).getType());
+                } else if (data.length == 1) {
+                    try {
+                        return new RecipeChoice.MaterialChoice(Material.valueOf(data[0].trim().toUpperCase()));
+                    } catch (IllegalArgumentException e) {
+                        throw new IllegalArgumentException("Invalid material for ingredient " + ingredient + " in " + fileName);
+                    }
                 } else {
-                    throw new IllegalArgumentException("Invalid item type");
+                    throw new IllegalArgumentException("Invalid item type for ingredient " + ingredient + " in " + fileName);
                 }
             }
             case "tag" -> {
-                return new RecipeChoice.MaterialChoice(TagRegistry.getTag(ingredientArray[1].trim().toLowerCase()));
+                return new RecipeChoice.MaterialChoice(TagRegistry.getTag(ingredientArray[1].trim().toUpperCase()));
             }
-            default -> throw new IllegalArgumentException("Invalid ingredient type");
+            default -> throw new IllegalArgumentException("Invalid ingredient type for ingredient "+ ingredient + " in " + fileName);
         }
     }
 
