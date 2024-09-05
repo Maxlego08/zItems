@@ -1,20 +1,47 @@
+# Type of the rune.
+# "ENCHANT_APPLICATOR" indicates that this rune allows the player to modify the enchantments on an item.
+# Specifically, it can increase or decrease the levels of certain enchantments.
 type: ENCHANT_APPLICATOR
 
+# Display the name of the rune.
+# This is the name that will appear when the player hovers over the item.
 display-name: "#34eb9bᴘʀᴏᴛᴇᴄᴛɪᴏɴ"
 
+# Name of the item associated with the rune.
+# This is the name that the item itself will display in the player's inventory.
+# Typically, this would match the display-name, but can be customized.
 item-name: "#34eb9bᴘʀᴏᴛᴇᴄᴛɪᴏɴ"
+
+# Lore of the item.
+# The lore is the description that appears under the item name.
+# It provides additional context or information about the item's abilities or origin.
 lore:
   - "&8Allows to augment protection enchantment"
 
+# Allowed materials for applying the rune.
+# This defines which materials the rune can be applied to.
+# If left empty, it will allow all materials unless restricted by tags.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 allowed-materials: [ ]
+
+# Allowed material tags for applying the rune.
+# Tags are predefined groups of materials in Minecraft.
+# "PICKAXES" indicates that this rune is only applicable to pickaxes.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/tag/Tag.html
 allowed-tags:
   - ITEMS_FOOT_ARMOR
   - ITEMS_LEG_ARMOR
   - ITEMS_CHEST_ARMOR
   - ITEMS_HEAD_ARMOR
 
+# Enchantments configuration.
+# This section defines which enchantments can be modified by the rune, and by how much.
+# Each entry in the list includes the name of the enchantment and the level modification.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
 enchantments:
   - name: PROTECTION
+    # Increase the Protection enchantment level by 2.
     increase: 2
   - name: UNBREAKING
+    # Decrease the Unbreaking enchantment level by 1.
     decrease: 1

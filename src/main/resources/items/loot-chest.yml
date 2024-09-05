@@ -1,21 +1,46 @@
+# Material type of the custom item.
+# "CHEST" defines that the base item is a chest in Minecraft.
+# This will be the item that appears in the world or inventory.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 material: CHEST
 
+# Rarity of the item.
+# "RARE" indicates that this item is of rare quality or value.
+# This can be used to categorize or filter items based on their rarity.
 rarity: RARE
 
+# Lore of the item.
+# The lore is the description that appears under the item name.
+# It provides additional context or information about the item's purpose or contents.
+# The '&7' color code sets the text to light gray.
 lore:
   - "&7Custom chest with content"
 
+# Block state meta configuration.
+# This section allows for advanced customization of the block's state, including the contents of the chest.
 block-state-meta:
 
+  # Enable or disable the block state meta functionality.
+  # When true, it allows the customization features below to take effect, including the container contents.
   enable: true
 
+  # Container configuration.
+  # This section defines the specific items and their positions within the chest when it is placed.
   container:
     0:
+      # Custom item placed in the first slot (index 0) of the chest.
+      # The "custom_seed" refers to a predefined custom item in your plugin or server configuration.
       custom-item: "custom_seed"
-      amount: 16
+      amount: 16  # The amount of the custom item to be placed in this slot.
+
     1:
+      # Standard Minecraft item placed in the second slot (index 1) of the chest.
+      # "DIAMOND" refers to the material type, with 16 diamonds placed in this slot.
       material: DIAMOND
-      amount: 16
+      amount: 16  # The amount of diamonds to be placed in this slot.
+
     5:
+      # Standard Minecraft item placed in the sixth slot (index 5) of the chest.
+      # "STONE" refers to the material type, and the item has a custom display name.
       material: STONE
-      display-name: "<rainbow>Heyy"
+      display-name: "<rainbow>Heyy"  # The display name uses a custom text format (e.g., rainbow effect).

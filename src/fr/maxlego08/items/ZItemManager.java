@@ -39,7 +39,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
         File folder = new File(plugin.getDataFolder(), "items");
         if (!folder.exists()) {
             if (folder.mkdirs()) {
-                this.plugin.saveResource("items/example.yml", false);
+                // this.plugin.saveResource("items/example.yml", false);
                 this.plugin.saveResource("items/armor-trim.yml", false);
                 this.plugin.saveResource("items/custom_seed.yml", false);
                 this.plugin.saveResource("items/empty_item.yml", false);
