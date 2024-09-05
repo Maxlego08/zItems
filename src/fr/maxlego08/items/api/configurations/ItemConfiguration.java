@@ -10,6 +10,7 @@ import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
 import fr.maxlego08.items.api.configurations.meta.*;
 import fr.maxlego08.items.api.configurations.recipes.RecipeConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
+import fr.maxlego08.items.api.enchantments.EssentialsEnchantment;
 import fr.maxlego08.items.api.runes.ItemRuneConfiguration;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.utils.Helper;
@@ -23,6 +24,7 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
@@ -39,6 +41,7 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemConfiguration {
@@ -137,30 +140,12 @@ public class ItemConfiguration {
         this.disableEnchantments = new ArrayList<>();
         List<Map<?, ?>> enchantmentDisableList = configuration.getMapList(path + "enchantment.disable-enchantments");
         Enchantments enchantmentsDisable = plugin.getEnchantments();
+
         for (Map<?, ?> enchantmentMap : enchantmentDisableList) {
             String enchantmentAsString = (String) enchantmentMap.get("enchantment");
-            var optional = enchantmentsDisable.getEnchantments(enchantmentAsString.toLowerCase());
-            Object levels = enchantmentMap.get("levels");
-            if (levels instanceof List) {
-                List<Integer> levelsList = (List<Integer>) levels;
-                for (Integer level : levelsList) {
-                    if (optional.isPresent()) {
-                        var enchantment = optional.get().enchantment();
-                        this.disableEnchantments.add(new ItemEnchantment(enchantment, level));
-                    } else {
-                        plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found for the item " + fileName);
-                    }
-                }
-            } else if (levels instanceof String string) {
-                if(string.equalsIgnoreCase("all")) {
-                    if (optional.isPresent()) {
-                        var enchantment = optional.get().enchantment();
-                        this.disableEnchantments.add(new ItemEnchantment(enchantment, -1));
-                    } else {
-                        plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found for the item " + fileName);
-                    }
-                }
-            }
+            var optionalEnchantment = enchantmentsDisable.getEnchantments(enchantmentAsString.toLowerCase());
+            var levels = enchantmentMap.get("levels");
+            this.handleLevels(plugin, fileName, enchantmentAsString, optionalEnchantment, levels);
         }
 
         List<String> runesList = configuration.getStringList(path + "rune.runes");
@@ -240,6 +225,28 @@ public class ItemConfiguration {
             this.itemRuneConfiguration = ItemRuneConfiguration.loadItemRuneConfiguration(plugin, configuration, fileName, path);
         }
 
+    }
+
+    private void handleLevels(ItemPlugin plugin, String fileName, String enchantmentAsString, Optional<EssentialsEnchantment> optionalEnchantment, Object levels) {
+        if (levels instanceof List) {
+            List<Integer> levelsList = (List<Integer>) levels;
+            levelsList.forEach(level -> processEnchantment(plugin, fileName, enchantmentAsString, optionalEnchantment, level));
+        } else if (levels instanceof String string) {
+            if (string.equalsIgnoreCase("all")) {
+                processEnchantment(plugin, fileName, enchantmentAsString, optionalEnchantment, -1);
+            }
+        }
+    }
+
+    private void processEnchantment(ItemPlugin plugin, String fileName, String enchantmentAsString, Optional<EssentialsEnchantment> optionalEnchantment, int level) {
+        if (optionalEnchantment.isPresent()) {
+            var enchantment = optionalEnchantment.get().enchantment();
+            this.disableEnchantments.add(new ItemEnchantment(enchantment, level));
+        } else if (enchantmentAsString.equalsIgnoreCase("all")) {
+            this.disableEnchantments.add(new ItemEnchantment(null, level));
+        } else {
+            plugin.getLogger().severe("Enchantment " + enchantmentAsString + " was not found for the item " + fileName);
+        }
     }
 
     private void loadPotion(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
