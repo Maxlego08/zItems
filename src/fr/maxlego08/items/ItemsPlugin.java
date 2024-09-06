@@ -21,6 +21,7 @@ import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.hook.ZHookManager;
 import fr.maxlego08.items.hook.jobs.JobsHook;
 import fr.maxlego08.items.hook.worlds.WorldGuardHook;
+import fr.maxlego08.items.listener.GrindstoneListener;
 import fr.maxlego08.items.listener.SpawnerListener;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.runes.RuneListener;
@@ -71,6 +72,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addListener(new PrepareCraftListener(this.runeManager, this.itemManager));
         this.addListener(new DisableEnchantsListener(this.itemManager));
         this.addListener(new CommandsListener(this.itemManager));
+        this.addListener(new GrindstoneListener(this.itemManager));
         this.addListener(new SpawnerListener());
 
         this.addSave(Config.getInstance());

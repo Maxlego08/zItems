@@ -67,6 +67,9 @@ can-break:
   # If False, the 'Can break' line will not be included in the tooltip. Default is True.
   show-in-tooltip: true
 
+# If True, the item will be use in grindstone.
+grindstone-enabled: true
+
 enchantment:
 
   glint: true

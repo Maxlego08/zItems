@@ -67,6 +67,7 @@ public class ItemConfiguration {
     private final List<String> canBreakBlocks;
     private final boolean canBreakShowInTooltip;
     private final boolean enchantmentGlint;
+    private final boolean grindstoneEnabled;
     private final List<ItemEnchantment> enchantments;
     private final List<ItemEnchantment> disableEnchantments;
     private final List<Rune> runes;
@@ -112,6 +113,8 @@ public class ItemConfiguration {
         this.canBreakShowInTooltip = configuration.getBoolean(path + "can-break.show-in-tooltip", true);
         this.enchantmentGlint = configuration.getBoolean(path + "enchantment.glint", false);
         this.enchantmentShowInTooltip = configuration.getBoolean(path + "enchantment.show-in-tooltip", true);
+        this.grindstoneEnabled = configuration.getBoolean(path + "grindstone-enabled", true);
+
         String rarity = configuration.getString(path + "rarity");
         if (rarity != null) {
             try {
@@ -525,6 +528,10 @@ public class ItemConfiguration {
                 potionMeta.addCustomEffect(new PotionEffect(customPotionEffect.type(), customPotionEffect.duration(), customPotionEffect.amplifier(), customPotionEffect.ambient(), customPotionEffect.particles(), customPotionEffect.icon()), customPotionEffect.overwrite());
             }
         }
+    }
+
+    public boolean isGrindstoneEnabled() {
+        return grindstoneEnabled;
     }
 
     public void applyBlockState(ItemMeta itemMeta, Player player, ItemComponent itemComponent) {
