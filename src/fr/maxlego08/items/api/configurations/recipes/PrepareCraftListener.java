@@ -14,7 +14,9 @@ import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -111,6 +113,9 @@ public class PrepareCraftListener implements Listener {
 
     @EventHandler
     public void onSmithingTransform(PrepareSmithingEvent event) {
+        if(event.getInventory().getRecipe() == null) {
+            return;
+        }
 
         Player player = (Player) event.getView().getPlayer();
         ItemStack item = event.getResult();
@@ -122,6 +127,10 @@ public class PrepareCraftListener implements Listener {
         ItemStack base = event.getInventory().getInputEquipment();
         ItemStack addition = event.getInventory().getInputMineral();
 
+        if(event.getInventory().getRecipe() instanceof SmithingTrimRecipe) {
+            return;
+        }
+
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
@@ -129,6 +138,7 @@ public class PrepareCraftListener implements Listener {
         if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return;
         Optional<Item> itemOptional = itemManager.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
         if (itemOptional.isEmpty()) return;
+
 
         List<ItemRecipe> itemRecipes = itemOptional.get().getConfiguration()
                 .getRecipeConfiguration().recipes();
@@ -280,6 +290,11 @@ public class PrepareCraftListener implements Listener {
         ItemMeta itemMeta = result.getItemMeta();
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
         List<Rune> runes = persistentDataContainer.getOrDefault(this.runeManager.getKey(), PersistentDataType.LIST.listTypeFrom(this.runeManager.getDataType()), new ArrayList<>());
+        runes = new ArrayList<>(runes);
+
+        List<Rune> existingRunes = newResult.getItemMeta().getPersistentDataContainer().getOrDefault(this.runeManager.getKey(), PersistentDataType.LIST.listTypeFrom(this.runeManager.getDataType()), new ArrayList<>());
+        runes.removeIf(existingRunes::contains);
+
         for (Rune rune : runes) {
             try {
                 this.runeManager.applyRune(newResult, rune);
