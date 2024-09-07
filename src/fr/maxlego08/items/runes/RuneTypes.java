@@ -33,6 +33,7 @@ public enum RuneTypes implements RuneType {
     XP_BOOST(new XPBoost(), RuneXPBoostConfiguration.class),
     JOB_XP_BOOST(new JobXPBoost(), RuneXPBoostConfiguration.class),
     JOB_MONEY_BOOST(new JobMoneyBoost(), RuneMoneyBoostConfiguration.class),
+    ATTRIBUTE_APPLICATOR(new AttributeApplicator(), RuneAttributeConfiguration.class),
     ;
 
     private final RuneActivator<?> activator;
