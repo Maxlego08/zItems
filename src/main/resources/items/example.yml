@@ -70,6 +70,12 @@ can-break:
 # If True, the item will be use in grindstone.
 grindstone-enabled: true
 
+# Permit to change amount of rune show on the item
+# If you want to show 3 runes, you need to set the value to 3
+# If you want to show 0 runes, you need to set the value to 0
+# If you want to show all runes, you need to set the value to all
+nb-runes-view: 3
+
 enchantment:
 
   glint: true

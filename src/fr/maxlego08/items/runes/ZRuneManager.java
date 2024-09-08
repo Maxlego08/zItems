@@ -170,10 +170,13 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         ItemMeta itemMeta = itemStack.getItemMeta();
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
 
+        int nbRunesView = -1;
+
         if (persistentDataContainer.has(Item.ITEM_KEY, PersistentDataType.STRING)) {
             Optional<Item> itemOptional = plugin.getItemManager().getItem(persistentDataContainer.get(Item.ITEM_KEY, PersistentDataType.STRING));
             if (itemOptional.isPresent()) {
                 Item item = itemOptional.get();
+                nbRunesView = item.getConfiguration().getNbRunesView();
                 if(item.getConfiguration().getDisableRunes().contains(rune)) {
                     throw new RuneNotAllowedException();
                 }
@@ -204,10 +207,16 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
         List<String> lore = itemMeta.hasLore() ? new ArrayList<>(itemMeta.getLore()) : new ArrayList<>();
 
-        if (runes.isEmpty()) {
-            lore.addAll(generateRuneLore(rune));
-        } else {
-            lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+        if(nbRunesView != 0) {
+            if (runes.isEmpty()) {
+                lore.addAll(generateRuneLore(rune));
+            } else {
+                if (nbRunesView != -1 && runes.size() == nbRunesView) {
+                    lore.add(color(getMessage(Message.RUNE_MORE)));
+                } else if (nbRunesView == -1 || runes.size() < nbRunesView) {
+                    lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                }
+            }
         }
 
         itemMeta.setLore(lore);

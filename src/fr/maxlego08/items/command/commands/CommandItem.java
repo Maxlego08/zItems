@@ -13,6 +13,7 @@ public class CommandItem extends VCommand {
         this.addSubCommand(new CommandItemReload(plugin));
         this.addSubCommand(new CommandItemApplyRune(plugin));
         this.addSubCommand(new CommandItemGive(plugin));
+        this.addSubCommand(new CommandItemViewRunes(plugin));
     }
 
     @Override
