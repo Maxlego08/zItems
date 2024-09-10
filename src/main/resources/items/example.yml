@@ -183,6 +183,12 @@ banner-meta:
     - color: RED
       pattern: STRIPE_DOWNLEFT
 
+# Allow defining the color of the leather armor
+# The color is defined by the RGB color space
+# Format is R,G,B (0-255) or #RRGGBB (0x000000-0xFFFFFF)
+leather-armor-meta:
+  color: 45,55,45
+
 # Allows defining the content of a block when it will be placed, you have all possible values for all types of blocks below
 # More informations here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/data/BlockData.html
 block-data-meta:

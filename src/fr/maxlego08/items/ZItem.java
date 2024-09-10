@@ -121,6 +121,8 @@ public class ZItem extends ZUtils implements Item {
                 persistentDataContainer.set(this.plugin.getRuneManager().getRuneRepresentKey(), this.plugin.getRuneManager().getDataType(), this.configuration.getItemRuneConfiguration().rune());
             }
 
+            this.configuration.applyLeatherArmorMeta(itemMeta);
+
             itemStack.setItemMeta(itemMeta);
 
             for (Rune rune : this.configuration.getRunes()) {

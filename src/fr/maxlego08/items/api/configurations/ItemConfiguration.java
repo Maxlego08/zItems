@@ -81,10 +81,11 @@ public class ItemConfiguration {
     private final BlockStateMetaConfiguration blockStateMetaConfiguration;
     private final ToolComponentConfiguration toolComponentConfiguration;
     private final RecipeConfiguration recipeConfiguration;
+    private final CommandsConfiguration commandsConfiguration;
+    private final LeatherArmorMetaConfiguration leatherArmorMetaConfiguration;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
-    private CommandsConfiguration commandsConfiguration;
     private ItemRuneConfiguration itemRuneConfiguration;
     private Food food;
     private ItemRarity itemRarity;
@@ -223,6 +224,12 @@ public class ItemConfiguration {
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
         this.recipeConfiguration = RecipeConfiguration.loadRecipe(plugin, configuration, fileName, path);
         this.commandsConfiguration = CommandsConfiguration.loadCommandsConfiguration(plugin, configuration, fileName, path);
+
+        if (this.material == Material.LEATHER_HELMET || this.material == Material.LEATHER_CHESTPLATE || this.material == Material.LEATHER_LEGGINGS || this.material == Material.LEATHER_BOOTS) {
+            this.leatherArmorMetaConfiguration = LeatherArmorMetaConfiguration.loadLeatherArmorMetaConfiguration(configuration, fileName, path);
+        } else {
+            this.leatherArmorMetaConfiguration = null;
+        }
 
         if (this.itemType == ItemType.RUNE) {
             this.itemRuneConfiguration = ItemRuneConfiguration.loadItemRuneConfiguration(plugin, configuration, fileName, path);
@@ -537,6 +544,12 @@ public class ItemConfiguration {
     public void applyBlockState(ItemMeta itemMeta, Player player, ItemComponent itemComponent) {
         if (this.blockStateMetaConfiguration != null && blockStateMetaConfiguration.enable() && itemMeta instanceof BlockStateMeta blockStateMeta) {
             this.blockStateMetaConfiguration.apply(blockStateMeta, player, itemComponent);
+        }
+    }
+
+    public void applyLeatherArmorMeta(ItemMeta itemMeta) {
+        if (itemMeta instanceof LeatherArmorMeta leatherArmorMeta && this.leatherArmorMetaConfiguration != null) {
+            this.leatherArmorMetaConfiguration.apply(leatherArmorMeta);
         }
     }
 
