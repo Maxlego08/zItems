@@ -89,10 +89,13 @@ public class ItemConfiguration {
     private ItemRuneConfiguration itemRuneConfiguration;
     private Food food;
     private ItemRarity itemRarity;
+    private int nbRunesView;
 
     public ItemConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
         this.itemType = ItemType.valueOf(configuration.getString(path + "type", "CLASSIC").toUpperCase());
+        String strValue = configuration.getString(path + "nb-runes-view", "all");
+        this.nbRunesView = "all".equals(strValue) ? -1 : Integer.parseInt(strValue);
         this.material = Material.getMaterial(configuration.getString(path + "material", "IRON_SWORD").toUpperCase());
         this.maxStackSize = Helper.between(configuration.getInt(path + "max-stack-size", 0), 0, 99); // between 0 and 99
         this.amount = Helper.between(configuration.getInt(path + "amount", 0), 0, 99); // between 1 and 99
@@ -579,6 +582,10 @@ public class ItemConfiguration {
 
     public List<Rune> getRunes() {
         return runes;
+    }
+
+    public int getNbRunesView() {
+        return nbRunesView;
     }
 
     public ItemRuneConfiguration getItemRuneConfiguration() {

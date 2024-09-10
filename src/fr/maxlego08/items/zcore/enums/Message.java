@@ -34,6 +34,7 @@ public enum Message {
     DESCRIPTION_RELOAD("Reload configuration files"),
     DESCRIPTION_GIVE("Give an item"),
     DESCRIPTION_RUN_APPLY("Apply a rune to an item"),
+    DESCRIPTION_VIEW_RUNES("View the runes of an item"),
 
     ITEM_NOT_FOUND("&cImpossible to find the item &f%name%&c."),
     ITEM_HAVE_NOT_META("&cThis item does not have any metadata."),
@@ -45,7 +46,7 @@ public enum Message {
     RUNE_LINE("&8- %rune%"),
 
     COMMAND_RUNE_NOT_ALLOWED("&cThis item does not support the rune %rune%."),
-    ;
+    RUNE_MORE("&8- &fAnd More...");
 
     private List<String> messages;
     private String message;
