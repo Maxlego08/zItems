@@ -8,7 +8,7 @@ import fr.maxlego08.items.exceptions.ItemEnchantException;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class EnchantApplicator implements ItemApplicationHandler<RuneEnchantApplicatorConfiguration>, RuneActivator<RuneEnchantApplicatorConfiguration> {
+public class EnchantApplicator implements ItemApplicationHandler<RuneEnchantApplicatorConfiguration>, RuneActivator {
 
     @Override
     public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneEnchantApplicatorConfiguration runeConfiguration) throws ItemEnchantException {

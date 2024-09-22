@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Objects;
 import java.util.UUID;
 
-public class AttributeApplicator implements ItemApplicationHandler<RuneAttributeConfiguration>, RuneActivator<RuneAttributeConfiguration> {
+public class AttributeApplicator implements ItemApplicationHandler<RuneAttributeConfiguration>, RuneActivator {
 
     @Override
     public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneAttributeConfiguration runeConfiguration) throws Exception {

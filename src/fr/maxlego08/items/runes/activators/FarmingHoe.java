@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class FarmingHoe implements BreakHandler<RuneFarmingHoeConfiguration>, InteractionHandler<RuneFarmingHoeConfiguration>, RuneActivator<RuneFarmingHoeConfiguration> {
+public class FarmingHoe implements BreakHandler<RuneFarmingHoeConfiguration>, InteractionHandler<RuneFarmingHoeConfiguration>, RuneActivator {
     
     /**
      * Plants seeds in a specified area around a given block.

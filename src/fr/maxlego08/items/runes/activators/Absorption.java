@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class Absorption implements BreakHandler<EmptyConfiguration>, RuneActivator<EmptyConfiguration> {
+public class Absorption implements BreakHandler<EmptyConfiguration>, RuneActivator {
 
     @Override
     public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, EmptyConfiguration runeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {

@@ -15,7 +15,7 @@ import org.bukkit.util.RayTraceResult;
 
 import java.util.*;
 
-public class Hammer implements BreakHandler<RuneHammerConfiguration>, RuneActivator<RuneHammerConfiguration> {
+public class Hammer implements BreakHandler<RuneHammerConfiguration>, RuneActivator {
 
     @Override
     public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, RuneHammerConfiguration runeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {

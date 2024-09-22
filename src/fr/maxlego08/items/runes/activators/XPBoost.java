@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class XPBoost implements EntityDeathHandler<RuneXPBoostConfiguration>, BreakHandler<RuneXPBoostConfiguration>, RuneActivator<RuneXPBoostConfiguration> {
+public class XPBoost implements EntityDeathHandler<RuneXPBoostConfiguration>, BreakHandler<RuneXPBoostConfiguration>, RuneActivator {
 
     @Override
     public void onEntityDeath(ItemPlugin plugin, EntityDeathEvent event, RuneXPBoostConfiguration runeConfiguration) {

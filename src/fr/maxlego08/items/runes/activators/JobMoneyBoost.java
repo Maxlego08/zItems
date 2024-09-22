@@ -6,7 +6,7 @@ import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneMoneyBoostConfiguration;
 import fr.maxlego08.items.api.runes.handlers.JobsMoneyHandler;
 
-public class JobMoneyBoost implements JobsMoneyHandler<RuneMoneyBoostConfiguration>, RuneActivator<RuneMoneyBoostConfiguration> {
+public class JobMoneyBoost implements JobsMoneyHandler<RuneMoneyBoostConfiguration>, RuneActivator {
 
     @Override
     public void jobsGainMoney(ItemPlugin plugin, JobsPayementEventWrapper event, RuneMoneyBoostConfiguration runeConfiguration) {

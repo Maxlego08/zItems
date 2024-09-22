@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class VeinMiner implements BreakHandler<RuneVeinMiningConfiguration>, RuneActivator<RuneVeinMiningConfiguration> {
+public class VeinMiner implements BreakHandler<RuneVeinMiningConfiguration>, RuneActivator {
 
     /**
      * Cette méthode prend un bloc de départ et renvoie un ensemble de tous les blocs connectés du même type.

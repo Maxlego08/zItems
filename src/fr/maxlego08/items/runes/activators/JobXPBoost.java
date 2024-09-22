@@ -6,7 +6,7 @@ import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneXPBoostConfiguration;
 import fr.maxlego08.items.api.runes.handlers.JobsExperienceHandler;
 
-public class JobXPBoost implements JobsExperienceHandler<RuneXPBoostConfiguration>, RuneActivator<RuneXPBoostConfiguration> {
+public class JobXPBoost implements JobsExperienceHandler<RuneXPBoostConfiguration>, RuneActivator {
 
     @Override
     public void jobsGainExperience(ItemPlugin plugin, JobsExpGainEventWrapper event, RuneXPBoostConfiguration runeConfiguration) {

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SilkSpawner implements BreakHandler<EmptyConfiguration>, RuneActivator<EmptyConfiguration> {
+public class SilkSpawner implements BreakHandler<EmptyConfiguration>, RuneActivator {
 
     @Override
     public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, EmptyConfiguration runeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {

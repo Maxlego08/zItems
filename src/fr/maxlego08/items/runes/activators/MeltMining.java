@@ -14,7 +14,7 @@ import org.bukkit.inventory.RecipeChoice;
 
 import java.util.*;
 
-public class MeltMining implements BreakHandler<RuneConfiguration>, RuneActivator<RuneConfiguration> {
+public class MeltMining implements BreakHandler<RuneConfiguration>, RuneActivator {
 
     private final Map<Material, FurnaceRecipe> caches = new HashMap<>();
 
