@@ -42,7 +42,7 @@ public class RunePipeline {
         currentBlocks.add(event.getBlock());
         drops.put(event.getBlock().getLocation(), new ArrayList<>(event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand())));
 
-        for (Rune rune : runes.stream().filter(rune -> rune instanceof BreakHandler<?>).toList()) {
+        for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof BreakHandler<?>).toList()) {
             currentBlocks = new HashSet<>(((BreakHandler<?>) rune.getType().getActivator()).breakBlocks(plugin, event, rune.getConfiguration(), new HashSet<>(currentBlocks), drops));
         }
         return currentBlocks;
@@ -51,17 +51,17 @@ public class RunePipeline {
     public <T extends Event> void pipeline(ItemPlugin plugin, T event) {
         switch (event) {
             case PlayerInteractEvent playerInteractEvent ->  {
-                for (Rune rune : runes.stream().filter(rune -> rune instanceof InteractionHandler<?>).toList()) {
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof InteractionHandler<?>).toList()) {
                     ((InteractionHandler<?>) rune.getType().getActivator()).interactBlock(plugin, playerInteractEvent, rune.getConfiguration());
                 }
             }
             case JobsExpGainEventWrapper jobsExpGainEventWrapper -> {
-                for (Rune rune : runes.stream().filter(rune -> rune instanceof JobsExperienceHandler<?>).toList()) {
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof JobsExperienceHandler<?>).toList()) {
                     ((JobsExperienceHandler<?>) rune.getType().getActivator()).jobsGainExperience(plugin, jobsExpGainEventWrapper, rune.getConfiguration());
                 }
             }
             case JobsPayementEventWrapper jobsPayementEventWrapper -> {
-                for (Rune rune : runes.stream().filter(rune -> rune instanceof JobsMoneyHandler<?>).toList()) {
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof JobsMoneyHandler<?>).toList()) {
                     ((JobsMoneyHandler<?>) rune.getType().getActivator()).jobsGainMoney(plugin, jobsPayementEventWrapper, rune.getConfiguration());
                 }
             }
@@ -69,7 +69,7 @@ public class RunePipeline {
                 handleBreak(plugin, blockBreakEvent);
             }
             case EntityDeathEvent entityDeathEvent -> {
-                for (Rune rune : runes.stream().filter(rune -> rune instanceof EntityDeathHandler<?>).toList()) {
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof EntityDeathHandler<?>).toList()) {
                     ((EntityDeathHandler<?>) rune.getType().getActivator()).onEntityDeath(plugin, entityDeathEvent, rune.getConfiguration());
                 }
             }
