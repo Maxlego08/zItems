@@ -1,7 +1,9 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneAttributeConfiguration;
+import fr.maxlego08.items.api.runes.handlers.ItemApplicationHandler;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -9,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Objects;
 import java.util.UUID;
 
-public class AttributeApplicator extends RuneActivatorHelper<RuneAttributeConfiguration> {
+public class AttributeApplicator implements ItemApplicationHandler<RuneAttributeConfiguration>, RuneActivator<RuneAttributeConfiguration> {
 
     @Override
     public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneAttributeConfiguration runeConfiguration) throws Exception {

@@ -1,7 +1,9 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.api.runes.handlers.BreakHandler;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -12,7 +14,7 @@ import org.bukkit.inventory.RecipeChoice;
 
 import java.util.*;
 
-public class MeltMining extends RuneActivatorHelper<RuneConfiguration> {
+public class MeltMining implements BreakHandler<RuneConfiguration>, RuneActivator<RuneConfiguration> {
 
     private final Map<Material, FurnaceRecipe> caches = new HashMap<>();
 

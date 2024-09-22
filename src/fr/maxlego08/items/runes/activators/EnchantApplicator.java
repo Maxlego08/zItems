@@ -1,12 +1,14 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneEnchantApplicatorConfiguration;
+import fr.maxlego08.items.api.runes.handlers.ItemApplicationHandler;
 import fr.maxlego08.items.exceptions.ItemEnchantException;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class EnchantApplicator extends RuneActivatorHelper<RuneEnchantApplicatorConfiguration> {
+public class EnchantApplicator implements ItemApplicationHandler<RuneEnchantApplicatorConfiguration>, RuneActivator<RuneEnchantApplicatorConfiguration> {
 
     @Override
     public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneEnchantApplicatorConfiguration runeConfiguration) throws ItemEnchantException {

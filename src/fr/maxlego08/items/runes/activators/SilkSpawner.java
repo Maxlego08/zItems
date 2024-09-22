@@ -1,7 +1,9 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.EmptyConfiguration;
+import fr.maxlego08.items.api.runes.handlers.BreakHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SilkSpawner extends RuneActivatorHelper<EmptyConfiguration> {
+public class SilkSpawner implements BreakHandler<EmptyConfiguration>, RuneActivator<EmptyConfiguration> {
 
     @Override
     public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, EmptyConfiguration runeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {

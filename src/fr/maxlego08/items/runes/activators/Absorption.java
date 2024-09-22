@@ -1,7 +1,9 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.EmptyConfiguration;
+import fr.maxlego08.items.api.runes.handlers.BreakHandler;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -10,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class Absorption extends RuneActivatorHelper<EmptyConfiguration> {
+public class Absorption implements BreakHandler<EmptyConfiguration>, RuneActivator<EmptyConfiguration> {
 
     @Override
     public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, EmptyConfiguration runeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {
