@@ -20,6 +20,7 @@ import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.hook.ZHookManager;
 import fr.maxlego08.items.hook.jobs.JobsHook;
+import fr.maxlego08.items.hook.jobs.ZJobsHook;
 import fr.maxlego08.items.hook.worlds.WorldGuardHook;
 import fr.maxlego08.items.listener.GrindstoneListener;
 import fr.maxlego08.items.listener.SpawnerListener;
@@ -93,7 +94,8 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         //Register all internal hooks
         List.of(
-                new Hooks(Plugins.JOBS, new JobsHook(this.runeManager))
+                new Hooks(Plugins.JOBS, new JobsHook(this.runeManager)),
+                new Hooks(Plugins.ZJOBS, new ZJobsHook(this.runeManager))
                 // ToDo, add more hook
         ).forEach(hooks -> this.hookManager.registerHook(hooks.plugins(), hooks.hook()));
 

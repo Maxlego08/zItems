@@ -11,7 +11,7 @@ public enum Plugins {
 	ZTRANSLATOR("zTranslator"),
 	WORLDGUARD("WorldGuard"),
 	JOBS("Jobs"),
-	
+	ZJOBS("zJobs"),
 	;
 
 	private final String name;

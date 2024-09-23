@@ -9,4 +9,5 @@ api-version: 1.21
 softdepend:
   - WorldGuard
   - Jobs
+  - zJobs
 commands:
