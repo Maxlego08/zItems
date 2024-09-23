@@ -60,6 +60,10 @@
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
+        <repository>
+            <id>repository-local</id>
+            <url>file://${project.basedir}/libs</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -98,5 +102,13 @@
             <version>v5.2.2.3</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>fr.maxlego08</groupId>
+            <artifactId>zjobs</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/zJobs-1.0.0.jar</systemPath>
+        </dependency>
+
     </dependencies>
 </project>
