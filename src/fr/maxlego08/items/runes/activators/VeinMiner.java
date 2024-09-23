@@ -3,17 +3,16 @@ package fr.maxlego08.items.runes.activators;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
+import fr.maxlego08.items.api.runes.handlers.BreakHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class VeinMiner extends RuneActivatorHelper<RuneVeinMiningConfiguration> {
+public class VeinMiner implements BreakHandler<RuneVeinMiningConfiguration>, RuneActivator {
 
     /**
      * Cette méthode prend un bloc de départ et renvoie un ensemble de tous les blocs connectés du même type.

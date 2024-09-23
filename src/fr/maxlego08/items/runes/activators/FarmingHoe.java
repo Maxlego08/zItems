@@ -1,9 +1,10 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
-import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
+import fr.maxlego08.items.api.runes.handlers.BreakHandler;
+import fr.maxlego08.items.api.runes.handlers.InteractionHandler;
 import fr.maxlego08.items.zcore.utils.ElapsedTime;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,12 +18,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class FarmingHoe extends RuneActivatorHelper<RuneFarmingHoeConfiguration> {
+public class FarmingHoe implements BreakHandler<RuneFarmingHoeConfiguration>, InteractionHandler<RuneFarmingHoeConfiguration>, RuneActivator {
     
     /**
      * Plants seeds in a specified area around a given block.
@@ -263,9 +263,6 @@ public class FarmingHoe extends RuneActivatorHelper<RuneFarmingHoeConfiguration>
             itemStack.damage(runeFarmingHoeConfiguration.harvestDamage(), player);
         }
     }
-
-    @Override
-    public void applyOnItems(ItemPlugin plugin, ItemMeta itemMeta, RuneFarmingHoeConfiguration runeConfiguration) {}
 
     @Override
     public int getPriority() {

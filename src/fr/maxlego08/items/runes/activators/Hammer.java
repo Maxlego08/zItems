@@ -1,7 +1,9 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneHammerConfiguration;
+import fr.maxlego08.items.api.runes.handlers.BreakHandler;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -13,7 +15,7 @@ import org.bukkit.util.RayTraceResult;
 
 import java.util.*;
 
-public class Hammer extends RuneActivatorHelper<RuneHammerConfiguration> {
+public class Hammer implements BreakHandler<RuneHammerConfiguration>, RuneActivator {
 
     @Override
     public Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, RuneHammerConfiguration runeConfiguration, Set<Block> origin, Map<Location, List<ItemStack>> drops) {

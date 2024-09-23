@@ -30,7 +30,7 @@ public interface RuneType {
 
     String getName();
 
-    RuneActivator<?> getActivator();
+    RuneActivator getActivator();
 
     RuneConfiguration getConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName);
 

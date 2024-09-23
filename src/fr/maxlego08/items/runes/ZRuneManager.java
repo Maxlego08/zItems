@@ -11,6 +11,7 @@ import fr.maxlego08.items.api.runes.RunePipeline;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import fr.maxlego08.items.api.runes.exceptions.*;
+import fr.maxlego08.items.api.runes.handlers.ItemApplicationHandler;
 import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.zcore.enums.Message;
@@ -199,7 +200,9 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         }
 
         try {
-            rune.getType().getActivator().applyOnItems(plugin, itemMeta, rune.getConfiguration());
+            if(rune.getType().getActivator() instanceof ItemApplicationHandler<?> itemApplicationHandler) {
+                itemApplicationHandler.applyOnItems(plugin, itemMeta, rune.getConfiguration());
+            }
         } catch (Exception e) {
             throw new RuneAppliedException();
         }
@@ -275,7 +278,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         var optional = this.getRunes(itemStack);
         if (optional.isEmpty()) return;
 
-        RunePipeline pipeline = new RunePipeline(this, optional.get());
+        RunePipeline pipeline = new RunePipeline(optional.get());
         pipeline.pipeline(plugin, event);
     }
 

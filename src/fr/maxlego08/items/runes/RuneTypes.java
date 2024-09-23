@@ -36,10 +36,10 @@ public enum RuneTypes implements RuneType {
     ATTRIBUTE_APPLICATOR(new AttributeApplicator(), RuneAttributeConfiguration.class),
     ;
 
-    private final RuneActivator<?> activator;
+    private final RuneActivator activator;
     private final Class<? extends RuneConfiguration> configuration;
 
-    RuneTypes(RuneActivator<?> activator, Class<? extends RuneConfiguration> configuration) {
+    RuneTypes(RuneActivator activator, Class<? extends RuneConfiguration> configuration) {
         this.activator = activator;
         this.configuration = configuration;
     }
@@ -55,7 +55,7 @@ public enum RuneTypes implements RuneType {
     }
 
     @Override
-    public RuneActivator<?> getActivator() {
+    public RuneActivator getActivator() {
         return this.activator;
     }
 

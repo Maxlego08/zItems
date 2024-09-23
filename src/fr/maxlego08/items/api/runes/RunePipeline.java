@@ -3,6 +3,7 @@ package fr.maxlego08.items.api.runes;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
 import fr.maxlego08.items.api.hook.jobs.JobsPayementEventWrapper;
+import fr.maxlego08.items.api.runes.handlers.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,11 +17,9 @@ import java.util.*;
 
 public class RunePipeline {
 
-    private final RuneManager runeManager;
     private final List<Rune> runes;
 
-    public RunePipeline(RuneManager runeManager, List<Rune> activators) {
-        this.runeManager = runeManager;
+    public RunePipeline(List<Rune> activators) {
         activators.sort(Comparator.comparingInt(rune -> rune.getType().getActivator().getPriority()));
         this.runes = activators.reversed();
     }
@@ -43,8 +42,8 @@ public class RunePipeline {
         currentBlocks.add(event.getBlock());
         drops.put(event.getBlock().getLocation(), new ArrayList<>(event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand())));
 
-        for (Rune rune : runes) {
-            currentBlocks = new HashSet<>(rune.getType().getActivator().breakBlocks(plugin, event, rune.getConfiguration(), new HashSet<>(currentBlocks), drops));
+        for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof BreakHandler<?>).toList()) {
+            currentBlocks = new HashSet<>(((BreakHandler<?>) rune.getType().getActivator()).breakBlocks(plugin, event, rune.getConfiguration(), new HashSet<>(currentBlocks), drops));
         }
         return currentBlocks;
     }
@@ -52,26 +51,26 @@ public class RunePipeline {
     public <T extends Event> void pipeline(ItemPlugin plugin, T event) {
         switch (event) {
             case PlayerInteractEvent playerInteractEvent ->  {
-                for (Rune rune : runes) {
-                    rune.getType().getActivator().interactBlock(plugin, playerInteractEvent, rune.getConfiguration());
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof InteractionHandler<?>).toList()) {
+                    ((InteractionHandler<?>) rune.getType().getActivator()).interactBlock(plugin, playerInteractEvent, rune.getConfiguration());
                 }
             }
             case JobsExpGainEventWrapper jobsExpGainEventWrapper -> {
-                for (Rune rune : runes) {
-                    rune.getType().getActivator().jobsGainExperience(plugin, jobsExpGainEventWrapper, rune.getConfiguration());
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof JobsExperienceHandler<?>).toList()) {
+                    ((JobsExperienceHandler<?>) rune.getType().getActivator()).jobsGainExperience(plugin, jobsExpGainEventWrapper, rune.getConfiguration());
                 }
             }
             case JobsPayementEventWrapper jobsPayementEventWrapper -> {
-                for (Rune rune : runes) {
-                    rune.getType().getActivator().jobsGainMoney(plugin, jobsPayementEventWrapper, rune.getConfiguration());
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof JobsMoneyHandler<?>).toList()) {
+                    ((JobsMoneyHandler<?>) rune.getType().getActivator()).jobsGainMoney(plugin, jobsPayementEventWrapper, rune.getConfiguration());
                 }
             }
             case BlockBreakEvent blockBreakEvent -> {
                 handleBreak(plugin, blockBreakEvent);
             }
             case EntityDeathEvent entityDeathEvent -> {
-                for (Rune rune : runes) {
-                    rune.getType().getActivator().onEntityDeath(plugin, entityDeathEvent, rune.getConfiguration());
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof EntityDeathHandler<?>).toList()) {
+                    ((EntityDeathHandler<?>) rune.getType().getActivator()).onEntityDeath(plugin, entityDeathEvent, rune.getConfiguration());
                 }
             }
             default -> throw new IllegalStateException("Unexpected value: " + event);

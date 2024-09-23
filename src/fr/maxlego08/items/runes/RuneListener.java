@@ -9,7 +9,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -38,7 +37,7 @@ public class RuneListener implements Listener {
         runes.removeIf(rune -> !rune.getConfiguration().contains(event.getBlock().getType()));
         if (runes.isEmpty()) return;
 
-        RunePipeline pipeline = new RunePipeline(this.runeManager, runes);
+        RunePipeline pipeline = new RunePipeline(runes);
         pipeline.pipeline(plugin, event);
     }
 
@@ -53,7 +52,7 @@ public class RuneListener implements Listener {
         if (optional.isEmpty()) return;
 
         var runes = new ArrayList<>(optional.get());
-        RunePipeline pipeline = new RunePipeline(this.runeManager, runes);
+        RunePipeline pipeline = new RunePipeline(runes);
         pipeline.pipeline(plugin, event);
     }
 

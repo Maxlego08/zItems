@@ -1,9 +1,11 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneXPBoostConfiguration;
+import fr.maxlego08.items.api.runes.handlers.BreakHandler;
+import fr.maxlego08.items.api.runes.handlers.EntityDeathHandler;
 import org.bukkit.Location;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class XPBoost extends RuneActivatorHelper<RuneXPBoostConfiguration> {
+public class XPBoost implements EntityDeathHandler<RuneXPBoostConfiguration>, BreakHandler<RuneXPBoostConfiguration>, RuneActivator {
 
     @Override
     public void onEntityDeath(ItemPlugin plugin, EntityDeathEvent event, RuneXPBoostConfiguration runeConfiguration) {
