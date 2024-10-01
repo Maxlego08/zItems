@@ -35,6 +35,7 @@ public enum Message {
     DESCRIPTION_GIVE("Give an item"),
     DESCRIPTION_RUN_APPLY("Apply a rune to an item"),
     DESCRIPTION_VIEW_RUNES("View the runes of an item"),
+    DESCRIPTION_ITEM_INFO("Display item informations"),
 
     ITEM_NOT_FOUND("&cImpossible to find the item &f%name%&c."),
     ITEM_HAVE_NOT_META("&cThis item does not have any metadata."),
@@ -46,7 +47,40 @@ public enum Message {
     RUNE_LINE("&8- %rune%"),
 
     COMMAND_RUNE_NOT_ALLOWED("&cThis item does not support the rune %rune%."),
-    RUNE_MORE("&8- &fAnd More...");
+    RUNE_MORE("&8- &fAnd More..."),
+
+    DESCRIPTION_ITEM_NAME("Change the item name"),
+    DESCRIPTION_ITEM_CUSTOM_MODEL_DATA("Change custom model data"),
+    DESCRIPTION_ITEM_LORE("Show commands for the lore"),
+    DESCRIPTION_ITEM_LORE_SET("Define a line of a lore"),
+    DESCRIPTION_ITEM_LORE_ADD("Add a line to lore"),
+    DESCRIPTION_ITEM_LORE_CLEAR("Clear item lore"),
+
+
+    COMMAND_ITEM_EMPTY("&cYou have no item in your hand."),
+    COMMAND_ITEM_CLEAR("&aYou have cleared this item's name"),
+    COMMAND_ITEM_SET("&aYou have renamed your held item to &f%name%&a."),
+    COMMAND_ITEM_LORE_ADD("&aYou just added the line &f%text%&a."),
+    COMMAND_ITEM_LORE_SET("&aYou just set line %line% to &f%text%&a."),
+    COMMAND_ITEM_LORE_CLEAR("&aYou just clear the item lore."),
+    COMMAND_ITEM_LORE_SET_ERROR("&cCan’t find the line &f%line%&c."),
+    COMMAND_ITEM_CUSTOM_MODEL_DATA("&aYou just updated the custom model data to &f%custom-model-data%&a."),
+    COMMAND_ITEM_NAME_AND_AMOUNT("&eItem name: &f%item-name%&e, Amount: &f%amount%"),
+    COMMAND_ITEM_LORE("&eItem Lore:"),
+    COMMAND_ITEM_LORE_LINE("&7- "),
+    COMMAND_ITEM_ENCHANTMENTS("&eEnchantments: &f%enchantments%"),
+    COMMAND_ITEM_CUSTOM_MODEL_DATA_INFO("&aCustom Model Data: &f%custom-model-data%"),
+    COMMAND_ITEM_DURABILITY("&eDurability: &f%durability%&e/&f%max-durability%"),
+    COMMAND_ITEM_ATTRIBUTES("&eAttributes: &f%attributes%"),
+    COMMAND_ITEM_NBT_DATA("&eNBT Data: &f%nbt-data%"),
+    COMMAND_ITEM_FLAGS("&eItem Flags: &f%flags%"),
+    COMMAND_ITEM_UNBREAKABLE("&eUnbreakable: &f%unbreakable%"),
+    COMMAND_ITEM_RARITY("&eRarity: &f%rarity%"),
+    COMMAND_ITEM_OWNER("&eOwner: &f%owner%"),
+
+
+
+    ;
 
     private List<String> messages;
     private String message;

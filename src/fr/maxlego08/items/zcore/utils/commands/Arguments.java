@@ -274,4 +274,13 @@ public abstract class Arguments extends ZUtils {
 			return world;
 		}
 	}
+
+	protected String getArgs(int start) {
+		StringBuilder stringBuilder = new StringBuilder();
+		for (int i = start; i < this.args.length; i++) {
+			if (i != start) stringBuilder.append(" ");
+			stringBuilder.append(this.args[i]);
+		}
+		return stringBuilder.toString();
+	}
 }

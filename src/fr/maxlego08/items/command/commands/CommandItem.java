@@ -2,6 +2,7 @@ package fr.maxlego08.items.command.commands;
 
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.command.VCommand;
+import fr.maxlego08.items.command.commands.edit.CommandItemEdit;
 import fr.maxlego08.items.zcore.enums.Permission;
 import fr.maxlego08.items.zcore.utils.commands.CommandType;
 
@@ -14,6 +15,7 @@ public class CommandItem extends VCommand {
         this.addSubCommand(new CommandItemApplyRune(plugin));
         this.addSubCommand(new CommandItemGive(plugin));
         this.addSubCommand(new CommandItemViewRunes(plugin));
+        this.addSubCommand(new CommandItemEdit(plugin));
     }
 
     @Override

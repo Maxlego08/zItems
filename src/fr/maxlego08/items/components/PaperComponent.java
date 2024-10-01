@@ -1,21 +1,25 @@
 package fr.maxlego08.items.components;
 
 import fr.maxlego08.items.api.ItemComponent;
+import fr.maxlego08.items.zcore.enums.Message;
+import fr.maxlego08.items.zcore.utils.ZUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bukkit.block.sign.SignSide;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PaperComponent implements ItemComponent {
+public class PaperComponent extends ZUtils implements ItemComponent {
 
     private final MiniMessage MINI_MESSAGE = MiniMessage.builder().tags(TagResolver.builder().resolver(StandardTags.defaults()).build()).build();
     private final Map<String, String> COLORS_MAPPINGS = new HashMap<>();
@@ -76,13 +80,13 @@ public class PaperComponent implements ItemComponent {
 
     @Override
     public void setItemName(ItemMeta itemMeta, String name) {
-        var component = getComponent(name).decoration(TextDecoration.ITALIC, getState(name));
+        var component = name.isEmpty() ? null : getComponent(name).decoration(TextDecoration.ITALIC, getState(name));
         itemMeta.itemName(component);
     }
 
     @Override
     public void setDisplayName(ItemMeta itemMeta, String name) {
-        var component = getComponent(name).decoration(TextDecoration.ITALIC, getState(name));
+        var component = name.isEmpty() ? null : getComponent(name).decoration(TextDecoration.ITALIC, getState(name));
         itemMeta.displayName(component);
     }
 
@@ -97,7 +101,37 @@ public class PaperComponent implements ItemComponent {
         signSide.line(index, getComponent(line).decoration(TextDecoration.ITALIC, getState(line)));
     }
 
+    @Override
+    public void addLoreLine(ItemMeta itemMeta, String line) {
+
+        List<Component> components = itemMeta.hasLore() ? itemMeta.lore() : new ArrayList<>();
+        if (components == null) components = new ArrayList<>();
+
+        components.add(getComponent(line).decorationIfAbsent(TextDecoration.ITALIC, getState(line)));
+        itemMeta.lore(components);
+    }
+
     public Component getComponent(String message) {
         return this.MINI_MESSAGE.deserialize(colorMiniMessage(message));
+    }
+
+    @Override
+    public void setLoreIndex(ItemMeta itemMeta, int index, String line) {
+        List<Component> components = itemMeta.hasLore() ? itemMeta.lore() : new ArrayList<>();
+        if (components == null) return;
+        components.set(index - 1, getComponent(line).decorationIfAbsent(TextDecoration.ITALIC, getState(line)));
+        itemMeta.lore(components);
+    }
+
+    @Override
+    public void sendItemLore(Player player, ItemMeta itemMeta) {
+        List<Component> lore = itemMeta.lore();
+        message(player, Message.COMMAND_ITEM_LORE);
+        if (lore != null) {
+            for (Component component : lore) {
+                Component message = getComponent(Message.COMMAND_ITEM_LORE_LINE.getMessage());
+                player.sendMessage(message.append(component));
+            }
+        }
     }
 }
