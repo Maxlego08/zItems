@@ -2,19 +2,19 @@ package fr.maxlego08.items.api.configurations;
 
 import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
 import fr.maxlego08.items.ItemsPlugin;
-import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
 import fr.maxlego08.items.api.configurations.meta.*;
-import fr.maxlego08.items.api.configurations.recipes.RecipeConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.enchantments.EssentialsEnchantment;
 import fr.maxlego08.items.api.runes.ItemRuneConfiguration;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TrimHelper;
+import fr.traqueur.recipes.impl.domains.ItemRecipe;
+import fr.traqueur.recipes.impl.domains.recipes.RecipeConfiguration;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -24,7 +24,6 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
@@ -80,7 +79,6 @@ public class ItemConfiguration {
     private final BlockDataMetaConfiguration blockDataMetaConfiguration;
     private final BlockStateMetaConfiguration blockStateMetaConfiguration;
     private final ToolComponentConfiguration toolComponentConfiguration;
-    private final RecipeConfiguration recipeConfiguration;
     private final CommandsConfiguration commandsConfiguration;
     private final LeatherArmorMetaConfiguration leatherArmorMetaConfiguration;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
@@ -90,9 +88,13 @@ public class ItemConfiguration {
     private Food food;
     private ItemRarity itemRarity;
     private int nbRunesView;
+    private final List<ItemRecipe> recipes;
+    private final YamlConfiguration configuration;
 
-    public ItemConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+    public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
+        this.recipes = new ArrayList<>();
+        this.configuration = configuration;
         this.itemType = ItemType.valueOf(configuration.getString(path + "type", "CLASSIC").toUpperCase());
         String strValue = configuration.getString(path + "nb-runes-view", "all");
         this.nbRunesView = "all".equals(strValue) ? -1 : Integer.parseInt(strValue);
@@ -225,7 +227,6 @@ public class ItemConfiguration {
         this.blockDataMetaConfiguration = BlockDataMetaConfiguration.loadBlockDataMeta(plugin, configuration, fileName, path);
         this.blockStateMetaConfiguration = BlockStateMetaConfiguration.loadBlockStateMeta(plugin, configuration, fileName, path);
         this.toolComponentConfiguration = ToolComponentConfiguration.loadToolComponent(plugin, configuration, fileName, path);
-        this.recipeConfiguration = RecipeConfiguration.loadRecipe(plugin, configuration, fileName, path);
         this.commandsConfiguration = CommandsConfiguration.loadCommandsConfiguration(plugin, configuration, fileName, path);
 
         if (this.material == Material.LEATHER_HELMET || this.material == Material.LEATHER_CHESTPLATE || this.material == Material.LEATHER_LEGGINGS || this.material == Material.LEATHER_BOOTS) {
@@ -556,20 +557,25 @@ public class ItemConfiguration {
         }
     }
 
-    public void createRecipe(Item item, ItemsPlugin plugin) {
-        this.recipeConfiguration.apply(item, plugin);
+    public void createRecipe(ItemsPlugin plugin) {
+        if(configuration.contains("recipes")) {
+            for (String key : configuration.getConfigurationSection("recipes").getKeys(false)) {
+                var recipeConfig = new RecipeConfiguration(plugin, key, "recipes." + key, configuration);
+                var recipe = recipeConfig.build();
+                this.recipes.add(recipe);
+                plugin.getRecipesAPI().addRecipe(recipe);
+            }
+        }
     }
 
-    public void deleteRecipe(Item item, ItemsPlugin plugin) {
-        this.recipeConfiguration.deleteRecipe(item, plugin);
+    public void deleteRecipe(ItemPlugin plugin) {
+       this.recipes.forEach(recipeConfiguration -> {
+           plugin.getRecipesAPI().removeRecipe(recipeConfiguration);
+       });
     }
 
     public ItemRarity getItemRarity() {
         return itemRarity;
-    }
-
-    public RecipeConfiguration getRecipeConfiguration() {
-        return recipeConfiguration;
     }
 
     public CommandsConfiguration getCommandsConfiguration() {

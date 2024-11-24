@@ -18,7 +18,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -117,7 +116,7 @@ public class FarmingHoe implements BreakHandler<RuneFarmingHoeConfiguration>, In
 
         if (runeFarmingHoeConfiguration.dropItemInInventory()) {
             var inventory = player.getInventory();
-            @NotNull HashMap<Integer, ItemStack> result = inventory.addItem(drops.toArray(new ItemStack[0]));
+            HashMap<Integer, ItemStack> result = inventory.addItem(drops.toArray(new ItemStack[0]));
             return result.values();
         }
         return drops;

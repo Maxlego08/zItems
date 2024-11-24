@@ -70,7 +70,6 @@ public class DisableEnchantsListener implements Listener {
         getCustomItem(item).ifPresent(customItem -> {
             List<ItemEnchantment> disableEnchants = customItem.getConfiguration().getDisableEnchantments();
             if (disableEnchants.isEmpty()) return;
-            System.out.println("Anvil");
             for (ItemEnchantment enchantment : disableEnchants) {
                 if (shouldDisableEnchantment(item2, enchantment)) {
                     event.setResult(null);

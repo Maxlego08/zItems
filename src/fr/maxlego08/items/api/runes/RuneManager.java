@@ -1,7 +1,7 @@
 package fr.maxlego08.items.api.runes;
 
-import fr.maxlego08.items.api.configurations.recipes.ItemRecipe;
 import fr.maxlego08.items.api.runes.exceptions.RuneException;
+import fr.traqueur.recipes.impl.domains.ItemRecipe;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;
@@ -43,8 +43,6 @@ public interface RuneManager {
     PersistentDataType<String, Rune> getDataType();
 
     void deleteCrafts();
-
-    Map<NamespacedKey, ItemRecipe> getRecipesUseRunes();
 
     <T extends PlayerEvent> void onPlayerEvent(T event);
 }

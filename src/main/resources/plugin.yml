@@ -6,6 +6,7 @@ website: https://groupez.dev
 description: Custom items
 version: 1.0.0
 api-version: 1.21
+folia-support: true
 softdepend:
   - WorldGuard
   - Jobs

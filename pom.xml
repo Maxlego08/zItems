@@ -30,6 +30,7 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+
                     </execution>
                 </executions>
             </plugin>
@@ -109,6 +110,15 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/zJobs-1.0.0.jar</systemPath>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.Traqueur-dev</groupId>
+            <artifactId>RecipesAPI</artifactId>
+            <version>1.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.technicallycoded</groupId>
+            <artifactId>FoliaLib</artifactId>
+            <version>main-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

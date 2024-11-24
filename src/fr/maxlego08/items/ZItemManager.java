@@ -2,21 +2,13 @@ package fr.maxlego08.items;
 
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
-import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
-import fr.maxlego08.items.api.runes.Rune;
-import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.SmithingRecipe;
-import org.bukkit.inventory.SmithingTransformRecipe;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,10 +61,13 @@ public class ZItemManager extends ZUtils implements ItemManager {
             exception.printStackTrace();
         }
 
+
+    }
+
+    @Override
+    public void loadCrafts() {
         // Must create a recipe after all registrations to get custom items from the List when ingredient is custom
-        this.items.forEach(item -> item.getConfiguration().createRecipe(item, this.plugin));
-
-
+        this.items.forEach(item -> item.getConfiguration().createRecipe(this.plugin));
     }
 
     @Override
@@ -126,7 +121,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
 
     @Override
     public void deleteCrafts() {
-        this.items.forEach(item -> item.getConfiguration().deleteRecipe(item, this.plugin));
+        this.items.forEach(item -> item.getConfiguration().deleteRecipe(this.plugin));
         this.plugin.getRuneManager().deleteCrafts();
     }
 }
