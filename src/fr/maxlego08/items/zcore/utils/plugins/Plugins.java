@@ -1,5 +1,7 @@
 package fr.maxlego08.items.zcore.utils.plugins;
 
+import org.bukkit.Bukkit;
+
 public enum Plugins {
 	
 	VAULT("Vault"),
@@ -12,12 +14,17 @@ public enum Plugins {
 	WORLDGUARD("WorldGuard"),
 	JOBS("Jobs"),
 	ZJOBS("zJobs"),
+	ZMENU("zMenu"),
 	;
 
 	private final String name;
 
 	private Plugins(String name) {
 		this.name = name;
+	}
+
+	public boolean isEnable() {
+		return Bukkit.getPluginManager().isPluginEnabled(name);
 	}
 
 	/**

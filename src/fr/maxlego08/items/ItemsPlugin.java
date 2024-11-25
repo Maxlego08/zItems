@@ -6,6 +6,7 @@ import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.buttons.ItemsButton;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.commands.CommandsListener;
 import fr.maxlego08.items.api.enchantments.Enchantments;
@@ -34,6 +35,10 @@ import fr.maxlego08.items.save.MessageLoader;
 import fr.maxlego08.items.zcore.ZPlugin;
 import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import fr.maxlego08.menu.api.ButtonManager;
+import fr.maxlego08.menu.api.InventoryManager;
+import fr.maxlego08.menu.button.loader.NoneLoader;
+import fr.maxlego08.menu.exceptions.InventoryException;
 import fr.traqueur.recipes.api.RecipesAPI;
 import fr.traqueur.recipes.api.hook.Hook;
 import org.bukkit.Location;
@@ -65,6 +70,18 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.preEnable();
 
         this.scheduler = new FoliaLib(this).getScheduler();
+
+        this.scheduler.runNextTick((t) -> {
+            if(Plugins.ZMENU.isEnable()) {
+                this.getProvider(ButtonManager.class).unregisters(this);
+                this.getProvider(ButtonManager.class).register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
+                try {
+                    this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
+                } catch (InventoryException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         this.enchantments.register();
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
