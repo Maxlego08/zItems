@@ -1,6 +1,8 @@
 package fr.maxlego08.items.zcore.utils;
 
 import fr.maxlego08.items.save.Config;
+import fr.maxlego08.items.zcore.ZPlugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Utility class for measuring elapsed time between start and end points.
@@ -69,7 +71,7 @@ public class ElapsedTime extends ZUtils {
 	public void endDisplay() {
 		this.end();
 		if (Config.enableDebugTime) {
-			System.out.println("[ElapsedTime] " + name + " -> " + super.format(this.getElapsedTime(), ' '));
+			JavaPlugin.getPlugin(ZPlugin.class).getLogger().info("[ElapsedTime] " + name + " -> " + super.format(this.getElapsedTime(), ' '));
 		}
 	}
 }

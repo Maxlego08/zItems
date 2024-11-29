@@ -12,6 +12,8 @@ public interface ItemManager {
 
     void loadItems();
 
+    void loadCrafts();
+
     void loadItem(File file);
 
     List<Item> getItems();

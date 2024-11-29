@@ -79,8 +79,7 @@ public enum Message {
     COMMAND_ITEM_OWNER("&eOwner: &f%owner%"),
 
 
-
-    ;
+    DESCRIPTION_GUI("Open the GUI"),;
 
     private List<String> messages;
     private String message;

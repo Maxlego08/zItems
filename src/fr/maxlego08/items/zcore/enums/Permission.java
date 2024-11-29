@@ -12,7 +12,7 @@ public enum Permission {
     ZITEMS_EDIT_LORE,
     ZITEMS_EDIT_CUSTOM_MODEL_DATA,
     ZITEMS_EDIT_INFO,
-    ;
+    ZITEMS_GUI;
 
     private final String permission;
 

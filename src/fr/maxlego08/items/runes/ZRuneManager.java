@@ -3,8 +3,7 @@ package fr.maxlego08.items.runes;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemType;
-import fr.maxlego08.items.api.configurations.recipes.ItemRecipe;
-import fr.maxlego08.items.api.configurations.recipes.RecipeType;
+import fr.maxlego08.items.api.recipes.ZItemIngredient;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RunePipeline;
@@ -16,6 +15,13 @@ import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
+import fr.traqueur.recipes.api.RecipeType;
+import fr.traqueur.recipes.api.domains.Ingredient;
+import fr.traqueur.recipes.api.hook.Hook;
+import fr.traqueur.recipes.impl.domains.ItemRecipe;
+import fr.traqueur.recipes.impl.domains.ingredients.MaterialIngredient;
+import fr.traqueur.recipes.impl.domains.ingredients.TagIngredient;
+import fr.traqueur.recipes.impl.domains.recipes.RecipeBuilder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
@@ -261,14 +267,9 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
     @Override
     public void deleteCrafts() {
-        for (NamespacedKey key : this.recipesUseRunes.keySet()) {
-            this.plugin.getServer().removeRecipe(key);
+        for (ItemRecipe key : this.recipesUseRunes.values()) {
+            this.plugin.getRecipesAPI().removeRecipe(key);
         }
-    }
-
-    @Override
-    public Map<NamespacedKey, ItemRecipe> getRecipesUseRunes() {
-        return recipesUseRunes;
     }
 
     @Override
@@ -298,27 +299,53 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         String template = runeItem.getConfiguration().getItemRuneConfiguration().template();
         Set<Material> materials = new HashSet<>(rune.getMaterials());
         rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
-        RecipeChoice addition = new RecipeChoice.MaterialChoice(runeItem.build(null, 1).getType());
-        ItemRecipe.Ingredient[] ingredients = new ItemRecipe.Ingredient[3];
-        ingredients[0] = new ItemRecipe.Ingredient(Helper.getRecipeChoiceFromString(this.plugin, "item|" + template, runeItem.getName()), template, '-');
-        ingredients[2] = new ItemRecipe.Ingredient(addition, "zitems:" + runeItem.getName(), '-');
         materials.forEach(material -> {
-            ingredients[1] = new ItemRecipe.Ingredient(new RecipeChoice.MaterialChoice(material), "minecraft: " + material.name().toLowerCase(), '-');
             ItemStack result = new ItemStack(material);
             try {
                 this.plugin.getRuneManager().applyRune(result, rune);
             } catch (RuneException e) {
                 throw new RuntimeException(e);
             }
-            NamespacedKey runeKey = this.getRuneKey(rune, material);
-            ItemRecipe itemRecipe = new ItemRecipe("", "", RecipeType.SMITHING_TRANSFORM, 1, ingredients, new String[0], 0, 0);
-            this.recipesUseRunes.put(runeKey, itemRecipe);
-            this.plugin.getServer().addRecipe(itemRecipe.toBukkitRecipe(runeKey, result));
+            ItemRecipe recipe = new RecipeBuilder()
+                    .setType(RecipeType.SMITHING_TRANSFORM)
+                    .addIngredient(getIngredient(template))
+                    .addIngredient(material)
+                    .addIngredient(new ZItemIngredient(runeItem.getName(), '-'))
+                    .setResult(result)
+                    .setAmount(1)
+                    .setName("rune_" + rune.getName() + "_" + material.name().toLowerCase()+ "_smithing").build();
+            this.recipesUseRunes.put(recipe.getKey(), recipe);
+            this.plugin.getRecipesAPI().addRecipe(recipe);
         });
-
     }
 
-    private NamespacedKey getRuneKey(Rune rune, Material material) {
-        return new NamespacedKey(this.plugin, "rune_" + rune.getName().toLowerCase() + "_" + material.name().toLowerCase() + "_smithing_craft");
+    public Ingredient getIngredient(String template) {
+        String[] parts = template.split(":");
+        if (parts.length == 1) {
+            return new MaterialIngredient(Material.valueOf(parts[0]));
+        } else {
+            for (Hook hook : Hook.HOOKS) {
+                if(hook.getPluginName().equalsIgnoreCase(parts[0])) {
+                    return hook.getIngredient(parts[1], '-');
+                }
+            }
+            switch (parts[0]) {
+                case "tag" -> {
+                    Tag<Material> tag = TagRegistry.getTag(parts[1]);
+                    if (tag == null) {
+                        throw new IllegalArgumentException("Tag not found: " + parts[1]);
+                    }
+                    return new TagIngredient(tag);
+                }
+                case "minecraft", "material" -> {
+                    Material material = Material.matchMaterial(parts[1]);
+                    if (material == null) {
+                        throw new IllegalArgumentException("Material not found: " + parts[1]);
+                    }
+                    return new MaterialIngredient(material);
+                }
+                default -> throw new IllegalArgumentException("Unknown ingredient type: " + parts[0]);
+            }
+        }
     }
 }

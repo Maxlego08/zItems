@@ -1,16 +1,19 @@
 package fr.maxlego08.items;
 
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.impl.PlatformScheduler;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.buttons.ItemsButton;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.commands.CommandsListener;
-import fr.maxlego08.items.api.configurations.recipes.PrepareCraftListener;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.hook.Hooks;
+import fr.maxlego08.items.api.recipes.ZItemHook;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.items.command.commands.CommandItem;
@@ -32,12 +35,17 @@ import fr.maxlego08.items.save.MessageLoader;
 import fr.maxlego08.items.zcore.ZPlugin;
 import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import fr.maxlego08.menu.api.ButtonManager;
+import fr.maxlego08.menu.api.InventoryManager;
+import fr.maxlego08.menu.button.loader.NoneLoader;
+import fr.maxlego08.menu.exceptions.InventoryException;
+import fr.traqueur.recipes.api.RecipesAPI;
+import fr.traqueur.recipes.api.hook.Hook;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ItemsPlugin extends ZPlugin implements ItemPlugin {
@@ -50,6 +58,8 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private final List<BlockAccess> blockAccesses = new ArrayList<>();
     private ItemComponent itemComponent;
     private RuneListener runeListener;
+    private PlatformScheduler scheduler;
+    private RecipesAPI recipesAPI;
 
     @Override
     public void onEnable() {
@@ -58,6 +68,20 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         placeholder.setPrefix("zitems");
 
         this.preEnable();
+
+        this.scheduler = new FoliaLib(this).getScheduler();
+
+        this.scheduler.runNextTick((t) -> {
+            if(Plugins.ZMENU.isEnable()) {
+                this.getProvider(ButtonManager.class).unregisters(this);
+                this.getProvider(ButtonManager.class).register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
+                try {
+                    this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
+                } catch (InventoryException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         this.enchantments.register();
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
@@ -70,7 +94,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         servicesManager.register(ItemPlugin.class, this, this, ServicePriority.Highest);
         servicesManager.register(Enchantments.class, this.enchantments, this, ServicePriority.Highest);
 
-        this.addListener(new PrepareCraftListener(this.runeManager, this.itemManager));
         this.addListener(new DisableEnchantsListener(this.itemManager));
         this.addListener(new CommandsListener(this.itemManager));
         this.addListener(new GrindstoneListener(this.itemManager));
@@ -79,8 +102,13 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addSave(Config.getInstance());
         this.addSave(CooldownBuilder.getInstance());
         this.addSave(new MessageLoader(this));
+
+        this.recipesAPI = new RecipesAPI(this, Config.enableDebug, true, this.scheduler);
+        Hook.addHook(new ZItemHook(this));
+
         this.runeManager.loadRunes();
         this.itemManager.loadItems();
+        this.itemManager.loadCrafts();
         this.runeManager.loadCraftWithRunes();
 
         // Rune listener
@@ -151,6 +179,16 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     @Override
     public Item createItem(String name, ItemConfiguration itemConfiguration) {
         return new ZItem(this, name, itemConfiguration);
+    }
+
+    @Override
+    public PlatformScheduler getScheduler() {
+        return scheduler;
+    }
+
+    @Override
+    public RecipesAPI getRecipesAPI() {
+        return this.recipesAPI;
     }
 
     public HookManager getHookManager() {
