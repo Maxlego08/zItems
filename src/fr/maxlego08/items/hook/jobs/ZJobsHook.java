@@ -1,11 +1,11 @@
 package fr.maxlego08.items.hook.jobs;
 
 import fr.maxlego08.items.api.hook.Hook;
-import fr.maxlego08.jobs.api.event.events.JobExpGainEvent;
-import fr.maxlego08.jobs.api.event.events.JobMoneyGainEvent;
 import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
 import fr.maxlego08.items.api.hook.jobs.JobsPayementEventWrapper;
 import fr.maxlego08.items.api.runes.RuneManager;
+import fr.maxlego08.jobs.api.event.events.JobExpGainEvent;
+import fr.maxlego08.jobs.api.event.events.JobMoneyGainEvent;
 import org.bukkit.event.EventHandler;
 
 public class ZJobsHook implements Hook {

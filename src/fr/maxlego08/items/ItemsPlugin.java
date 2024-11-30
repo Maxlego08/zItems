@@ -6,13 +6,14 @@ import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.ItemPlugin;
-import fr.maxlego08.items.api.buttons.ItemsButton;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.commands.CommandsListener;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.hook.Hooks;
+import fr.maxlego08.items.api.menus.ApplicatorMenu;
+import fr.maxlego08.items.api.menus.buttons.*;
 import fr.maxlego08.items.api.recipes.ZItemHook;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
@@ -71,17 +72,18 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         this.scheduler = new FoliaLib(this).getScheduler();
 
-        this.scheduler.runNextTick((t) -> {
-            if(Plugins.ZMENU.isEnable()) {
-                this.getProvider(ButtonManager.class).unregisters(this);
-                this.getProvider(ButtonManager.class).register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
-                try {
-                    this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
-                } catch (InventoryException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        this.getProvider(ButtonManager.class).unregisters(this);
+        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
+        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorInputButton.class, "ZITEMS_RUNE_APPLICATOR_INPUTS"));
+        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorBaseInputButton.class, "ZITEMS_RUNE_APPLICATOR_BASE_INPUT"));
+        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorExtraInputButton.class, "ZITEMS_RUNE_APPLICATOR_EXTRA_INPUTS"));
+        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorOutputButton.class, "ZITEMS_RUNE_APPLICATOR_OUTPUT"));
+        try {
+            this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
+            this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/rune_applicator.yml", ApplicatorMenu.class);
+        } catch (InventoryException e) {
+            throw new RuntimeException(e);
+        }
 
         this.enchantments.register();
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();

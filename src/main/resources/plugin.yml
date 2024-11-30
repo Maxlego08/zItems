@@ -10,5 +10,6 @@ folia-supported: true
 softdepend:
   - WorldGuard
   - Jobs
+depend:
   - zMenu
 commands:

@@ -2,16 +2,12 @@ package fr.maxlego08.items.api.runes.configurations;
 
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.meta.AttributeConfiguration;
-import fr.maxlego08.items.api.enchantments.EssentialsEnchantment;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class RuneAttributeConfiguration extends RuneConfiguration {
 

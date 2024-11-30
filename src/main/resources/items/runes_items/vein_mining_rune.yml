@@ -1,0 +1,14 @@
+type: RUNE
+material: PAPER
+
+rune-representation:
+  type: VEIN-MINING
+  enable-applicator: true
+  applicator: ZITEMS_APPLICATOR
+  inputs:
+    - "minecraft:IRON_INGOT"
+  extra-inputs:
+    - "minecraft:GOLD_INGOT"
+
+
+display-name: "&eVeinmining Rune"

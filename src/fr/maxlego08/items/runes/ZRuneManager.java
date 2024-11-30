@@ -8,10 +8,10 @@ import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RunePipeline;
 import fr.maxlego08.items.api.runes.RuneType;
+import fr.maxlego08.items.api.runes.applicators.Applicator;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
 import fr.maxlego08.items.api.runes.exceptions.*;
 import fr.maxlego08.items.api.runes.handlers.ItemApplicationHandler;
-import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
@@ -29,7 +29,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -39,6 +38,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ZRuneManager extends ZUtils implements RuneManager {
@@ -49,7 +49,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     private final NamespacedKey runeNamespacedKey;
     private final PersistentDataType<String, Rune> runeDataType;
     private final Map<NamespacedKey, ItemRecipe> recipesUseRunes = new HashMap<>();
-
+    private final List<Applicator> applicators = new ArrayList<>();
 
     public ZRuneManager(ItemsPlugin plugin) {
         this.plugin = plugin;
@@ -283,6 +283,11 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         pipeline.pipeline(plugin, event);
     }
 
+    @Override
+    public List<Applicator> getApplicators() {
+        return this.applicators;
+    }
+
     private List<String> generateRuneLore(Rune rune) {
         List<String> runeLore = Message.RUNE_LORE.getMessages();
         List<String> formattedLore = new ArrayList<>();
@@ -295,8 +300,19 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
 
     private void createRecipeWithRuneItem(Item runeItem) {
+        switch (runeItem.getConfiguration().getItemRuneConfiguration().type()) {
+            case SMITHING_TABLE -> {
+                this.createSmithingCraft(runeItem);
+            }
+            case ZITEMS_APPLICATOR -> {
+                this.createCustomApplicator(runeItem);
+            }
+        }
+    }
+
+    private void createSmithingCraft(Item runeItem) {
         Rune rune = runeItem.getConfiguration().getItemRuneConfiguration().rune();
-        String template = runeItem.getConfiguration().getItemRuneConfiguration().template();
+        String template = runeItem.getConfiguration().getItemRuneConfiguration().ingredientList().getFirst();
         Set<Material> materials = new HashSet<>(rune.getMaterials());
         rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
         materials.forEach(material -> {
@@ -319,7 +335,45 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         });
     }
 
-    public Ingredient getIngredient(String template) {
+    private void createCustomApplicator(Item runeItem) {
+        Rune rune = runeItem.getConfiguration().getItemRuneConfiguration().rune();
+        Set<Material> materials = new HashSet<>(rune.getMaterials());
+        rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
+        List<Ingredient> ingredients = runeItem.getConfiguration()
+                .getItemRuneConfiguration()
+                .ingredientList()
+                .stream()
+                .map(this::getIngredient)
+                .collect(Collectors.toList());
+        ingredients.add(new ZItemIngredient(runeItem.getName(), '-'));
+        int nbInputs = ingredients.size();
+        ingredients.addAll(runeItem.getConfiguration()
+                .getItemRuneConfiguration().extraIngredients().stream()
+                .map(this::getIngredient)
+                .toList());
+        int nbExtra = ingredients.size() - nbInputs;
+        for (Material material : materials) {
+            ItemStack result = new ItemStack(material);
+            try {
+                this.plugin.getRuneManager().applyRune(result, rune);
+            } catch (RuneException e) {
+                throw new RuntimeException(e);
+            }
+            List<Ingredient> ingredientsInner = new ArrayList<>(ingredients);
+            ingredientsInner.add(new MaterialIngredient(material));
+            ItemRecipe recipe = new ItemRecipe(
+                    "rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator",
+                    "", "", null,
+                    result,
+                    1,
+                    ingredientsInner.toArray(Ingredient[]::new),
+                    null, 0, 0);
+            this.applicators.add(new Applicator(this, recipe, rune, material, nbInputs, nbExtra));
+            this.plugin.getLogger().info("Loaded applicator " + "rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator");
+        }
+    }
+
+    private Ingredient getIngredient(String template) {
         String[] parts = template.split(":");
         if (parts.length == 1) {
             return new MaterialIngredient(Material.valueOf(parts[0]));
