@@ -1,11 +1,7 @@
 package fr.maxlego08.items.api.runes.configurations;
 
 import fr.maxlego08.items.api.ItemPlugin;
-import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import java.util.List;
 
 public class RuneVeinMiningConfiguration extends RuneConfiguration {
 

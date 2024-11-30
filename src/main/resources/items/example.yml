@@ -593,10 +593,8 @@ recipes:
     category: MISC
     pattern:
       - "###"
-      - "##"
-    result:
-      item: "zitems:exemple"
-      amount: 5
+      - "## "
+    result-amount: 5
     ingredients:
       - item: "material:stone"
         sign: '#'

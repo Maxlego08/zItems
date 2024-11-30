@@ -1,6 +1,5 @@
 package fr.maxlego08.items.api.configurations.meta;
 
-import fr.maxlego08.items.api.ItemPlugin;
 import org.bukkit.Color;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.meta.LeatherArmorMeta;

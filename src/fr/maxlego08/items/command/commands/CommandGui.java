@@ -1,7 +1,6 @@
 package fr.maxlego08.items.command.commands;
 
 import fr.maxlego08.items.ItemsPlugin;
-import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.command.VCommand;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.enums.Permission;

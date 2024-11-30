@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ZItemManager extends ZUtils implements ItemManager {
@@ -48,6 +50,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
         if(!runeFolder.exists()) {
             if(runeFolder.mkdirs()) {
                 this.plugin.saveResource("items/runes_items/hammer_rune.yml", false);
+                this.plugin.saveResource("items/runes_items/vein_mining_rune.yml", false);
             }
         }
 
@@ -67,7 +70,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
     @Override
     public void loadCrafts() {
         // Must create a recipe after all registrations to get custom items from the List when ingredient is custom
-        this.items.forEach(item -> item.getConfiguration().createRecipe(this.plugin));
+        this.items.forEach(item -> item.getConfiguration().createRecipe(this.plugin, item));
     }
 
     @Override

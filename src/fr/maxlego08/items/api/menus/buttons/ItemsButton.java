@@ -1,6 +1,7 @@
-package fr.maxlego08.items.api.buttons;
+package fr.maxlego08.items.api.menus.buttons;
 
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.CloneUtils;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.zcore.utils.inventory.Pagination;
 import fr.maxlego08.menu.api.button.PaginateButton;
@@ -30,7 +31,7 @@ public class ItemsButton extends ZButton implements PaginateButton {
             ItemStack itemStack = items.get(i).build(player, 1);
 
             inventory.addItem(slot, itemStack).setClick(event -> {
-                var rest = player.getInventory().addItem(itemStack);
+                var rest = player.getInventory().addItem(CloneUtils.cloneItemStack(itemStack));
                 rest.values().forEach(item -> player.getWorld().dropItem(player.getLocation(), item));
             });
         }

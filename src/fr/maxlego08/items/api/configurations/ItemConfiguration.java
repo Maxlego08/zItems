@@ -2,6 +2,7 @@ package fr.maxlego08.items.api.configurations;
 
 import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
@@ -9,6 +10,7 @@ import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
 import fr.maxlego08.items.api.configurations.meta.*;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.enchantments.EssentialsEnchantment;
+import fr.maxlego08.items.api.recipes.ZRecipeConfiguration;
 import fr.maxlego08.items.api.runes.ItemRuneConfiguration;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.utils.Helper;
@@ -557,10 +559,11 @@ public class ItemConfiguration {
         }
     }
 
-    public void createRecipe(ItemsPlugin plugin) {
+    public void createRecipe(ItemsPlugin plugin, Item item) {
         if(configuration.contains("recipes")) {
             for (String key : configuration.getConfigurationSection("recipes").getKeys(false)) {
-                var recipeConfig = new RecipeConfiguration(plugin, key, "recipes." + key, configuration);
+                var recipeConfig = new ZRecipeConfiguration(plugin, key, "recipes." + key, configuration);
+                recipeConfig.setResult(item.build(null, 1));
                 var recipe = recipeConfig.build();
                 this.recipes.add(recipe);
                 plugin.getRecipesAPI().addRecipe(recipe);
