@@ -70,7 +70,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
     @Override
     public void loadCrafts() {
         // Must create a recipe after all registrations to get custom items from the List when ingredient is custom
-        this.items.forEach(item -> item.getConfiguration().createRecipe(this.plugin));
+        this.items.forEach(item -> item.getConfiguration().createRecipe(this.plugin, item));
     }
 
     @Override
