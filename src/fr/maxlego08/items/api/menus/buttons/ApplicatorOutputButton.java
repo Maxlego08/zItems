@@ -54,8 +54,8 @@ public class ApplicatorOutputButton extends ZButton {
             result = CloneUtils.cloneItemStack(baseItem.clone());
             try {
                 this.plugin.getRuneManager().applyRune(result, rune);
-            } catch (RuneException e) {
-                throw new RuntimeException(e);
+            } catch (RuneException exception) {
+                exception.printStackTrace();
             }
         }
         result.setAmount(itemRecipe == null ? 1 : itemRecipe.amount());

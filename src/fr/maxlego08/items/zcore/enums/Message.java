@@ -23,11 +23,11 @@ public enum Message {
 
     FORMAT_DAY("d"), FORMAT_DAYS("days"),
 
-    COMMAND_SYNTAXE_ERROR("&cYou must execute the command like this&7: &a%syntax%"),
+    COMMAND_SYNTAX_ERROR("&cYou must execute the command like this&7: &a%syntax%"),
     COMMAND_NO_PERMISSION("&cYou do not have permission to run this command."),
     COMMAND_NO_CONSOLE("&cOnly one player can execute this command."),
     COMMAND_NO_ARG("&cImpossible to find the command with its arguments."),
-    COMMAND_SYNTAXE_HELP("&f%syntax% &7» &7%description%"),
+    COMMAND_SYNTAX_HELP("&f%syntax% &7» &7%description%"),
 
     RELOAD("&aYou have just reloaded the configuration files."),
 
@@ -49,6 +49,7 @@ public enum Message {
     COMMAND_RUNE_NOT_ALLOWED("&cThis item does not support the rune %rune%."),
     RUNE_MORE("&8- &fAnd More..."),
 
+    DESCRIPTION_EDIT("Edit commands"),
     DESCRIPTION_ITEM_NAME("Change the item name"),
     DESCRIPTION_ITEM_CUSTOM_MODEL_DATA("Change custom model data"),
     DESCRIPTION_ITEM_LORE("Show commands for the lore"),

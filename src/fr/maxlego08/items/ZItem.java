@@ -128,8 +128,8 @@ public class ZItem extends ZUtils implements Item {
             for (Rune rune : this.configuration.getRunes()) {
                 try {
                     this.plugin.getRuneManager().applyRune(itemStack, rune);
-                } catch (RuneException e) {
-                    throw new RuntimeException(e);
+                } catch (RuneException exception) {
+                    exception.printStackTrace();
                 }
             }
 

@@ -157,13 +157,13 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
         try {
             this.applyRune(itemStack, rune);
-        } catch (RuneException e) {
-            switch (e) {
+        } catch (RuneException exception) {
+            switch (exception) {
                 case NoMetaException ignored -> message(player, Message.ITEM_HAVE_NOT_META);
                 case ItemContainsAlreadyRuneException ignored -> message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
                 case RuneNotAllowedException ignored -> message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
                 case RuneAppliedException ignored -> message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
-                default -> throw new IllegalStateException("Unexpected value: " + e);
+                default -> throw new IllegalStateException("Unexpected value: " + exception);
             }
         }
     }
@@ -209,8 +209,8 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             if(rune.getType().getActivator() instanceof ItemApplicationHandler<?> itemApplicationHandler) {
                 itemApplicationHandler.applyOnItems(plugin, itemMeta, rune.getConfiguration());
             }
-        } catch (Exception e) {
-            throw new RuneAppliedException();
+        } catch (Exception exception) {
+            throw new RuneAppliedException(exception);
         }
 
 
@@ -317,11 +317,11 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
         materials.forEach(material -> {
             ItemStack result = new ItemStack(material);
-            try {
+            /*try {
                 this.plugin.getRuneManager().applyRune(result, rune);
-            } catch (RuneException e) {
-                throw new RuntimeException(e);
-            }
+            } catch (RuneException exception) {
+                exception.printStackTrace();
+            }*/
             ItemRecipe recipe = new RecipeBuilder()
                     .setType(RecipeType.SMITHING_TRANSFORM)
                     .addIngredient(getIngredient(template))
@@ -354,11 +354,11 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         int nbExtra = ingredients.size() - nbInputs;
         for (Material material : materials) {
             ItemStack result = new ItemStack(material);
-            try {
+            /*try {
                 this.plugin.getRuneManager().applyRune(result, rune);
-            } catch (RuneException e) {
-                throw new RuntimeException(e);
-            }
+            } catch (RuneException exception) {
+                exception.printStackTrace();
+            }*/
             List<Ingredient> ingredientsInner = new ArrayList<>(ingredients);
             ingredientsInner.add(new MaterialIngredient(material));
             ItemRecipe recipe = new ItemRecipe(
