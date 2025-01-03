@@ -8,12 +8,17 @@ import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.commands.CommandsListener;
+import fr.maxlego08.items.api.configurations.global.GlobalConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.hook.Hooks;
 import fr.maxlego08.items.api.menus.ApplicatorMenu;
-import fr.maxlego08.items.api.menus.buttons.*;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorBaseInputButton;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorExtraInputButton;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorInputButton;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorOutputButton;
+import fr.maxlego08.items.api.menus.buttons.ItemsButton;
 import fr.maxlego08.items.api.recipes.ZItemHook;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
@@ -25,6 +30,7 @@ import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.hook.ZHookManager;
 import fr.maxlego08.items.hook.jobs.JobsHook;
 import fr.maxlego08.items.hook.jobs.ZJobsHook;
+import fr.maxlego08.items.hook.packs.ItemsAdderHook;
 import fr.maxlego08.items.hook.worlds.WorldGuardHook;
 import fr.maxlego08.items.listener.GrindstoneListener;
 import fr.maxlego08.items.listener.SpawnerListener;
@@ -61,6 +67,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private RuneListener runeListener;
     private PlatformScheduler scheduler;
     private RecipesAPI recipesAPI;
+    private GlobalConfiguration globalConfiguration;
 
     @Override
     public void onEnable() {
@@ -69,6 +76,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         placeholder.setPrefix("zitems");
 
         this.preEnable();
+        this.saveDefaultConfig();
 
         this.scheduler = new FoliaLib(this).getScheduler();
 
@@ -125,7 +133,8 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         //Register all internal hooks
         List.of(
                 new Hooks(Plugins.JOBS, new JobsHook(this.runeManager)),
-                new Hooks(Plugins.ZJOBS, new ZJobsHook(this.runeManager))
+                new Hooks(Plugins.ZJOBS, new ZJobsHook(this.runeManager)),
+                new Hooks(Plugins.ITEMSADDER, new ItemsAdderHook(this))
                 // ToDo, add more hook
         ).forEach(hooks -> this.hookManager.registerHook(hooks.plugins(), hooks.hook()));
 
@@ -133,6 +142,8 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
             //Load one tick later to permit addon to register hooks
             this.hookManager.loadHooks(this::isEnable);
         });
+
+        this.globalConfiguration = new GlobalConfiguration(getConfig());
 
         this.postEnable();
     }
@@ -145,6 +156,12 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.saveFiles();
 
         this.postDisable();
+    }
+
+    @Override
+    public void reloadFiles() {
+        super.reloadFiles();
+        this.globalConfiguration = new GlobalConfiguration(getConfig());
     }
 
     public ItemComponent getItemComponent() {
@@ -168,6 +185,11 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     @Override
     public boolean hasAccess(Player player, Location location) {
         return this.blockAccesses.isEmpty() || this.blockAccesses.stream().allMatch(blockAccess -> blockAccess.hasAccess(player, location));
+    }
+
+    @Override
+    public GlobalConfiguration getGlobalConfiguration() {
+        return this.globalConfiguration;
     }
 
     public Enchantments getEnchantments() {

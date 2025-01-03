@@ -1,7 +1,7 @@
 package fr.maxlego08.items.enchantments;
 
 import fr.maxlego08.items.api.enchantments.Enchantments;
-import fr.maxlego08.items.api.enchantments.EssentialsEnchantment;
+import fr.maxlego08.items.api.enchantments.EnchantmentRegistry;
 import org.bukkit.enchantments.Enchantment;
 
 import java.util.ArrayList;
@@ -11,11 +11,11 @@ import java.util.Optional;
 
 public class ZEnchantments implements Enchantments {
 
-    private final List<EssentialsEnchantment> essentialsEnchantments = new ArrayList<>();
+    private final List<EnchantmentRegistry> enchantmentRegisteries = new ArrayList<>();
 
     @Override
-    public Optional<EssentialsEnchantment> getEnchantments(String enchantment) {
-        return essentialsEnchantments.stream().filter(essentialsEnchantment -> essentialsEnchantment.aliases().contains(enchantment.toLowerCase())).findFirst();
+    public Optional<EnchantmentRegistry> getEnchantments(String enchantment) {
+        return enchantmentRegisteries.stream().filter(essentialsEnchantment -> essentialsEnchantment.aliases().contains(enchantment.toLowerCase())).findFirst();
     }
 
     @Override
@@ -67,11 +67,11 @@ public class ZEnchantments implements Enchantments {
     }
 
     private void register(Enchantment enchantment, String... strings) {
-        this.essentialsEnchantments.add(new ZEssentialsEnchantment(enchantment, Arrays.asList(strings)));
+        this.enchantmentRegisteries.add(new ZEnchantmentRegistry(enchantment, Arrays.asList(strings)));
     }
 
     @Override
     public List<String> getEnchantments() {
-        return this.essentialsEnchantments.stream().map(EssentialsEnchantment::aliases).flatMap(List::stream).toList();
+        return this.enchantmentRegisteries.stream().map(EnchantmentRegistry::aliases).flatMap(List::stream).toList();
     }
 }

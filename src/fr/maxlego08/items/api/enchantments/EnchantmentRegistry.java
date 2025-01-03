@@ -4,7 +4,7 @@ import org.bukkit.enchantments.Enchantment;
 
 import java.util.List;
 
-public interface EssentialsEnchantment {
+public interface EnchantmentRegistry {
 
     Enchantment enchantment();
 

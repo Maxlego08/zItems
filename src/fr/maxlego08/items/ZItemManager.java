@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,8 +48,8 @@ public class ZItemManager extends ZUtils implements ItemManager {
             }
         }
         File runeFolder = new File(folder, "runes_items");
-        if(!runeFolder.exists()) {
-            if(runeFolder.mkdirs()) {
+        if (!runeFolder.exists()) {
+            if (runeFolder.mkdirs()) {
                 this.plugin.saveResource("items/runes_items/hammer_rune.yml", false);
                 this.plugin.saveResource("items/runes_items/vein_mining_rune.yml", false);
             }
@@ -126,5 +127,17 @@ public class ZItemManager extends ZUtils implements ItemManager {
     public void deleteCrafts() {
         this.items.forEach(item -> item.getConfiguration().deleteRecipe(this.plugin));
         this.plugin.getRuneManager().deleteCrafts();
+    }
+
+    @Override
+    public Optional<Item> getItem(ItemStack itemStack) {
+        if (itemStack.hasItemMeta()) {
+            var meta = itemStack.getItemMeta();
+            var container = meta.getPersistentDataContainer();
+            if (container.has(Item.ITEM_KEY, PersistentDataType.STRING)) {
+                return this.getItem(container.get(Item.ITEM_KEY, PersistentDataType.STRING));
+            }
+        }
+        return Optional.empty();
     }
 }

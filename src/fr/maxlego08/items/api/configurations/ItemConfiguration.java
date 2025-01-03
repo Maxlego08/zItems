@@ -7,16 +7,28 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
-import fr.maxlego08.items.api.configurations.meta.*;
+import fr.maxlego08.items.api.configurations.meta.ArmorStandConfig;
+import fr.maxlego08.items.api.configurations.meta.AttributeConfiguration;
+import fr.maxlego08.items.api.configurations.meta.AxolotlBucketConfiguration;
+import fr.maxlego08.items.api.configurations.meta.BannerMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.BlockDataMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.BlockStateMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.CustomPotionEffect;
+import fr.maxlego08.items.api.configurations.meta.Food;
+import fr.maxlego08.items.api.configurations.meta.FoodEffect;
+import fr.maxlego08.items.api.configurations.meta.ItemEnchantment;
+import fr.maxlego08.items.api.configurations.meta.LeatherArmorMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.PotionMetaConfiguration;
+import fr.maxlego08.items.api.configurations.meta.ToolComponentConfiguration;
+import fr.maxlego08.items.api.configurations.meta.TrimConfiguration;
+import fr.maxlego08.items.api.enchantments.EnchantmentRegistry;
 import fr.maxlego08.items.api.enchantments.Enchantments;
-import fr.maxlego08.items.api.enchantments.EssentialsEnchantment;
 import fr.maxlego08.items.api.recipes.ZRecipeConfiguration;
 import fr.maxlego08.items.api.runes.ItemRuneConfiguration;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.traqueur.recipes.impl.domains.ItemRecipe;
-import fr.traqueur.recipes.impl.domains.recipes.RecipeConfiguration;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -30,7 +42,15 @@ import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
-import org.bukkit.inventory.meta.*;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.AxolotlBucketMeta;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockDataMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
@@ -83,15 +103,15 @@ public class ItemConfiguration {
     private final ToolComponentConfiguration toolComponentConfiguration;
     private final CommandsConfiguration commandsConfiguration;
     private final LeatherArmorMetaConfiguration leatherArmorMetaConfiguration;
+    private final int nbRunesView;
+    private final List<ItemRecipe> recipes;
+    private final YamlConfiguration configuration;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
     private ItemRuneConfiguration itemRuneConfiguration;
     private Food food;
     private ItemRarity itemRarity;
-    private int nbRunesView;
-    private final List<ItemRecipe> recipes;
-    private final YamlConfiguration configuration;
 
     public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
@@ -160,16 +180,10 @@ public class ItemConfiguration {
         }
 
         List<String> runesList = configuration.getStringList(path + "rune.runes");
-        this.runes = runesList.stream()
-                .map(runeName -> plugin.getRuneManager().getRune(runeName)
-                        .orElseThrow(() -> new IllegalArgumentException("Rune " + runeName + " was not found for the item " + fileName)))
-                .collect(Collectors.toList());
+        this.runes = runesList.stream().map(runeName -> plugin.getRuneManager().getRune(runeName).orElseThrow(() -> new IllegalArgumentException("Rune " + runeName + " was not found for the item " + fileName))).collect(Collectors.toList());
 
         List<String> runesDisableList = configuration.getStringList(path + "rune.disable-runes");
-        this.disableRunes = runesDisableList.stream()
-                .map(runeName -> plugin.getRuneManager().getRune(runeName)
-                        .orElseThrow(() -> new IllegalArgumentException("Rune " + runeName + " was not found for the item " + fileName)))
-                .collect(Collectors.toList());
+        this.disableRunes = runesDisableList.stream().map(runeName -> plugin.getRuneManager().getRune(runeName).orElseThrow(() -> new IllegalArgumentException("Rune " + runeName + " was not found for the item " + fileName))).collect(Collectors.toList());
 
         // Load food
         if (configuration.contains(path + "food")) {
@@ -243,7 +257,7 @@ public class ItemConfiguration {
 
     }
 
-    private void handleLevels(ItemPlugin plugin, String fileName, String enchantmentAsString, Optional<EssentialsEnchantment> optionalEnchantment, Object levels) {
+    private void handleLevels(ItemPlugin plugin, String fileName, String enchantmentAsString, Optional<EnchantmentRegistry> optionalEnchantment, Object levels) {
         if (levels instanceof List) {
             List<Integer> levelsList = (List<Integer>) levels;
             levelsList.forEach(level -> processEnchantment(plugin, fileName, enchantmentAsString, optionalEnchantment, level));
@@ -254,7 +268,7 @@ public class ItemConfiguration {
         }
     }
 
-    private void processEnchantment(ItemPlugin plugin, String fileName, String enchantmentAsString, Optional<EssentialsEnchantment> optionalEnchantment, int level) {
+    private void processEnchantment(ItemPlugin plugin, String fileName, String enchantmentAsString, Optional<EnchantmentRegistry> optionalEnchantment, int level) {
         if (optionalEnchantment.isPresent()) {
             var enchantment = optionalEnchantment.get().enchantment();
             this.disableEnchantments.add(new ItemEnchantment(enchantment, level));
@@ -560,7 +574,7 @@ public class ItemConfiguration {
     }
 
     public void createRecipe(ItemsPlugin plugin, Item item) {
-        if(configuration.contains("recipes")) {
+        if (configuration.contains("recipes")) {
             for (String key : configuration.getConfigurationSection("recipes").getKeys(false)) {
                 var recipeConfig = new ZRecipeConfiguration(plugin, key, "recipes." + key, configuration);
                 recipeConfig.setResult(item.build(null, 1));
@@ -572,9 +586,9 @@ public class ItemConfiguration {
     }
 
     public void deleteRecipe(ItemPlugin plugin) {
-       this.recipes.forEach(recipeConfiguration -> {
-           plugin.getRecipesAPI().removeRecipe(recipeConfiguration);
-       });
+        this.recipes.forEach(recipeConfiguration -> {
+            plugin.getRecipesAPI().removeRecipe(recipeConfiguration);
+        });
     }
 
     public ItemRarity getItemRarity() {
@@ -598,7 +612,7 @@ public class ItemConfiguration {
     }
 
     public ItemRuneConfiguration getItemRuneConfiguration() {
-        if(this.itemType != ItemType.RUNE || this.itemRuneConfiguration == null) {
+        if (this.itemType != ItemType.RUNE || this.itemRuneConfiguration == null) {
             throw new IllegalArgumentException("Item is not a rune item or the rune configuration is null");
         }
         return itemRuneConfiguration;

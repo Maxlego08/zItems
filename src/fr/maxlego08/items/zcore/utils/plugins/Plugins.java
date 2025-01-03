@@ -15,6 +15,7 @@ public enum Plugins {
 	JOBS("Jobs"),
 	ZJOBS("zJobs"),
 	ZMENU("zMenu"),
+	ITEMSADDER("ItemsAdder"),
 	;
 
 	private final String name;

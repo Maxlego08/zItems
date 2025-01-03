@@ -2,6 +2,7 @@ package fr.maxlego08.items.api;
 
 import com.tcoded.folialib.impl.PlatformScheduler;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
+import fr.maxlego08.items.api.configurations.global.GlobalConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.runes.RuneManager;
@@ -34,4 +35,6 @@ public interface ItemPlugin extends Plugin {
     void registerBlockAccess(BlockAccess blockAccess);
 
     boolean hasAccess(Player player, Location location);
+
+    GlobalConfiguration getGlobalConfiguration();
 }

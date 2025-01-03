@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface Enchantments {
 
-    Optional<EssentialsEnchantment> getEnchantments(String enchantment);
+    Optional<EnchantmentRegistry> getEnchantments(String enchantment);
 
     void register();
 

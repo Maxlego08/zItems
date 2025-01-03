@@ -103,6 +103,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.LoneDev6</groupId>
+      <artifactId>api-itemsadder</artifactId>
+      <version>3.6.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>fr.maxlego08</groupId>
       <artifactId>zjobs</artifactId>
       <version>1.0</version>

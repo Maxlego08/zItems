@@ -1,7 +1,7 @@
 package fr.maxlego08.items.api.runes.configurations;
 
 import fr.maxlego08.items.api.ItemPlugin;
-import fr.maxlego08.items.api.enchantments.EssentialsEnchantment;
+import fr.maxlego08.items.api.enchantments.EnchantmentRegistry;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 
@@ -24,7 +24,7 @@ public class RuneEnchantApplicatorConfiguration extends RuneConfiguration {
     private List<EnchantmentEvolution> stringListToEnchantmentEvolutionList(ItemPlugin plugin, List<?> enchantments) {
         return  enchantments.stream().map(enchantment -> {
             Map<String, Object> mapEnchantment = (Map<String, Object>) enchantment;
-            EssentialsEnchantment enchant = plugin.getEnchantments().getEnchantments((String) mapEnchantment.get("name")).orElseThrow(() -> new IllegalArgumentException("Enchantement not found"));
+            EnchantmentRegistry enchant = plugin.getEnchantments().getEnchantments((String) mapEnchantment.get("name")).orElseThrow(() -> new IllegalArgumentException("Enchantement not found"));
             if (mapEnchantment.containsKey("increase")) {
                 return new EnchantmentEvolution(enchant.enchantment(), (int) mapEnchantment.get("increase"));
             } else if (mapEnchantment.containsKey("decrease")) {

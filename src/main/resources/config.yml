@@ -1,0 +1,8 @@
+strip-log:
+  enable: false
+  damage: 1
+  tags:
+    - ITEMS_AXES
+  strips:
+    - from: "azura_log"
+      to: "azura_striped_log"

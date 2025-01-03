@@ -266,6 +266,7 @@ public abstract class ZPlugin extends JavaPlugin {
      * Reload files
      */
     public void reloadFiles() {
+        this.reloadConfig();
         this.savers.forEach(save -> {
             if (!(save instanceof NoReloadable)) {
                 save.load(this.persist);
