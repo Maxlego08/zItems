@@ -106,8 +106,9 @@
         <dependency>
             <groupId>com.github.Maxlego08</groupId>
             <artifactId>zMenu-API</artifactId>
-            <version>1.0.3.5</version>
-            <scope>provided</scope>
+            <version>1.0.3.7</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/zmenu-1.0.3.7.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>fr.maxlego08</groupId>
@@ -120,11 +121,6 @@
             <groupId>com.github.Traqueur-dev</groupId>
             <artifactId>RecipesAPI</artifactId>
             <version>1.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.technicallycoded</groupId>
-            <artifactId>FoliaLib</artifactId>
-            <version>0.4.3</version>
         </dependency>
         <dependency>
             <groupId>com.github.LoneDev6</groupId>
