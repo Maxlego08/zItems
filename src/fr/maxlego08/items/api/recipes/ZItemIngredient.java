@@ -27,7 +27,7 @@ public class ZItemIngredient extends BaseIngredient {
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
         if (!container.has(Item.ITEM_KEY, PersistentDataType.STRING)) return false;
-        String id = container.get(Item.ITEM_KEY, PersistentDataType.STRING);
+        String id = container.getOrDefault(Item.ITEM_KEY, PersistentDataType.STRING, "ERROR");
         return id.equals(item.getName());
     }
 

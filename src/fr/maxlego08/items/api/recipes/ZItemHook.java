@@ -17,7 +17,7 @@ public class ZItemHook implements Hook {
 
     @Override
     public String getPluginName() {
-        return JavaPlugin.getPlugin(ZPlugin.class).getName();
+        return this.itemPlugin.getName();
     }
 
     @Override

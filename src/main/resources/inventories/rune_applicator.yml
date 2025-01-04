@@ -5,9 +5,12 @@ items:
     type: ZITEMS_RUNE_APPLICATOR_INPUTS
     slots:
       - 10
-      - 11
   base-input:
     type: ZITEMS_RUNE_APPLICATOR_BASE_INPUT
+    slots:
+      - 11
+  rune-input:
+    type: ZITEMS_RUNE_APPLICATOR_RUNE_INPUT
     slots:
       - 12
   extra-inputs:

@@ -8,7 +8,7 @@ public enum ApplicatorType {
     ZITEMS_APPLICATOR("inputs", "extra-inputs"),
     ;
 
-    private List<String> parameters;
+    private final List<String> parameters;
 
     ApplicatorType(String... parameters) {
         this.parameters = List.of(parameters);

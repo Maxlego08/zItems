@@ -40,25 +40,27 @@ public class ApplicatorOutputButton extends ZButton {
         ItemRecipe itemRecipe = null;
         List<ItemStack> inputItems = getInputItems(inventory);
         ItemStack baseItem = getBaseItem(inventory);
+        ItemStack runeItem = getRuneItem(inventory);
         List<ItemStack> extraInputItems = getExtraInputItems(inventory);
+        ItemStack result = new ItemStack(Material.AIR);
+
         Rune rune = null;
         for (Applicator applicator : plugin.getRuneManager().getApplicators()) {
-            if(applicator.canApply(baseItem, inputItems, extraInputItems)) {
+            if(applicator.canApply(baseItem, runeItem, inputItems, extraInputItems)) {
                 itemRecipe = applicator.recipe();
                 rune = applicator.rune();
                 break;
             }
         }
-        ItemStack result = new ItemStack(Material.AIR);
         if (itemRecipe != null) {
             result = CloneUtils.cloneItemStack(baseItem.clone());
             try {
                 this.plugin.getRuneManager().applyRune(result, rune);
+                result.setAmount(itemRecipe.amount());
             } catch (RuneException exception) {
-                exception.printStackTrace();
+               result = new ItemStack(Material.AIR);
             }
         }
-        result.setAmount(itemRecipe == null ? 1 : itemRecipe.amount());
 
         inventory.addItem(this.slots.getFirst(), result).setClick(event -> this.onClick(event, inventory));
     }
@@ -77,9 +79,22 @@ public class ApplicatorOutputButton extends ZButton {
         return inventory.getButtons()
                 .stream()
                 .filter(button -> button instanceof ApplicatorBaseInputButton)
-                .map(button -> inventory.getInventory().getItem(new ArrayList<>(button.getSlots()).getFirst()) == null
-                        ? new ItemStack(Material.AIR)
-                        : inventory.getInventory().getItem(new ArrayList<>(button.getSlots()).getFirst()))
+                .map(button -> {
+                    var item = inventory.getInventory().getItem(new ArrayList<>(button.getSlots()).getFirst());
+                    return item != null ? item : new ItemStack(Material.AIR);
+                })
+                .findFirst()
+                .orElse(new ItemStack(Material.AIR));
+    }
+
+    private ItemStack getRuneItem(InventoryDefault inventory) {
+        return inventory.getButtons()
+                .stream()
+                .filter(button -> button instanceof ApplicatorRuneInputButton)
+                .map(button -> {
+                    var item = inventory.getInventory().getItem(new ArrayList<>(button.getSlots()).getFirst());
+                    return item != null ? item : new ItemStack(Material.AIR);
+                })
                 .findFirst()
                 .orElse(new ItemStack(Material.AIR));
     }
@@ -122,6 +137,9 @@ public class ApplicatorOutputButton extends ZButton {
             }
             slots.forEach(slot -> {
                 ItemStack item = inventoryDefault.getInventory().getItem(slot);
+                if(item == null) {
+                    return;
+                }
                 if(item.getAmount() == 1) {
                     inventoryDefault.getInventory().setItem(slot, new ItemStack(Material.AIR));
                 } else {

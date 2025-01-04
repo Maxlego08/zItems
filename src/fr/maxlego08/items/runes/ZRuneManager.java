@@ -48,7 +48,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     private final NamespacedKey namespacedKey;
     private final NamespacedKey runeNamespacedKey;
     private final PersistentDataType<String, Rune> runeDataType;
-    private final Map<NamespacedKey, ItemRecipe> recipesUseRunes = new HashMap<>();
+    private final Map<Rune, List<ItemRecipe>> recipesUseRunes = new HashMap<>();
     private final List<Applicator> applicators = new ArrayList<>();
 
     public ZRuneManager(ItemsPlugin plugin) {
@@ -267,9 +267,8 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
     @Override
     public void deleteCrafts() {
-        for (ItemRecipe key : this.recipesUseRunes.values()) {
-            this.plugin.getRecipesAPI().removeRecipe(key);
-        }
+        this.recipesUseRunes.forEach((rune, recipes) -> recipes.forEach(recipe -> this.plugin.getRecipesAPI().removeRecipe(recipe)));
+        this.applicators.clear();
     }
 
     @Override
@@ -286,6 +285,11 @@ public class ZRuneManager extends ZUtils implements RuneManager {
     @Override
     public List<Applicator> getApplicators() {
         return this.applicators;
+    }
+
+    @Override
+    public Map<Rune, List<ItemRecipe>> getRecipesUseRunes() {
+        return recipesUseRunes;
     }
 
     private List<String> generateRuneLore(Rune rune) {
@@ -317,11 +321,11 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
         materials.forEach(material -> {
             ItemStack result = new ItemStack(material);
-            /*try {
+            try {
                 this.plugin.getRuneManager().applyRune(result, rune);
-            } catch (RuneException exception) {
-                exception.printStackTrace();
-            }*/
+            } catch (RuneException ignored) {
+                result = new ItemStack(material);
+            }
             ItemRecipe recipe = new RecipeBuilder()
                     .setType(RecipeType.SMITHING_TRANSFORM)
                     .addIngredient(getIngredient(template))
@@ -329,8 +333,9 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                     .addIngredient(new ZItemIngredient(runeItem.getName(), '-'))
                     .setResult(result)
                     .setAmount(1)
-                    .setName("rune_" + rune.getName() + "_" + material.name().toLowerCase()+ "_smithing").build();
-            this.recipesUseRunes.put(recipe.getKey(), recipe);
+                    .setName("rune_" + rune.getName() + "_" + material.name().toLowerCase()).build();
+
+            this.recipesUseRunes.computeIfAbsent(rune, k -> new ArrayList<>()).add(recipe);
             this.plugin.getRecipesAPI().addRecipe(recipe);
         });
     }
@@ -346,12 +351,12 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 .map(this::getIngredient)
                 .collect(Collectors.toList());
         ingredients.add(new ZItemIngredient(runeItem.getName(), '-'));
-        int nbInputs = ingredients.size();
+        int nbInputs = ingredients.size() - 1;
         ingredients.addAll(runeItem.getConfiguration()
                 .getItemRuneConfiguration().extraIngredients().stream()
                 .map(this::getIngredient)
                 .toList());
-        int nbExtra = ingredients.size() - nbInputs;
+        int nbExtra = ingredients.size() - nbInputs - 1;
         for (Material material : materials) {
             ItemStack result = new ItemStack(material);
             /*try {
@@ -368,7 +373,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                     1,
                     ingredientsInner.toArray(Ingredient[]::new),
                     null, 0, 0);
-            this.applicators.add(new Applicator(this, recipe, rune, material, nbInputs, nbExtra));
+            this.applicators.add(new Applicator(this.plugin, recipe, rune, material, nbInputs, nbExtra));
             this.plugin.getLogger().info("Loaded applicator " + "rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator");
         }
     }

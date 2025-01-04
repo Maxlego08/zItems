@@ -2,6 +2,7 @@ package fr.maxlego08.items.api.runes;
 
 import fr.maxlego08.items.api.runes.applicators.Applicator;
 import fr.maxlego08.items.api.runes.exceptions.RuneException;
+import fr.traqueur.recipes.impl.domains.ItemRecipe;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;
@@ -10,6 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface RuneManager {
@@ -43,4 +45,6 @@ public interface RuneManager {
     <T extends PlayerEvent> void onPlayerEvent(T event);
 
     List<Applicator> getApplicators();
+
+    Map<Rune, List<ItemRecipe>> getRecipesUseRunes();
 }

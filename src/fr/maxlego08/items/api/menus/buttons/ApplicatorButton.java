@@ -53,44 +53,41 @@ public abstract class ApplicatorButton extends ZButton {
                 int maxStackSize = event.getCurrentItem() == null ? event.getCursor().getMaxStackSize() : event.getCurrentItem().getMaxStackSize();
                 int currentAmount = event.getCurrentItem() == null ? 0 : event.getCurrentItem().getAmount();
                 int newAmount = Math.min(maxStackSize, currentAmount + event.getCursor().getAmount());
-                place(player, event, currentAmount, newAmount);
+                place(player, inventory,event, currentAmount, newAmount);
             }
             case SWAP_WITH_CURSOR -> {
-                ItemStack item = CloneUtils.cloneItemStack(event.getCursor());
-                player.setItemOnCursor(CloneUtils.cloneItemStack(event.getCurrentItem()));
-                event.getInventory().setItem(event.getRawSlot(), item);
+                swap(player, inventory, event);
             }
             case PICKUP_ALL -> {
                 player.setItemOnCursor(CloneUtils.cloneItemStack(event.getCurrentItem()));
-                event.getInventory().setItem(event.getRawSlot(), new ItemStack(Material.AIR));
+                inventory.addItem(event.getRawSlot(), new ItemStack(Material.AIR)).setClick(event1 -> this.onClick(event1, inventory));
             }
         }
     }
 
-    private void place(Player player, InventoryClickEvent event, int currentAmount, int newAmount) {
-        int rest = event.getCursor().getAmount() - (newAmount - currentAmount);
-        ItemStack item = CloneUtils.cloneItemStack(event.getCursor());
+    private void place(Player player, InventoryDefault inventoryDefault, InventoryClickEvent event, int currentAmount, int newAmount) {
+        int rest = player.getItemOnCursor().getAmount() - (newAmount - currentAmount);
+        ItemStack item = CloneUtils.cloneItemStack(player.getItemOnCursor());
+        ItemStack cursor = new ItemStack(Material.AIR);
         item.setAmount(newAmount);
-        event.getInventory().setItem(event.getRawSlot(), item);
+        inventoryDefault.addItem(event.getRawSlot(), item).setClick(event1 -> this.onClick(event1, inventoryDefault));
         if(rest > 0) {
-            event.getCursor().setAmount(rest);
-        } else {
-            player.setItemOnCursor(new ItemStack(Material.AIR));
+            cursor = CloneUtils.cloneItemStack(player.getItemOnCursor());
+            cursor.setAmount(rest);
         }
+        player.setItemOnCursor(cursor);
     }
 
     private void rightClick(Player player, InventoryDefault inventory, InventoryClickEvent event) {
         switch (event.getAction()) {
             case SWAP_WITH_CURSOR -> {
-                ItemStack item = CloneUtils.cloneItemStack(event.getCursor());
-                player.setItemOnCursor(CloneUtils.cloneItemStack(event.getCurrentItem()));
-                event.getInventory().setItem(event.getRawSlot(), item);
+                swap(player, inventory, event);
             }
             case PLACE_ONE -> {
                 int maxStackSize = event.getCurrentItem() == null ? event.getCursor().getMaxStackSize() : event.getCurrentItem().getMaxStackSize();
                 int currentAmount = event.getCurrentItem() == null ? 0 : event.getCurrentItem().getAmount();
                 int newAmount = Math.min(maxStackSize, currentAmount + 1);
-                place(player, event, currentAmount, newAmount);
+                place(player, inventory, event, currentAmount, newAmount);
             }
             case PICKUP_HALF -> {
                 int half = event.getCurrentItem().getAmount() / 2;
@@ -101,11 +98,24 @@ public abstract class ApplicatorButton extends ZButton {
                 item.setAmount(half);
                 player.setItemOnCursor(item);
                 item.setAmount(event.getCurrentItem().getAmount() - half);
-                event.getInventory().setItem(event.getRawSlot(), item);
+                inventory.addItem(event.getRawSlot(), item).setClick(event1 -> this.onClick(event1, inventory));
             }
         }
     }
 
+    private void swap(Player player, InventoryDefault inventory, InventoryClickEvent event) {
+        ItemStack cursor = CloneUtils.cloneItemStack(event.getCursor());
+        ItemStack current = CloneUtils.cloneItemStack(event.getCurrentItem());
+        if(current != null && current.isSimilar(cursor)) {
+            int maxStackSize = current.getMaxStackSize();
+            int currentAmount = current.getAmount();
+            int newAmount = Math.min(maxStackSize, currentAmount + cursor.getAmount());
+            place(player, inventory, event, currentAmount, newAmount);
+        } else {
+            player.setItemOnCursor(current);
+            inventory.addItem(event.getRawSlot(), cursor).setClick(event1 -> this.onClick(event1, inventory));
+        }
+    }
 
 
 }

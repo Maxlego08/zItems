@@ -10,6 +10,9 @@ import org.bukkit.persistence.PersistentDataContainer;
 public class CloneUtils {
 
     public static ItemStack cloneItemStack(ItemStack itemStack) {
+        if(itemStack == null) {
+            return null;
+        }
         ItemStack clone = itemStack.clone();
         ItemMeta cloneMeta = clone.getItemMeta();
         if(cloneMeta == null) {

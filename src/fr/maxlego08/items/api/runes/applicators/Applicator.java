@@ -1,12 +1,15 @@
 package fr.maxlego08.items.api.runes.applicators;
 
 import fr.maxlego08.items.api.ItemManager;
+import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.traqueur.recipes.api.domains.Ingredient;
 import fr.traqueur.recipes.impl.domains.ItemRecipe;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,13 +18,22 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-public record Applicator(RuneManager runeManager, ItemRecipe recipe, Rune rune, Material baseItem, int nbInputs, int nbExtraInputs) {
+public record Applicator(ItemPlugin plugin, ItemRecipe recipe, Rune rune, Material baseItem, int nbInputs, int nbExtraInputs) {
 
-    public boolean canApply(ItemStack baseItem, List<ItemStack> inputItems, List<ItemStack> extraInputItems) {
+    public boolean canApply(ItemStack baseItem, ItemStack runeItem, List<ItemStack> inputItems, List<ItemStack> extraInputItems) {
+        RuneManager runeManager = plugin.getRuneManager();
+        ItemManager itemManager = plugin.getItemManager();
+
+        if(baseItem == null || baseItem.getType() != this.baseItem) {
+            return false;
+        }
+
         var runes = runeManager.getRunes(baseItem);
         AtomicBoolean canApply = new AtomicBoolean(true);
         runes.ifPresent(runeList -> {
-            if (runeList.stream().anyMatch(rune -> rune.getName().equals(this.rune.getName()))) {
+            if (runeList
+                    .stream()
+                    .anyMatch(rune -> rune.getName().equals(this.rune.getName()))) {
                 canApply.set(false);
             }
         });
@@ -29,7 +41,18 @@ public record Applicator(RuneManager runeManager, ItemRecipe recipe, Rune rune, 
             return false;
         }
 
-        if(baseItem == null || baseItem.getType() != this.baseItem) {
+        itemManager.getItem(runeItem).ifPresentOrElse(item -> {
+            if (item.getConfiguration().getItemType() != ItemType.RUNE) {
+                canApply.set(false);
+                return;
+            }
+            Rune rune = item.getConfiguration().getItemRuneConfiguration().rune();
+            if (!rune.getName().equals(this.rune.getName())) {
+                canApply.set(false);
+            }
+        }, () -> canApply.set(false));
+
+        if (!canApply.get()) {
             return false;
         }
 
@@ -38,14 +61,14 @@ public record Applicator(RuneManager runeManager, ItemRecipe recipe, Rune rune, 
         }
 
         List<Ingredient> recipeIngredients = new ArrayList<>(Arrays.asList(this.recipe.ingredients()));
-        if (!testIfInputsMatch(inputItems, recipeIngredients.subList(0, nbInputs))) return false;
-        if (!testIfInputsMatch(extraInputItems, recipeIngredients.subList(nbInputs, nbInputs + nbExtraInputs))) return false;
+        new ArrayList<>(recipeIngredients).stream()
+                .filter(ingredient -> ingredient.isSimilar(runeItem) || ingredient.isSimilar(baseItem))
+                .forEach(recipeIngredients::remove);
 
-        if(!this.recipe.ingredients()[this.recipe.ingredients().length-1].isSimilar(baseItem)) {
-            return false;
-        }
+        if (!testIfInputsMatch(inputItems, new ArrayList<>(recipeIngredients.subList(0, nbInputs)))) return false;
+        if (!testIfInputsMatch(extraInputItems, new ArrayList<>(recipeIngredients.subList(nbInputs, nbInputs + nbExtraInputs)))) return false;
 
-        return true;
+        return this.recipe.ingredients()[this.recipe.ingredients().length - 1].isSimilar(baseItem);
     }
 
     private boolean testIfInputsMatch(List<ItemStack> inputItems, List<Ingredient> recipeIngredients) {
