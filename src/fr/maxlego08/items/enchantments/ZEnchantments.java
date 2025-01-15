@@ -29,7 +29,7 @@ public class ZEnchantments implements Enchantments {
         this.register(Enchantment.FIRE_ASPECT, "fireaspect", "fire", "meleefire", "meleeflame", "fa");
         this.register(Enchantment.KNOCKBACK, "knockback", "kback", "kb", "k");
         this.register(Enchantment.FORTUNE, "blockslootbonus", "fortune", "fort", "lbb");
-        this.register(Enchantment.LOYALTY, "mobslootbonus", "mobloot", "looting", "lbm");
+        this.register(Enchantment.LOOTING, "mobslootbonus", "mobloot", "looting", "lbm");
         this.register(Enchantment.RESPIRATION, "oxygen", "respiration", "breathing", "breath", "o");
         this.register(Enchantment.PROTECTION, "protection", "prot", "protect", "p");
         this.register(Enchantment.BLAST_PROTECTION, "explosionsprotection", "explosionprotection", "expprot", "blastprotection", "bprotection", "bprotect", "blastprotect", "pe");
