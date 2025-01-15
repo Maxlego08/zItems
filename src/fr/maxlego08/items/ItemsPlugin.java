@@ -1,7 +1,5 @@
 package fr.maxlego08.items;
 
-import com.tcoded.folialib.FoliaLib;
-import com.tcoded.folialib.impl.PlatformScheduler;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
@@ -43,6 +41,8 @@ import fr.maxlego08.menu.api.ButtonManager;
 import fr.maxlego08.menu.api.InventoryManager;
 import fr.maxlego08.menu.button.loader.NoneLoader;
 import fr.maxlego08.menu.exceptions.InventoryException;
+import fr.maxlego08.menu.zcore.utils.folialib.FoliaLib;
+import fr.maxlego08.menu.zcore.utils.folialib.impl.PlatformScheduler;
 import fr.traqueur.recipes.api.RecipesAPI;
 import fr.traqueur.recipes.api.hook.Hook;
 import org.bukkit.Location;
