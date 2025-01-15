@@ -97,16 +97,17 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.github.Maxlego08</groupId>
-      <artifactId>zMenu-API</artifactId>
-      <version>1.0.3.5</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.github.LoneDev6</groupId>
       <artifactId>api-itemsadder</artifactId>
       <version>3.6.1</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.Maxlego08</groupId>
+      <artifactId>zMenu-API</artifactId>
+      <version>1.0.3.7</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/zmenu-1.0.3.7.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>fr.maxlego08</groupId>

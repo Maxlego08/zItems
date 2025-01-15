@@ -112,7 +112,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addSave(CooldownBuilder.getInstance());
         this.addSave(new MessageLoader(this));
 
-        this.recipesAPI = new RecipesAPI(this, Config.enableDebug, true, this.scheduler);
+        this.recipesAPI = new RecipesAPI(this, Config.enableDebug);
         Hook.addHook(new ZItemHook(this));
 
         this.runeManager.loadRunes();
