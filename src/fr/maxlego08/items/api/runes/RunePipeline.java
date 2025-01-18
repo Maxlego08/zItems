@@ -8,6 +8,7 @@ import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -49,10 +50,10 @@ public class RunePipeline {
         return currentBlocks;
     }
 
-    public void pipeline(ItemPlugin plugin, InventorySlotChangeHandler.InventorySlotChangeType type) {
+    public void pipeline(ItemPlugin plugin, Player player, InventorySlotChangeHandler.InventorySlotChangeType type) {
         for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof InventorySlotChangeHandler<?>).toList()) {
             if(type == ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).getType(rune.getConfiguration())) {
-                ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).onInventorySlotChange(plugin, rune.getConfiguration());
+                ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).onInventorySlotChange(plugin, player, rune.getConfiguration());
             }
         }
     }

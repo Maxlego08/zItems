@@ -28,17 +28,17 @@ public class RuneListener implements Listener {
         this.runeManager = runeManager;
     }
 
-    private void handleSlotChange(ItemStack oldItem, ItemStack newItem) {
+    private void handleSlotChange(Player player, ItemStack oldItem, ItemStack newItem) {
         var oldOptional = this.runeManager.getRunes(oldItem);
         if (oldOptional.isPresent()) {
             RunePipeline pipeline = new RunePipeline(new ArrayList<>(oldOptional.get()));
-            pipeline.pipeline(plugin, InventorySlotChangeHandler.InventorySlotChangeType.UNEQUIP);
+            pipeline.pipeline(plugin, player, InventorySlotChangeHandler.InventorySlotChangeType.UNEQUIP);
         }
 
         var newOptional = this.runeManager.getRunes(newItem);
         if (newOptional.isPresent()) {
             RunePipeline pipeline = new RunePipeline(new ArrayList<>(newOptional.get()));
-            pipeline.pipeline(plugin, InventorySlotChangeHandler.InventorySlotChangeType.EQUIP);
+            pipeline.pipeline(plugin, player, InventorySlotChangeHandler.InventorySlotChangeType.EQUIP);
         }
     }
 
@@ -46,32 +46,32 @@ public class RuneListener implements Listener {
     public void onItemHeldChange(PlayerItemHeldEvent event) {
         ItemStack oldItem = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
         ItemStack newItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
-        handleSlotChange(oldItem, newItem);
+        handleSlotChange(event.getPlayer(), oldItem, newItem);
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        handleSlotChange(null, itemStack);
+        handleSlotChange(player, null, itemStack);
         itemStack = player.getInventory().getItemInOffHand();
-        handleSlotChange(null, itemStack);
+        handleSlotChange(player, null, itemStack);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        handleSlotChange(itemStack, null);
+        handleSlotChange(player, itemStack, null);
         itemStack = player.getInventory().getItemInOffHand();
-        handleSlotChange(itemStack, null);
+        handleSlotChange(player, itemStack, null);
     }
 
     @EventHandler
     public void onSlotChange(PlayerInventorySlotChangeEvent event) {
         ItemStack oldItem = event.getOldItemStack();
         ItemStack newItem = event.getNewItemStack();
-        handleSlotChange(oldItem, newItem);
+        handleSlotChange(event.getPlayer(), oldItem, newItem);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

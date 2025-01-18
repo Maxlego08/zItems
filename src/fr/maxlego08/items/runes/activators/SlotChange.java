@@ -6,6 +6,7 @@ import fr.maxlego08.items.api.runes.configurations.SlotChangeConfiguration;
 import fr.maxlego08.items.api.runes.handlers.InventorySlotChangeHandler;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
+import org.bukkit.entity.Player;
 
 public class SlotChange extends ZUtils implements RuneActivator, InventorySlotChangeHandler<SlotChangeConfiguration> {
     @Override
@@ -19,9 +20,9 @@ public class SlotChange extends ZUtils implements RuneActivator, InventorySlotCh
     }
 
     @Override
-    public void onInventorySlotChange(ItemPlugin plugin, PlayerInventorySlotChangeEvent event, SlotChangeConfiguration runeConfiguration) {
+    public void onInventorySlotChange(ItemPlugin plugin, Player player, SlotChangeConfiguration runeConfiguration) {
         runeConfiguration.getCommands().forEach(command -> {
-            String commandFormatted = papi(command.replace("%player%", event.getPlayer().getName()), event.getPlayer());
+            String commandFormatted = papi(command.replace("%player%", player.getName()), player);
             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandFormatted);
         });
     }
