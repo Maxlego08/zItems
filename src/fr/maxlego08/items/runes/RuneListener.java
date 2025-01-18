@@ -1,5 +1,6 @@
 package fr.maxlego08.items.runes;
 
+import com.jeff_media.armorequipevent.ArmorEquipEvent;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.RuneManager;
@@ -40,6 +41,14 @@ public class RuneListener implements Listener {
             RunePipeline pipeline = new RunePipeline(new ArrayList<>(newOptional.get()));
             pipeline.pipeline(plugin, player, InventorySlotChangeHandler.InventorySlotChangeType.EQUIP);
         }
+    }
+
+    @EventHandler
+    public void onArmorEquip(ArmorEquipEvent event) {
+        if (event.isCancelled()) return;
+        ItemStack oldItem = event.getOldArmorPiece();
+        ItemStack newItem = event.getNewArmorPiece();
+        handleSlotChange(event.getPlayer(), oldItem, newItem);
     }
 
     @EventHandler
