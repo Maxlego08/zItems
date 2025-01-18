@@ -4,6 +4,8 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RunePipeline;
+import fr.maxlego08.items.api.runes.handlers.InventorySlotChangeHandler;
+import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -11,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 
@@ -22,6 +25,23 @@ public class RuneListener implements Listener {
     public RuneListener(ItemsPlugin plugin, RuneManager runeManager) {
         this.plugin = plugin;
         this.runeManager = runeManager;
+    }
+
+    @EventHandler
+    public void onSlotChange(PlayerInventorySlotChangeEvent event) {
+        ItemStack oldItem = event.getOldItemStack();
+        ItemStack newItem = event.getNewItemStack();
+        var oldOptional = this.runeManager.getRunes(oldItem);
+        if (oldOptional.isPresent()) {
+            RunePipeline pipeline = new RunePipeline(new ArrayList<>(oldOptional.get()));
+            pipeline.pipeline(plugin, event, InventorySlotChangeHandler.InventorySlotChangeType.UNEQUIP);
+        }
+
+        var newOptional = this.runeManager.getRunes(newItem);
+        if (newOptional.isPresent()) {
+            RunePipeline pipeline = new RunePipeline(new ArrayList<>(newOptional.get()));
+            pipeline.pipeline(plugin, event, InventorySlotChangeHandler.InventorySlotChangeType.EQUIP);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

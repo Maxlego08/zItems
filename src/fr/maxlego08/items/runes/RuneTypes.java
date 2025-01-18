@@ -46,6 +46,7 @@ public enum RuneTypes implements RuneType {
         }
     },
     SELL_STICK(new SellStick(), RuneSellingConfiguration.class),
+    SLOT_CHANGE(new SlotChange(), SlotChangeConfiguration.class),
     ;
 
     private final RuneActivator activator;

@@ -4,6 +4,7 @@ import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
 import fr.maxlego08.items.api.hook.jobs.JobsPayementEventWrapper;
 import fr.maxlego08.items.api.runes.handlers.*;
+import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -46,6 +47,19 @@ public class RunePipeline {
             currentBlocks = new HashSet<>(((BreakHandler<?>) rune.getType().getActivator()).breakBlocks(plugin, event, rune.getConfiguration(), new HashSet<>(currentBlocks), drops));
         }
         return currentBlocks;
+    }
+
+    public <T extends Event> void pipeline(ItemPlugin plugin, T event, InventorySlotChangeHandler.InventorySlotChangeType type) {
+        switch (event) {
+            case PlayerInventorySlotChangeEvent playerInventorySlotChangeEvent -> {
+                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof InventorySlotChangeHandler<?>).toList()) {
+                    if(type == ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).getType(rune.getConfiguration())) {
+                        ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).onInventorySlotChange(plugin, playerInventorySlotChangeEvent, rune.getConfiguration());
+                    }
+                }
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + event);
+        }
     }
 
     public <T extends Event> void pipeline(ItemPlugin plugin, T event) {
