@@ -6,12 +6,13 @@ import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.runes.RunePipeline;
 import fr.maxlego08.items.api.runes.handlers.InventorySlotChangeHandler;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,21 +28,50 @@ public class RuneListener implements Listener {
         this.runeManager = runeManager;
     }
 
-    @EventHandler
-    public void onSlotChange(PlayerInventorySlotChangeEvent event) {
-        ItemStack oldItem = event.getOldItemStack();
-        ItemStack newItem = event.getNewItemStack();
+    private void handleSlotChange(ItemStack oldItem, ItemStack newItem) {
         var oldOptional = this.runeManager.getRunes(oldItem);
         if (oldOptional.isPresent()) {
             RunePipeline pipeline = new RunePipeline(new ArrayList<>(oldOptional.get()));
-            pipeline.pipeline(plugin, event, InventorySlotChangeHandler.InventorySlotChangeType.UNEQUIP);
+            pipeline.pipeline(plugin, InventorySlotChangeHandler.InventorySlotChangeType.UNEQUIP);
         }
 
         var newOptional = this.runeManager.getRunes(newItem);
         if (newOptional.isPresent()) {
             RunePipeline pipeline = new RunePipeline(new ArrayList<>(newOptional.get()));
-            pipeline.pipeline(plugin, event, InventorySlotChangeHandler.InventorySlotChangeType.EQUIP);
+            pipeline.pipeline(plugin, InventorySlotChangeHandler.InventorySlotChangeType.EQUIP);
         }
+    }
+
+    @EventHandler
+    public void onItemHeldChange(PlayerItemHeldEvent event) {
+        ItemStack oldItem = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
+        ItemStack newItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
+        handleSlotChange(oldItem, newItem);
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        handleSlotChange(null, itemStack);
+        itemStack = player.getInventory().getItemInOffHand();
+        handleSlotChange(null, itemStack);
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        handleSlotChange(itemStack, null);
+        itemStack = player.getInventory().getItemInOffHand();
+        handleSlotChange(itemStack, null);
+    }
+
+    @EventHandler
+    public void onSlotChange(PlayerInventorySlotChangeEvent event) {
+        ItemStack oldItem = event.getOldItemStack();
+        ItemStack newItem = event.getNewItemStack();
+        handleSlotChange(oldItem, newItem);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

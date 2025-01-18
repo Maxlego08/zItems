@@ -49,16 +49,11 @@ public class RunePipeline {
         return currentBlocks;
     }
 
-    public <T extends Event> void pipeline(ItemPlugin plugin, T event, InventorySlotChangeHandler.InventorySlotChangeType type) {
-        switch (event) {
-            case PlayerInventorySlotChangeEvent playerInventorySlotChangeEvent -> {
-                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof InventorySlotChangeHandler<?>).toList()) {
-                    if(type == ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).getType(rune.getConfiguration())) {
-                        ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).onInventorySlotChange(plugin, playerInventorySlotChangeEvent, rune.getConfiguration());
-                    }
-                }
+    public void pipeline(ItemPlugin plugin, InventorySlotChangeHandler.InventorySlotChangeType type) {
+        for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof InventorySlotChangeHandler<?>).toList()) {
+            if(type == ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).getType(rune.getConfiguration())) {
+                ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).onInventorySlotChange(plugin, rune.getConfiguration());
             }
-            default -> throw new IllegalStateException("Unexpected value: " + event);
         }
     }
 
