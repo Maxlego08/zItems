@@ -115,7 +115,9 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
             RuneConfiguration runeConfiguration = runeType.getConfiguration(plugin, configuration, runeName);
 
-            Rune rune = new ZRune(runeName, displayName, runeType, materials, tags, runeConfiguration);
+            String parent = configuration.getString("parent", "");
+
+            Rune rune = new ZRune(runeName, parent, displayName, runeType, materials, tags, runeConfiguration);
 
             this.runes.add(rune);
 
@@ -220,11 +222,16 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             if (runes.isEmpty()) {
                 lore.addAll(generateRuneLore(rune));
             } else {
-                if (nbRunesView != -1 && runes.size() == nbRunesView) {
+                if(nbRunesView != -1 && runes.size() == nbRunesView) {
                     lore.add(color(getMessage(Message.RUNE_MORE)));
-                } else if (nbRunesView == -1 || runes.size() < nbRunesView) {
+                } else {
+                    this.getRune(rune.getParent()).ifPresent(parent -> {
+                        String displayRune = color(getMessage(Message.RUNE_LINE, "%rune%", parent.getDisplayName()));
+                        lore.removeIf(l -> l.contains(displayRune));
+                    });
                     lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
                 }
+
             }
         }
 

@@ -11,19 +11,26 @@ import java.util.List;
 public class ZRune implements Rune {
 
     private final String name;
+    private final String parent;
     private final String displayName;
     private final RuneType type;
     private final List<Material> materials;
     private final List<Tag<Material>> tags;
     private final RuneConfiguration configuration;
 
-    public ZRune(String name, String displayName, RuneType type, List<Material> materials, List<Tag<Material>> tags, RuneConfiguration configuration) {
+    public ZRune(String name, String parent, String displayName, RuneType type, List<Material> materials, List<Tag<Material>> tags, RuneConfiguration configuration) {
         this.name = name;
+        this.parent = parent;
         this.displayName = displayName;
         this.type = type;
         this.materials = materials;
         this.tags = tags;
         this.configuration = configuration;
+    }
+
+    @Override
+    public String getParent() {
+        return parent;
     }
 
     @Override

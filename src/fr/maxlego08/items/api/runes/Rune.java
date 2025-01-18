@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface Rune {
 
+    String getParent();
+
     String getName();
 
     String getDisplayName();
