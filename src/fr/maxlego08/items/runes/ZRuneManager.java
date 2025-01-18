@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -222,15 +224,26 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             if (runes.isEmpty()) {
                 lore.addAll(generateRuneLore(rune));
             } else {
-                if(nbRunesView != -1 && runes.size() == nbRunesView) {
-                    lore.add(color(getMessage(Message.RUNE_MORE)));
+                AtomicInteger line = new AtomicInteger();
+                AtomicBoolean removeParent = new AtomicBoolean(false);
+                this.getRune(rune.getParent()).ifPresent(parent -> {
+                    String displayRune = color(getMessage(Message.RUNE_LINE, "%rune%", parent.getDisplayName()));
+                    line.set(lore.indexOf(displayRune));
+                    if (line.get() != -1) {
+                        lore.remove(line.get());
+                        removeParent.set(true);
+                    }
+                });
+                if (removeParent.get()) {
+                    lore.set(line.get(), color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
                 } else {
-                    this.getRune(rune.getParent()).ifPresent(parent -> {
-                        String displayRune = color(getMessage(Message.RUNE_LINE, "%rune%", parent.getDisplayName()));
-                        lore.removeIf(l -> l.contains(displayRune));
-                    });
-                    lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                    if(nbRunesView != -1 && runes.size() == nbRunesView) {
+                        lore.add(color(getMessage(Message.RUNE_MORE)));
+                    } else {
+                        lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                    }
                 }
+
 
             }
         }
