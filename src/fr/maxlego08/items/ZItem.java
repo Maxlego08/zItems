@@ -5,6 +5,7 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.meta.Food;
+import fr.maxlego08.items.api.events.ItemBuildEvent;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import fr.maxlego08.items.zcore.utils.ZUtils;
@@ -137,7 +138,9 @@ public class ZItem extends ZUtils implements Item {
             plugin.getLogger().severe("ItemMeta is null !");
         }
 
-        return itemStack;
+        ItemBuildEvent itemBuildEvent = new ItemBuildEvent(player, this, itemStack);
+        this.plugin.getServer().getPluginManager().callEvent(itemBuildEvent);
+        return itemBuildEvent.getItemStack();
     }
 
     private void applyNames(ItemMeta itemMeta, Player player) {

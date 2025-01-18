@@ -128,5 +128,24 @@
             <version>3.6.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.brcdev-minecraft</groupId>
+            <artifactId>shopgui-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>fr.maxlego08</groupId>
+            <artifactId>zshop</artifactId>
+            <version>3.1.9</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/zshop-3.1.9.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Gypopo</groupId>
+            <artifactId>EconomyShopGUI-API</artifactId>
+            <version>1.7.2</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

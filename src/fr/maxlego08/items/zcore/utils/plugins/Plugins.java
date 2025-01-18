@@ -16,6 +16,9 @@ public enum Plugins {
 	ZJOBS("zJobs"),
 	ZMENU("zMenu"),
 	ITEMSADDER("ItemsAdder"),
+	ZSHOP("zShop"),
+	SHOPGUIPLUS("ShopGUIPlus"),
+	ECONOMYSHPOGUI("EconomyShopGUI"),
 	;
 
 	private final String name;

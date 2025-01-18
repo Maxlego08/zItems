@@ -29,11 +29,23 @@ public enum RuneTypes implements RuneType {
         }
     },
     SILK_SPAWNER(new SilkSpawner(), EmptyConfiguration.class),
-    ABSORPTION(new Absorption(), EmptyConfiguration.class),
+    ABSORPTION(new Absorption(), EmptyConfiguration.class) {
+        @Override
+        public List<RuneType> getIncompatibles() {
+            return List.of(SELLER);
+        }
+    },
     XP_BOOST(new XPBoost(), RuneXPBoostConfiguration.class),
     JOB_XP_BOOST(new JobXPBoost(), RuneXPBoostConfiguration.class),
     JOB_MONEY_BOOST(new JobMoneyBoost(), RuneMoneyBoostConfiguration.class),
     ATTRIBUTE_APPLICATOR(new AttributeApplicator(), RuneAttributeConfiguration.class),
+    SELLER(new Seller(), RuneSellingConfiguration.class) {
+        @Override
+        public List<RuneType> getIncompatibles() {
+            return List.of(ABSORPTION);
+        }
+    },
+    SELL_STICK(new SellStick(), RuneSellingConfiguration.class),
     ;
 
     private final RuneActivator activator;

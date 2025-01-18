@@ -4,6 +4,7 @@ import fr.maxlego08.items.api.configurations.ItemConfiguration;
 import fr.maxlego08.items.api.configurations.global.GlobalConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
+import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.maxlego08.menu.zcore.utils.folialib.impl.PlatformScheduler;
@@ -27,6 +28,8 @@ public interface ItemPlugin extends Plugin {
     PlatformScheduler getScheduler();
 
     RecipesAPI getRecipesAPI();
+
+    HookManager getHookManager();
 
     RuneManager getRuneManager();
 

@@ -1,0 +1,57 @@
+package fr.maxlego08.items.runes.activators;
+
+import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.runes.RuneActivator;
+import fr.maxlego08.items.api.runes.configurations.RuneSellingConfiguration;
+import fr.maxlego08.items.api.runes.handlers.BreakHandler;
+import fr.maxlego08.items.api.runes.handlers.EntityDeathHandler;
+import fr.maxlego08.items.api.runes.handlers.InteractionHandler;
+import fr.maxlego08.items.api.shop.ShopProvider;
+import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Container;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class SellStick implements RuneActivator, InteractionHandler<RuneSellingConfiguration> {
+    @Override
+    public int getPriority() {
+        return 0;
+    }
+
+
+    @Override
+    public void interactBlock(ItemPlugin plugin, PlayerInteractEvent event, RuneSellingConfiguration runeConfiguration) {
+        Plugins plugins = runeConfiguration.getPlugins();
+        ShopProvider provider = plugins == null ? plugin.getHookManager().getProviders().values().stream().findFirst().orElse(null) : plugin.getHookManager().getProviders().get(plugins);
+        if(provider == null) return;
+
+        Block block = event.getClickedBlock();
+        if(block == null) return;
+
+        if (block.getState() instanceof Container container) {
+            List<ItemStack> itemStacks = new ArrayList<>();
+            for (ItemStack itemStack : container.getInventory().getContents()) {
+                if(itemStack == null) {
+                    itemStacks.add(new ItemStack(Material.AIR));
+                } else {
+                    boolean result = provider.sellItems(event.getPlayer(), itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier());
+                    if(!result) {
+                        itemStacks.add(itemStack);
+                    }
+                }
+            }
+            container.getInventory().setContents(itemStacks.toArray(new ItemStack[0]));
+        }
+
+    }
+}

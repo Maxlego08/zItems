@@ -209,7 +209,7 @@ public abstract class ZPlugin extends JavaPlugin {
     /**
      * Check if plugin is enable
      *
-     * @param pluginName
+     * @param pl
      * @return
      */
     protected boolean isEnable(Plugins pl) {
@@ -220,7 +220,7 @@ public abstract class ZPlugin extends JavaPlugin {
     /**
      * Get plugin for plugins enum
      *
-     * @param pluginName
+     * @param plugin
      * @return
      */
     protected Plugin getPlugin(Plugins plugin) {

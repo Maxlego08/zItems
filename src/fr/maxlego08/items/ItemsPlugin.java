@@ -25,6 +25,7 @@ import fr.maxlego08.items.hook.ZHookManager;
 import fr.maxlego08.items.hook.jobs.JobsHook;
 import fr.maxlego08.items.hook.jobs.ZJobsHook;
 import fr.maxlego08.items.hook.packs.ItemsAdderHook;
+import fr.maxlego08.items.hook.shops.ShopHooks;
 import fr.maxlego08.items.hook.worlds.WorldGuardHook;
 import fr.maxlego08.items.listener.GrindstoneListener;
 import fr.maxlego08.items.listener.SmithingTableListener;
@@ -51,6 +52,7 @@ import org.bukkit.plugin.ServicePriority;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
@@ -130,12 +132,15 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         }
 
         //Register all internal hooks
-        List.of(
+        List<Hooks> hooksList = new ArrayList<>(List.of(
                 new Hooks(Plugins.JOBS, new JobsHook(this.runeManager)),
                 new Hooks(Plugins.ZJOBS, new ZJobsHook(this.runeManager)),
                 new Hooks(Plugins.ITEMSADDER, new ItemsAdderHook(this))
                 // ToDo, add more hook
-        ).forEach(hooks -> this.hookManager.registerHook(hooks.plugins(), hooks.hook()));
+        ));
+        Stream.of(ShopHooks.values()).forEach(shopHooks -> hooksList.add(new Hooks(shopHooks.getPlugin(), shopHooks)));
+
+        hooksList.forEach(hooks -> this.hookManager.registerHook(hooks.plugins(), hooks.hook()));
 
         this.getServer().getScheduler().runTask(this, () -> {
             //Load one tick later to permit addon to register hooks
@@ -214,10 +219,12 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         return this.recipesAPI;
     }
 
+    @Override
     public HookManager getHookManager() {
         return hookManager;
     }
 
+    @Override
     public RuneManager getRuneManager() {
         return runeManager;
     }
