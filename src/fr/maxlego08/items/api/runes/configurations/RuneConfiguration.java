@@ -17,6 +17,7 @@ public abstract class RuneConfiguration {
     protected final String runeName;
     protected List<Material> materials = new ArrayList<>();
     protected List<Tag<Material>> tags = new ArrayList<>();
+    protected boolean blacklisted = false;
     protected boolean eventBlockBreakEvent = false;
 
     public RuneConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName) {
@@ -52,10 +53,11 @@ public abstract class RuneConfiguration {
     }
 
     public boolean contains(Material material) {
-        if (this.materials.isEmpty() && this.tags.isEmpty()) {
-            return true;
+        if (blacklisted) {
+            return !materials.contains(material) && tags.stream().noneMatch(tag -> tag.isTagged(material));
+        } else {
+            return materials.contains(material) || tags.stream().anyMatch(tag -> tag.isTagged(material));
         }
-        return this.materials.contains(material) || this.tags.stream().anyMatch(tag -> tag.isTagged(material));
     }
 
     public ItemPlugin getPlugin() {
