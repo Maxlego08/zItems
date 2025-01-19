@@ -96,8 +96,9 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
             if(damageEvent.isCancelled()) {
                 return;
             }
-            if(event.getItem().getItemMeta() instanceof Damageable) {
-                this.applyDamageToItem(event.getItem(), damageEvent.getDamage(), event.getPlayer());
+            if(event.getItem().getItemMeta() instanceof Damageable damageable) {
+                damageable.setDamage(damageable.getDamage() + damageEvent.getDamage());
+                event.getItem().setItemMeta(damageable);
             } else {
                 int amount = event.getItem().getAmount();
                 if(amount > damageEvent.getDamage()) {

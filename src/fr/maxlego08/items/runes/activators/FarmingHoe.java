@@ -17,6 +17,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -227,6 +228,7 @@ public class FarmingHoe implements BreakHandler<RuneFarmingHoeConfiguration>, In
 
     @Override
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent event, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.useInteractedBlock() == Event.Result.DENY || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         var player = event.getPlayer();

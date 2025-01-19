@@ -115,11 +115,8 @@ public class RuneListener implements Listener {
         pipeline.pipeline(plugin, event);
     }
 
-    // ToDo, rework for use hand and offhand
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND) return;
-
         this.runeManager.onPlayerEvent(event);
     }
 }
