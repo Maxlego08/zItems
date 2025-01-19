@@ -43,9 +43,17 @@ public class CommandsListener implements Listener {
         Action itemAction;
 
         if (action.isLeftClick()) {
-            itemAction = Action.LEFT_CLICK;
+            if(player.isSneaking()) {
+                itemAction = Action.SHIFT_LEFT_CLICK;
+            } else {
+                itemAction = Action.LEFT_CLICK;
+            }
         } else if (action.isRightClick()) {
-            itemAction = Action.RIGHT_CLICK;
+            if(player.isSneaking()) {
+                itemAction = Action.SHIFT_RIGHT_CLICK;
+            } else {
+                itemAction = Action.RIGHT_CLICK;
+            }
         } else {
             return;
         }

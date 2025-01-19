@@ -1,12 +1,14 @@
 package fr.maxlego08.items.api.runes.configurations;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.configurations.commands.Action;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class RuneSellingConfiguration extends RuneConfiguration {
 
     private final Plugins plugin;
+    private final Action action;
     private final double multiplier;
     private final boolean damage;
 
@@ -25,6 +27,15 @@ public class RuneSellingConfiguration extends RuneConfiguration {
         }
         this.multiplier = configuration.getDouble("multiplier", 1);
         this.damage = configuration.getBoolean("damage", true);
+        try {
+            this.action = Action.valueOf(configuration.getString("action", "CLICK"));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Action " + configuration.getString("action") + " not found");
+        }
+    }
+
+    public Action getAction() {
+        return action;
     }
 
     public boolean isDamage() {

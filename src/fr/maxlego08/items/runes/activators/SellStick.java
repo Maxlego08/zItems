@@ -1,6 +1,7 @@
 package fr.maxlego08.items.runes.activators;
 
 import fr.maxlego08.items.api.ItemPlugin;
+import fr.maxlego08.items.api.configurations.commands.Action;
 import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneSellingConfiguration;
 import fr.maxlego08.items.api.runes.handlers.BreakHandler;
@@ -12,11 +13,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +37,37 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent event, RuneSellingConfiguration runeConfiguration) {
         Plugins plugins = runeConfiguration.getPlugins();
         ShopProvider provider = plugins == null ? plugin.getHookManager().getProviders().values().stream().findFirst().orElse(null) : plugin.getHookManager().getProviders().get(plugins);
+        Player player = event.getPlayer();
         if(provider == null) return;
 
         if(event.getItem() == null) return;
 
         Block block = event.getClickedBlock();
         if(block == null) return;
+
+        Action action;
+        switch (event.getAction()) {
+            case RIGHT_CLICK_BLOCK:
+                if(player.isSneaking()) {
+                    action = Action.SHIFT_RIGHT_CLICK;
+                } else {
+                    action = Action.RIGHT_CLICK;
+                }
+                break;
+            case LEFT_CLICK_BLOCK:
+                if(player.isSneaking()) {
+                    action = Action.SHIFT_LEFT_CLICK;
+                } else {
+                    action = Action.LEFT_CLICK;
+                }
+                break;
+            default:
+                return;
+        }
+
+        if(runeConfiguration.getAction() != Action.CLICK && runeConfiguration.getAction() != action) {
+            return;
+        }
 
         if (!(block.getState() instanceof Container container)) {
             return;
@@ -64,7 +92,17 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
             if(damageEvent.isCancelled()) {
                 return;
             }
-            this.applyDamageToItem(event.getItem(), damageEvent.getDamage(), event.getPlayer());
+            if(event.getItem().getItemMeta() instanceof Damageable) {
+                this.applyDamageToItem(event.getItem(), damageEvent.getDamage(), event.getPlayer());
+            } else {
+                int amount = event.getItem().getAmount();
+                if(amount > damageEvent.getDamage()) {
+                    event.getItem().setAmount(amount - damageEvent.getDamage());
+                } else {
+                    event.getPlayer().getInventory().remove(event.getItem());
+                }
+            }
+
         }
     }
 }
