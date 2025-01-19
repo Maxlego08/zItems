@@ -32,6 +32,11 @@ public interface Item {
      */
     String getName();
 
+
+    default ItemStack build(Player player, int amount) {
+        return build(player, amount, true);
+    }
+
     /**
      * Build an item stack with the given amount.
      *
@@ -39,5 +44,5 @@ public interface Item {
      * @param amount the amount of the item stack
      * @return the item stack
      */
-    ItemStack build(Player player, int amount);
+    ItemStack build(Player player, int amount, boolean parsePlaceholders);
 }

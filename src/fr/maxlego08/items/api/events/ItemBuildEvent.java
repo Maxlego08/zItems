@@ -19,11 +19,11 @@ public class ItemBuildEvent extends PlayerEvent {
     private ItemStack itemStack;
     private boolean parsePlaceholders;
 
-    public ItemBuildEvent(Player who, Item source, ItemStack itemStack) {
+    public ItemBuildEvent(Player who, Item source, ItemStack itemStack, boolean parsePlaceholders) {
         super(who);
         this.item = source;
         this.itemStack = itemStack;
-        this.parsePlaceholders = true;
+        this.parsePlaceholders = parsePlaceholders;
     }
 
     public void setParsePlaceholders(boolean parsePlaceholders) {
