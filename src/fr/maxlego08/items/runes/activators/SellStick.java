@@ -36,7 +36,7 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
 
     @Override
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent event, RuneSellingConfiguration runeConfiguration) {
-        if(event.getHand() != EquipmentSlot.HAND) {
+        if(event.getHand() != runeConfiguration.getHand()) {
             return;
         }
         Plugins plugins = runeConfiguration.getPlugins();
