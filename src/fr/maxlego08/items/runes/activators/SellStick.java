@@ -15,6 +15,7 @@ import org.bukkit.block.Container;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -35,23 +36,35 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
         ShopProvider provider = plugins == null ? plugin.getHookManager().getProviders().values().stream().findFirst().orElse(null) : plugin.getHookManager().getProviders().get(plugins);
         if(provider == null) return;
 
+        if(event.getItem() == null) return;
+
         Block block = event.getClickedBlock();
         if(block == null) return;
 
-        if (block.getState() instanceof Container container) {
-            List<ItemStack> itemStacks = new ArrayList<>();
-            for (ItemStack itemStack : container.getInventory().getContents()) {
-                if(itemStack == null) {
-                    itemStacks.add(new ItemStack(Material.AIR));
-                } else {
-                    boolean result = provider.sellItems(event.getPlayer(), itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier());
-                    if(!result) {
-                        itemStacks.add(itemStack);
-                    }
+        if (!(block.getState() instanceof Container container)) {
+            return;
+        }
+
+        List<ItemStack> itemStacks = new ArrayList<>();
+        for (ItemStack itemStack : container.getInventory().getContents()) {
+            if(itemStack == null) {
+                itemStacks.add(new ItemStack(Material.AIR));
+            } else {
+                boolean result = provider.sellItems(event.getPlayer(), itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier());
+                if(!result) {
+                    itemStacks.add(itemStack);
                 }
             }
-            container.getInventory().setContents(itemStacks.toArray(new ItemStack[0]));
         }
+        container.getInventory().setContents(itemStacks.toArray(new ItemStack[0]));
         event.setCancelled(true);
+        if(runeConfiguration.isDamage()) {
+            PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(event.getPlayer(), event.getItem(), 1, 1);
+            plugin.getServer().getPluginManager().callEvent(damageEvent);
+            if(damageEvent.isCancelled()) {
+                return;
+            }
+            this.applyDamageToItem(event.getItem(), damageEvent.getDamage(), event.getPlayer());
+        }
     }
 }

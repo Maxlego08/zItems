@@ -8,6 +8,7 @@ public class RuneSellingConfiguration extends RuneConfiguration {
 
     private final Plugins plugin;
     private final double multiplier;
+    private final boolean damage;
 
     public RuneSellingConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String runeName) {
         super(plugin, configuration, runeName);
@@ -23,6 +24,11 @@ public class RuneSellingConfiguration extends RuneConfiguration {
             }
         }
         this.multiplier = configuration.getDouble("multiplier", 1);
+        this.damage = configuration.getBoolean("damage", true);
+    }
+
+    public boolean isDamage() {
+        return damage;
     }
 
     public double getMultiplier() {
