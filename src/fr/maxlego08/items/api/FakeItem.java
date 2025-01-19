@@ -17,7 +17,7 @@ public class FakeItem implements Item {
     }
 
     @Override
-    public ItemStack build(Player player, int amount, boolean parsePlaceholders) {
+    public ItemStack build(Player player, int amount) {
         return new ItemStack(Material.STONE);
     }
 }

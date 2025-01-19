@@ -45,7 +45,7 @@ public class ZItem extends ZUtils implements Item {
     }
 
     @Override
-    public ItemStack build(Player player, int amount, boolean parsePlaceholders) {
+    public ItemStack build(Player player, int amount) {
 
         ItemStack itemStack = new ItemStack(this.configuration.getMaterial());
 
@@ -138,7 +138,7 @@ public class ZItem extends ZUtils implements Item {
             plugin.getLogger().severe("ItemMeta is null !");
         }
 
-        ItemBuildEvent itemBuildEvent = new ItemBuildEvent(player, this, itemStack, parsePlaceholders);
+        ItemBuildEvent itemBuildEvent = new ItemBuildEvent(player, this, itemStack);
         this.plugin.getServer().getPluginManager().callEvent(itemBuildEvent);
         return itemBuildEvent.getItemStack();
     }
