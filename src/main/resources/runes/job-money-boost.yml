@@ -8,18 +8,6 @@ type: JOB_MONEY_BOOST
 # The color code (#34eb9b) is used to apply a specific color to the name.
 display-name: "#34eb9bᴊᴏʙ-ᴍᴏɴᴇʏ-ʙᴏᴏsᴛ"
 
-# Name of the item associated with the rune.
-# This is the name that will be displayed in the player's inventory.
-# Typically, this matches the display name, but it can be customized independently.
-item-name: "#34eb9bᴊᴏʙ-ᴍᴏɴᴇʏ-ʙᴏᴏsᴛ"
-
-# Lore of the item.
-# The lore is a description that appears under the item name.
-# It provides additional context or information about the item's abilities, such as increasing the amount of money earned from jobs.
-# The '&8' color code sets the text to dark gray.
-lore:
-  - "&8Allows to gain more money for your job"
-
 # Allowed materials for applying the rune.
 # This defines which materials the rune can be applied to.
 # If this list is empty, the rune can be applied to all materials unless restricted by tags.

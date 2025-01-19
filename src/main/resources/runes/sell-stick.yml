@@ -1,21 +1,25 @@
-# Type of the rune.
-# "MELT_MINING" suggests that this rune allows the player to mine blocks in a way that automatically smelts the ores into their smelted form.
-# For example, mining iron ore would directly yield iron ingots instead of raw iron.
-type: MELT_MINING
+type: SELL_STICK
 
 # Display the name of the rune.
 # This is the name that will appear when the player hovers over the item.
-display-name: "#34eb9bᴍᴇʟᴛ ᴍɪɴɪɴɢ"
+display-name: "#34eb9bseller"
+
+# Plugin to handle the rune's functionality.
+# You can put ALL and it will work with all shop plugin implement in the plugin and in the server
+plugin: ALL
+
+# The price of items sold by the seller.
+multiplier: 1.0
 
 # Allowed materials for applying the rune.
 # This defines which materials the rune can be applied to.
 # If left empty, it will allow all materials unless restricted by tags.
 # Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-allowed-materials: [ ]
+allowed-materials:
+  - STICK
 
 # Allowed material tags for applying the rune.
 # Tags are predefined groups of materials in Minecraft.
 # "PICKAXES" indicates that this rune is only applicable to pickaxes.
 # Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/tag/Tag.html
-allowed-tags:
-  - ITEMS_PICKAXES
+allowed-tags: []

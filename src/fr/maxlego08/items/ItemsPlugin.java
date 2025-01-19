@@ -89,7 +89,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         try {
             this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
             this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/rune_applicator.yml", ApplicatorMenu.class);
-        } catch (InventoryException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

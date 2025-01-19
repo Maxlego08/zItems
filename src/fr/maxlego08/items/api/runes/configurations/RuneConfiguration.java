@@ -53,6 +53,9 @@ public abstract class RuneConfiguration {
     }
 
     public boolean contains(Material material) {
+        if(materials.isEmpty() && tags.isEmpty()) {
+            return !blacklisted;
+        }
         if (blacklisted) {
             return !materials.contains(material) && tags.stream().noneMatch(tag -> tag.isTagged(material));
         } else {

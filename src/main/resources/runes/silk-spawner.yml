@@ -7,17 +7,6 @@ type: SILK_SPAWNER
 # This is the name that will appear when the player hovers over the item.
 display-name: "#34eb9bsɪʟᴋ sᴘᴀᴡɴᴇʀ"
 
-# Name of the item associated with the rune.
-# This is the name that the item itself will display in the player's inventory.
-# Typically, this would match the display-name, but can be customized.
-item-name: "#34eb9bsɪʟᴋ sᴘᴀᴡɴᴇʀ"
-
-# Lore of the item.
-# The lore is the description that appears under the item name.
-# It provides additional context or information about the item's abilities or origin.
-lore:
-  - "&8Allows to pick up spawners"
-
 # Allowed materials for applying the rune.
 # This defines which materials the rune can be applied to.
 # If left empty, it will allow all materials unless restricted by tags.

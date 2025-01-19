@@ -10,6 +10,9 @@ folia-supported: true
 softdepend:
   - WorldGuard
   - Jobs
+  - zShop
+  - zJobs
+  - ShopGuiPlus
 depend:
   - zMenu
 commands:

@@ -52,6 +52,6 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
             }
             container.getInventory().setContents(itemStacks.toArray(new ItemStack[0]));
         }
-
+        event.setCancelled(true);
     }
 }

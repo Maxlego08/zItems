@@ -1,11 +1,15 @@
-# Type of the rune.
-# "MELT_MINING" suggests that this rune allows the player to mine blocks in a way that automatically smelts the ores into their smelted form.
-# For example, mining iron ore would directly yield iron ingots instead of raw iron.
-type: MELT_MINING
+type: SELLER
 
 # Display the name of the rune.
 # This is the name that will appear when the player hovers over the item.
-display-name: "#34eb9bᴍᴇʟᴛ ᴍɪɴɪɴɢ"
+display-name: "#34eb9bseller"
+
+# Plugin to handle the rune's functionality.
+# You can put ALL and it will work with all shop plugin implement in the plugin and in the server
+plugin: ALL
+
+# The price of items sold by the seller.
+multiplier: 1.0
 
 # Allowed materials for applying the rune.
 # This defines which materials the rune can be applied to.

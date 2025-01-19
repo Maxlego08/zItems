@@ -7,16 +7,6 @@ type: VEIN_MINING
 # This name appears when the player hovers over the item.
 display-name: "#34eb9bᴠᴇɪɴ ᴍɪɴɪɴɢ"
 
-# Name of the item associated with the rune.
-# This name appears in the player's inventory.
-# It can be the same as the display name or customized separately.
-item-name: "#34eb9bᴠᴇɪɴ ᴍɪɴɪɴɢ"
-
-# Lore of the item.
-# This is the description that appears under the item's name, providing additional details.
-lore:
-  - "&8Allows to mine ore veins"
-
 # Allowed materials for applying the rune.
 # Defines which materials the rune can be applied to.
 # If left empty, it defaults to allowing all materials unless restricted by tags.
