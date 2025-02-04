@@ -4,6 +4,7 @@ import fr.maxlego08.items.api.CloneUtils;
 import fr.maxlego08.items.api.menus.buttons.ApplicatorBaseInputButton;
 import fr.maxlego08.items.api.menus.buttons.ApplicatorExtraInputButton;
 import fr.maxlego08.items.api.menus.buttons.ApplicatorInputButton;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorRuneInputButton;
 import fr.maxlego08.menu.ZInventory;
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
@@ -32,7 +33,9 @@ public class ApplicatorMenu extends ZInventory {
                 .stream()
                 .filter(button -> button instanceof ApplicatorInputButton
                         || button instanceof ApplicatorExtraInputButton
-                        || button instanceof ApplicatorBaseInputButton)
+                        || button instanceof ApplicatorBaseInputButton
+                        || button instanceof ApplicatorRuneInputButton
+                )
                 .toList();
         for (Button button : buttons) {
             for (int slot : button.getSlots()) {

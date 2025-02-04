@@ -1,6 +1,7 @@
 package fr.maxlego08.items.api.configurations.meta;
 
 import fr.maxlego08.items.ItemsPlugin;
+import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
@@ -25,7 +26,8 @@ public record Food(boolean enable, int nutrition, int saturation, boolean canAlw
         foodComponent.setNutrition(this.nutrition);
         foodComponent.setSaturation(this.saturation);
         foodComponent.setCanAlwaysEat(this.canAlwaysEat);
-        foodComponent.setEatSeconds(this.eatSeconds);
+
+        /*foodComponent.setEatSeconds(this.eatSeconds);
 
         List<FoodComponent.FoodEffect> foodEffects = this.effects.stream().map(effect -> {
             PotionEffect potionEffect = new PotionEffect(PotionEffectType.getByName(effect.type()), effect.duration(), effect.amplifier(), effect.ambient(), effect.showParticles(), effect.showIcon());
@@ -36,7 +38,7 @@ public record Food(boolean enable, int nutrition, int saturation, boolean canAlw
 
         if (this.usingConvertsTo != null) {
             plugin.getItemManager().getItem(this.usingConvertsTo).ifPresent(item -> foodComponent.setUsingConvertsTo(item.build(player, 1)));
-        }
+        }*/
 
         itemMeta.setFood(foodComponent);
     }

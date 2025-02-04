@@ -86,12 +86,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorExtraInputButton.class, "ZITEMS_RUNE_APPLICATOR_EXTRA_INPUTS"));
         this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorOutputButton.class, "ZITEMS_RUNE_APPLICATOR_OUTPUT"));
         this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorRuneInputButton.class, "ZITEMS_RUNE_APPLICATOR_RUNE_INPUT"));
-        try {
-            this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
-            this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/rune_applicator.yml", ApplicatorMenu.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.loadInventories();
 
         this.enchantments.register();
         this.itemComponent = isPaperVersion() ? new PaperComponent() : new SpigotComponent();
@@ -166,6 +161,16 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     public void reloadFiles() {
         super.reloadFiles();
         this.globalConfiguration = new GlobalConfiguration(getConfig());
+        this.loadInventories();
+    }
+
+    private void loadInventories(){
+        try {
+            this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
+            this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/rune_applicator.yml", ApplicatorMenu.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ItemComponent getItemComponent() {

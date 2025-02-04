@@ -5,7 +5,10 @@ import fr.maxlego08.menu.button.ZButton;
 import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ApplicatorButton extends ZButton {
@@ -23,12 +26,22 @@ public abstract class ApplicatorButton extends ZButton {
         }
     }
 
+    @Override
+    public void onInventoryClick(InventoryClickEvent event, Player player, InventoryDefault inventoryDefault) {
+        super.onInventoryClick(event, player, inventoryDefault);
+
+        var inventory = event.getClickedInventory();
+        if (inventory != null && inventory.getType() == InventoryType.PLAYER && event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            event.setCancelled(true);
+        }
+    }
+
     private void onClick(InventoryClickEvent event, InventoryDefault inventoryDefault) {
         event.setCancelled(true);
-        if(event.getRawSlot() >= event.getInventory().getSize()) {
+        if (event.getRawSlot() >= event.getInventory().getSize()) {
             return;
         }
-        if(!this.slots.contains(event.getSlot())) {
+        if (!this.slots.contains(event.getSlot())) {
             return;
         }
         switch (event.getClick()) {
@@ -53,7 +66,7 @@ public abstract class ApplicatorButton extends ZButton {
                 int maxStackSize = event.getCurrentItem() == null ? event.getCursor().getMaxStackSize() : event.getCurrentItem().getMaxStackSize();
                 int currentAmount = event.getCurrentItem() == null ? 0 : event.getCurrentItem().getAmount();
                 int newAmount = Math.min(maxStackSize, currentAmount + event.getCursor().getAmount());
-                place(player, inventory,event, currentAmount, newAmount);
+                place(player, inventory, event, currentAmount, newAmount);
             }
             case SWAP_WITH_CURSOR -> {
                 swap(player, inventory, event);
@@ -71,7 +84,7 @@ public abstract class ApplicatorButton extends ZButton {
         ItemStack cursor = new ItemStack(Material.AIR);
         item.setAmount(newAmount);
         inventoryDefault.addItem(event.getRawSlot(), item).setClick(event1 -> this.onClick(event1, inventoryDefault));
-        if(rest > 0) {
+        if (rest > 0) {
             cursor = CloneUtils.cloneItemStack(player.getItemOnCursor());
             cursor.setAmount(rest);
         }
@@ -91,7 +104,7 @@ public abstract class ApplicatorButton extends ZButton {
             }
             case PICKUP_HALF -> {
                 int half = event.getCurrentItem().getAmount() / 2;
-                if(event.getCurrentItem().getAmount() == 1) {
+                if (event.getCurrentItem().getAmount() == 1) {
                     half = 1;
                 }
                 ItemStack item = CloneUtils.cloneItemStack(event.getCurrentItem());
@@ -106,7 +119,7 @@ public abstract class ApplicatorButton extends ZButton {
     private void swap(Player player, InventoryDefault inventory, InventoryClickEvent event) {
         ItemStack cursor = CloneUtils.cloneItemStack(event.getCursor());
         ItemStack current = CloneUtils.cloneItemStack(event.getCurrentItem());
-        if(current != null && current.isSimilar(cursor)) {
+        if (current != null && current.isSimilar(cursor)) {
             int maxStackSize = current.getMaxStackSize();
             int currentAmount = current.getAmount();
             int newAmount = Math.min(maxStackSize, currentAmount + cursor.getAmount());
@@ -116,6 +129,4 @@ public abstract class ApplicatorButton extends ZButton {
             inventory.addItem(event.getRawSlot(), cursor).setClick(event1 -> this.onClick(event1, inventory));
         }
     }
-
-
 }
