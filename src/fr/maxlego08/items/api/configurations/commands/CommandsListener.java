@@ -1,8 +1,11 @@
 package fr.maxlego08.items.api.configurations.commands;
 
 import fr.maxlego08.items.api.Item;
+import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
+import fr.maxlego08.items.zcore.utils.ZUtils;
 import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -16,17 +19,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CommandsListener implements Listener {
+public class CommandsListener extends ZUtils implements Listener {
 
+    private final ItemComponent itemComponent;
     private final ItemManager itemManager;
 
-    public CommandsListener(ItemManager itemManager) {
+    public CommandsListener(ItemComponent itemComponent, ItemManager itemManager) {
+        this.itemComponent = itemComponent;
         this.itemManager = itemManager;
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if(event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getHand() != EquipmentSlot.HAND) return;
 
         var player = event.getPlayer();
         var itemStack = player.getInventory().getItemInMainHand();
@@ -43,13 +48,13 @@ public class CommandsListener implements Listener {
         Action itemAction;
 
         if (action.isLeftClick()) {
-            if(player.isSneaking()) {
+            if (player.isSneaking()) {
                 itemAction = Action.SHIFT_LEFT_CLICK;
             } else {
                 itemAction = Action.LEFT_CLICK;
             }
         } else if (action.isRightClick()) {
-            if(player.isSneaking()) {
+            if (player.isSneaking()) {
                 itemAction = Action.SHIFT_RIGHT_CLICK;
             } else {
                 itemAction = Action.RIGHT_CLICK;
@@ -59,48 +64,51 @@ public class CommandsListener implements Listener {
         }
 
         for (ItemCommand itemCommand : commands.stream().filter(command -> command.action() == itemAction || command.action() == Action.CLICK).collect(Collectors.toSet())) {
-            String commandStr = itemCommand.command().replace("%player%", player.getName());
 
             if (itemCommand.cooldown() > 0 && CooldownBuilder.isCooldown(this.generateCooldownName(item, itemCommand), player.getUniqueId())) {
                 //TODO add message
+                Bukkit.getLogger().info("ToDo Add Message - ItemCooldown");
                 return;
             }
 
-            if(itemCommand.sender() == CommandSender.PLAYER) {
-                player.performCommand(commandStr);
-            } else {
-                player.getServer().dispatchCommand(player.getServer().getConsoleSender(), commandStr);
+            for (String command : itemCommand.commands()) {
+                String commandStr = command.replace("%player%", player.getName());
+                if (itemCommand.sender() == CommandSender.PLAYER) {
+                    player.performCommand(commandStr);
+                } else {
+                    player.getServer().dispatchCommand(player.getServer().getConsoleSender(), commandStr);
+                }
             }
 
-            if(itemCommand.cooldown() > 0) {
+            for (String message : itemCommand.messages()) {
+                this.itemComponent.sendMessage(player, papi(message, player));
+            }
+
+            if (itemCommand.cooldown() > 0) {
                 CooldownBuilder.addCooldown(this.generateCooldownName(item, itemCommand), player.getUniqueId(), itemCommand.cooldown());
             }
 
-
-            if(itemCommand.damage() == null) {
+            if (itemCommand.damage() == null) {
                 return;
             }
 
             ItemCommand.ItemDamage damage = itemCommand.damage();
-            if(damage.type() == ItemCommand.DamageType.AMOUNT) {
+            if (damage.type() == ItemCommand.DamageType.AMOUNT) {
                 itemStack.setAmount(Math.max(itemStack.getAmount() - damage.damage(), 0));
             } else {
-                if(!(meta instanceof Damageable damageable)) return;
-                if(damageable.getDamage() + damage.damage() >= damageable.getMaxDamage()) {
+                if (!(meta instanceof Damageable damageable)) return;
+                if (damageable.getDamage() + damage.damage() >= damageable.getMaxDamage()) {
                     itemStack.setAmount(itemStack.getAmount() - 1);
                 } else {
                     damageable.setDamage(damageable.getDamage() + damage.damage());
                     itemStack.setItemMeta(meta);
                 }
             }
-
         }
-
-
     }
 
     private String generateCooldownName(Item item, ItemCommand itemCommand) {
-        return "command-" + item.getName() + "-" + itemCommand.action().name() + "-" + itemCommand.command().trim();
+        return "command-" + item.getName() + "-" + itemCommand.action().name() + "-" + String.join("-", itemCommand.commands()).trim();
     }
 
 }

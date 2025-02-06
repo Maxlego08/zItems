@@ -1,3 +1,5 @@
+enable-info: false
+
 strip-log:
   enable: false
   damage: 1

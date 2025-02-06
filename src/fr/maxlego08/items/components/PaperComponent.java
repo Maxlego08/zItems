@@ -9,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bukkit.block.sign.SignSide;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -134,4 +135,11 @@ public class PaperComponent extends ZUtils implements ItemComponent {
             }
         }
     }
+
+    @Override
+    public void sendMessage(CommandSender sender, String string) {
+        sender.sendMessage(getComponent(string));
+    }
+
+
 }

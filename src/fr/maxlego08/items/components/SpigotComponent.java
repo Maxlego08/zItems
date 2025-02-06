@@ -3,6 +3,7 @@ package fr.maxlego08.items.components;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.block.sign.SignSide;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -39,5 +40,10 @@ public class SpigotComponent extends ZUtils implements ItemComponent {
 
     @Override
     public void sendItemLore(Player player, ItemMeta itemMeta) {
+    }
+
+    @Override
+    public void sendMessage(CommandSender sender, String string) {
+        sender.sendMessage(color(string));
     }
 }

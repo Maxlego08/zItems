@@ -84,7 +84,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
 
             this.items.add(item);
 
-            plugin.getLogger().info("Loaded item " + file.getPath());
+            plugin.info("Loaded item " + file.getPath());
 
         } catch (Exception exception) {
             plugin.getLogger().severe("Impossible to load the item " + file.getPath());

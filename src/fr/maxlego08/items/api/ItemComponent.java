@@ -1,6 +1,7 @@
 package fr.maxlego08.items.api;
 
 import org.bukkit.block.sign.SignSide;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -21,4 +22,6 @@ public interface ItemComponent {
     void setLoreIndex(ItemMeta itemMeta, int index, String loreLine);
 
     void sendItemLore(Player player, ItemMeta itemMeta);
+
+    void sendMessage(CommandSender sender, String string);
 }

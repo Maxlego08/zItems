@@ -1,6 +1,8 @@
 package fr.maxlego08.items.api.configurations.commands;
 
-public record ItemCommand(CommandSender sender, Action action, String command, ItemDamage damage, long cooldown) {
+import java.util.List;
+
+public record ItemCommand(CommandSender sender, Action action, List<String> commands, List<String> messages, ItemDamage damage, long cooldown) {
 
     public enum DamageType {
         AMOUNT,

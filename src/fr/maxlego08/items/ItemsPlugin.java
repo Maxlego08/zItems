@@ -12,7 +12,12 @@ import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.hook.Hooks;
 import fr.maxlego08.items.api.menus.ApplicatorMenu;
-import fr.maxlego08.items.api.menus.buttons.*;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorBaseInputButton;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorExtraInputButton;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorInputButton;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorOutputButton;
+import fr.maxlego08.items.api.menus.buttons.ApplicatorRuneInputButton;
+import fr.maxlego08.items.api.menus.buttons.ItemsButton;
 import fr.maxlego08.items.api.recipes.ZItemHook;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
@@ -41,7 +46,6 @@ import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 import fr.maxlego08.menu.api.ButtonManager;
 import fr.maxlego08.menu.api.InventoryManager;
 import fr.maxlego08.menu.button.loader.NoneLoader;
-import fr.maxlego08.menu.exceptions.InventoryException;
 import fr.maxlego08.menu.zcore.utils.folialib.FoliaLib;
 import fr.maxlego08.menu.zcore.utils.folialib.impl.PlatformScheduler;
 import fr.traqueur.recipes.api.RecipesAPI;
@@ -100,7 +104,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         servicesManager.register(Enchantments.class, this.enchantments, this, ServicePriority.Highest);
 
         this.addListener(new DisableEnchantsListener(this.itemManager));
-        this.addListener(new CommandsListener(this.itemManager));
+        this.addListener(new CommandsListener(this.itemComponent, this.itemManager));
         this.addListener(new GrindstoneListener(this.itemManager));
         this.addListener(new SmithingTableListener(this.itemManager, this.runeManager));
         this.addListener(new SpawnerListener());
@@ -164,7 +168,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.loadInventories();
     }
 
-    private void loadInventories(){
+    private void loadInventories() {
         try {
             this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
             this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/rune_applicator.yml", ApplicatorMenu.class);
@@ -236,5 +240,11 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
     public RuneListener getRuneListener() {
         return runeListener;
+    }
+
+    public void info(String string) {
+        if (getConfig().getBoolean("enable-info", false)) {
+            getLogger().info(string);
+        }
     }
 }

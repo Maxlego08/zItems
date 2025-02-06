@@ -125,7 +125,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
             this.runes.add(rune);
 
-            logger.info("Loaded rune " + file.getPath());
+            plugin.info("Loaded rune " + file.getPath());
 
         } catch (Exception exception) {
             logger.severe("Unable to load the rune " + file.getPath());
@@ -396,7 +396,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                     ingredientsInner.toArray(Ingredient[]::new),
                     null, 0, 0);
             this.applicators.add(new Applicator(this.plugin, recipe, rune, material, nbInputs, nbExtra));
-            this.plugin.getLogger().info("Loaded applicator " + "rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator");
+            this.plugin.info("Loaded applicator " + "rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator");
         }
     }
 

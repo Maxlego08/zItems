@@ -97,14 +97,20 @@ enchantment:
 # You can set damage to 'all' to break item when the command is run or to remove all amount of the item.
 commands:
   - sender: CONSOLE
-    command: "say left click console"
+    commands:
+      - "say left click console"
+    messages:
+      - "&fHey, its a &cleft click !"
     action: LEFT_CLICK
     cooldown: 10000
     damage:
       type: AMOUNT
       quantity: 1
   - sender: PLAYER
-    command: "say right click player"
+    commands:
+      - "say right click player"
+    messages:
+      - "&fHey, its a &dright click !"
     action: RIGHT_CLICK
     cooldown: 10000
     damage:
