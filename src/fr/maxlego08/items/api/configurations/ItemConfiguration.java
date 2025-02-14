@@ -112,6 +112,7 @@ public class ItemConfiguration {
     private ItemRuneConfiguration itemRuneConfiguration;
     private Food food;
     private ItemRarity itemRarity;
+    private final boolean repairDisabled;
 
     public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
@@ -142,6 +143,7 @@ public class ItemConfiguration {
         this.enchantmentGlint = configuration.getBoolean(path + "enchantment.glint", false);
         this.enchantmentShowInTooltip = configuration.getBoolean(path + "enchantment.show-in-tooltip", true);
         this.grindstoneEnabled = configuration.getBoolean(path + "grindstone-enabled", true);
+        this.repairDisabled = configuration.getBoolean(path + "repair-disabled", false); // Permet d'avoir un tag unrepairable sur l'item et les commandes /repair ne marche pas (que zessentials)
 
         String rarity = configuration.getString(path + "rarity");
         if (rarity != null) {
@@ -176,6 +178,9 @@ public class ItemConfiguration {
             String enchantmentAsString = (String) enchantmentMap.get("enchantment");
             var optionalEnchantment = enchantmentsDisable.getEnchantments(enchantmentAsString.toLowerCase());
             var levels = enchantmentMap.get("levels");
+            if (levels == null) {
+                plugin.getLogger().severe("Impossible to find levels for the enchantment " + enchantmentAsString + " for the item " + fileName);
+            }
             this.handleLevels(plugin, fileName, enchantmentAsString, optionalEnchantment, levels);
         }
 
@@ -461,6 +466,10 @@ public class ItemConfiguration {
 
     public ItemType getItemType() {
         return itemType;
+    }
+
+    public boolean isRepairDisabled() {
+        return repairDisabled;
     }
 
     public void enchant(ItemMeta itemMeta) {

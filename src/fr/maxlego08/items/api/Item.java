@@ -17,6 +17,7 @@ public interface Item {
      * The key used to store the item id in an item stack.
      */
     NamespacedKey ITEM_KEY = new NamespacedKey(JavaPlugin.getProvidingPlugin(ItemPlugin.class), "item-id");
+    NamespacedKey UNREPAIRABLE_KEY = new NamespacedKey(JavaPlugin.getProvidingPlugin(ItemPlugin.class), "unrepairable");
 
     /**
      * Get the item configuration.
