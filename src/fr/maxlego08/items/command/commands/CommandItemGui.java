@@ -8,11 +8,11 @@ import fr.maxlego08.items.zcore.utils.commands.CommandType;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 import fr.maxlego08.menu.api.InventoryManager;
 
-public class CommandGui extends VCommand {
+public class CommandItemGui extends VCommand {
 
     private final ItemsPlugin plugin;
 
-    public CommandGui(ItemsPlugin plugin) {
+    public CommandItemGui(ItemsPlugin plugin) {
         super(plugin);
         this.plugin = plugin;
         this.setPermission(Permission.ZITEMS_GUI);

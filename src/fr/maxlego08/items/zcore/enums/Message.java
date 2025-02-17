@@ -33,6 +33,7 @@ public enum Message {
 
     DESCRIPTION_RELOAD("Reload configuration files"),
     DESCRIPTION_GIVE("Give an item"),
+    DESCRIPTION_MAILBOX("Give an item into the mailbox"),
     DESCRIPTION_RUN_APPLY("Apply a rune to an item"),
     DESCRIPTION_VIEW_RUNES("View the runes of an item"),
     DESCRIPTION_ITEM_INFO("Display item informations"),
@@ -40,6 +41,7 @@ public enum Message {
     ITEM_NOT_FOUND("&cImpossible to find the item &f%name%&c."),
     ITEM_HAVE_NOT_META("&cThis item does not have any metadata."),
     ITEM_GIVE("&aYou just gave &b%name% to the player &f%player%&a."),
+    ITEM_MAILBOX("&aYou just gave &b%name% to the player &f%player%&a mailbox."),
     COMMAND_RUNE_NOT_FOUND("&cCannot find rune %rune%."),
     COMMAND_RUNE_ALREADY_APPLIED("&cThis item already contains the rune %rune%."),
 

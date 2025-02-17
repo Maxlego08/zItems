@@ -135,6 +135,13 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/libs/zshop-3.1.9.jar</systemPath>
     </dependency>
+    <dependency>
+      <groupId>fr.maxlego08.essentials</groupId>
+      <artifactId>ZEssentials</artifactId>
+      <version>1.0.1.9</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/zEssentialsAPI.jar</systemPath>
+    </dependency>
   </dependencies>
   <properties>
     <maven.compiler.target>21</maven.compiler.target>

@@ -17,8 +17,11 @@ public class CommandItem extends VCommand {
         this.addSubCommand(new CommandItemGive(plugin));
         this.addSubCommand(new CommandItemViewRunes(plugin));
         this.addSubCommand(new CommandItemEdit(plugin));
-        if(Plugins.ZMENU.isEnable()) {
-            this.addSubCommand(new CommandGui(plugin));
+        if (Plugins.ZMENU.isEnable()) {
+            this.addSubCommand(new CommandItemGui(plugin));
+        }
+        if (Plugins.ZESSENTIALS.isEnable()) {
+            this.addSubCommand(new CommandItemMail(plugin));
         }
     }
 
