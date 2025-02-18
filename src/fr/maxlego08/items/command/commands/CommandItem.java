@@ -14,7 +14,6 @@ public class CommandItem extends VCommand {
         this.setPermission(Permission.ZITEMS_USE);
         this.addSubCommand(new CommandItemReload(plugin));
         this.addSubCommand(new CommandItemApplyRune(plugin));
-        this.addSubCommand(new CommandItemGive(plugin));
         this.addSubCommand(new CommandItemViewRunes(plugin));
         this.addSubCommand(new CommandItemEdit(plugin));
         if (Plugins.ZMENU.isEnable()) {
@@ -22,6 +21,9 @@ public class CommandItem extends VCommand {
         }
         if (Plugins.ZESSENTIALS.isEnable()) {
             this.addSubCommand(new CommandItemMail(plugin));
+            this.addSubCommand(new CommandItemGiveOrMail(plugin));
+        } else {
+            this.addSubCommand(new CommandItemGive(plugin));
         }
     }
 
