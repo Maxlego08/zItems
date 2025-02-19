@@ -87,7 +87,7 @@ public class ItemConfiguration {
     private final boolean canPlaceOnShowInTooltip;
     private final List<String> canBreakBlocks;
     private final boolean canBreakShowInTooltip;
-    private final boolean enchantmentGlint;
+    private final Boolean enchantmentGlint;
     private final boolean grindstoneEnabled;
     private final List<ItemEnchantment> enchantments;
     private final List<ItemEnchantment> disableEnchantments;
@@ -140,7 +140,7 @@ public class ItemConfiguration {
         this.canPlaceOnShowInTooltip = configuration.getBoolean(path + "can-place-on.show-in-tooltip", true);
         this.canBreakBlocks = configuration.getStringList(path + "can-break.blocks");
         this.canBreakShowInTooltip = configuration.getBoolean(path + "can-break.show-in-tooltip", true);
-        this.enchantmentGlint = configuration.getBoolean(path + "enchantment.glint", false);
+        this.enchantmentGlint = getOrNull(configuration.get(path + "enchantment.glint", null));
         this.enchantmentShowInTooltip = configuration.getBoolean(path + "enchantment.show-in-tooltip", true);
         this.grindstoneEnabled = configuration.getBoolean(path + "grindstone-enabled", true);
         this.repairDisabled = configuration.getBoolean(path + "repair-disabled", false); // Permet d'avoir un tag unrepairable sur l'item et les commandes /repair ne marche pas (que zessentials)
@@ -440,7 +440,7 @@ public class ItemConfiguration {
         return canBreakShowInTooltip;
     }
 
-    public boolean isEnchantmentGlint() {
+    public Boolean isEnchantmentGlint() {
         return enchantmentGlint;
     }
 
@@ -625,5 +625,12 @@ public class ItemConfiguration {
             throw new IllegalArgumentException("Item is not a rune item or the rune configuration is null");
         }
         return itemRuneConfiguration;
+    }
+
+    private Boolean getOrNull(Object o) {
+        if (o instanceof Boolean) {
+            return (Boolean) o;
+        }
+        return null;
     }
 }

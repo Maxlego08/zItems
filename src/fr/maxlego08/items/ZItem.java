@@ -60,7 +60,7 @@ public class ZItem extends ZUtils implements Item {
             PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
             persistentDataContainer.set(ITEM_KEY, PersistentDataType.STRING, this.name);
 
-            if (this.configuration.isRepairDisabled()){
+            if (this.configuration.isRepairDisabled()) {
                 persistentDataContainer.set(UNREPAIRABLE_KEY, PersistentDataType.BOOLEAN, true);
             }
 
@@ -110,7 +110,9 @@ public class ZItem extends ZUtils implements Item {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
 
-            itemMeta.setEnchantmentGlintOverride(this.configuration.isEnchantmentGlint());
+            if (this.configuration.isEnchantmentGlint() != null) {
+                itemMeta.setEnchantmentGlintOverride(this.configuration.isEnchantmentGlint());
+            }
 
             this.configuration.getAttributes().forEach(attributeConfiguration -> itemMeta.addAttributeModifier(attributeConfiguration.attribute(), new AttributeModifier(NamespacedKey.fromString(UUID.randomUUID().toString()), attributeConfiguration.amount(), attributeConfiguration.operation(), attributeConfiguration.slot())));
 
@@ -122,7 +124,7 @@ public class ZItem extends ZUtils implements Item {
                 itemMeta.setRarity(this.configuration.getItemRarity());
             }
 
-            if(this.configuration.getItemType() == ItemType.RUNE) {
+            if (this.configuration.getItemType() == ItemType.RUNE) {
                 persistentDataContainer.set(this.plugin.getRuneManager().getRuneRepresentKey(), this.plugin.getRuneManager().getDataType(), this.configuration.getItemRuneConfiguration().rune());
             }
 
