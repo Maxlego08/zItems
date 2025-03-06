@@ -9,12 +9,17 @@ import fr.maxlego08.menu.button.ZButton;
 import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
 public class ItemsButton extends ZButton implements PaginateButton {
 
+    private final ItemsPlugin plugin;
+
+    public ItemsButton(Plugin plugin) {
+        this.plugin = (ItemsPlugin) plugin;
+    }
 
     @Override
     public boolean hasSpecialRender() {
@@ -24,21 +29,25 @@ public class ItemsButton extends ZButton implements PaginateButton {
     @Override
     public void onRender(Player player, InventoryDefault inventory) {
         Pagination<Item> pagination = new Pagination<>();
-        List<Item> items = JavaPlugin.getPlugin(ItemsPlugin.class).getItemManager().getItems();
+        List<Item> items = this.plugin.getItemManager().getItems();
         pagination.paginate(items, this.slots.size(), inventory.getPage());
-        for (int i = 0; i != Math.min(items.size(), this.slots.size()); i++) {
-            int slot = slots.get(i);
-            ItemStack itemStack = items.get(i).build(player, 1);
+        this.paginate(items, inventory, (slot, zItem) -> {
+            ItemStack itemStack = zItem.build(player, 1);
 
             inventory.addItem(slot, itemStack).setClick(event -> {
                 var rest = player.getInventory().addItem(CloneUtils.cloneItemStack(itemStack));
                 rest.values().forEach(item -> player.getWorld().dropItem(player.getLocation(), item));
             });
-        }
+        });
     }
 
     @Override
     public int getPaginationSize(Player player) {
-        return JavaPlugin.getPlugin(ItemsPlugin.class).getItemManager().getItems().size();
+        return this.plugin.getItemManager().getItems().size();
+    }
+
+    @Override
+    public boolean isPermanent() {
+        return true;
     }
 }
