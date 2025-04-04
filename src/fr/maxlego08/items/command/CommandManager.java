@@ -267,7 +267,7 @@ public class CommandManager extends ZUtils implements CommandExecutor, TabComple
 	/**
      * Register spigot command without plugin.yml This method will allow to
      * register a command in the spigot without using the plugin.yml This saves
-     * time and understanding, the plugin.yml file is clearer
+     * time and understanding, the plugin.yml files is clearer
      *
      * @param string   - Main command
      * @param vCommand - Command object

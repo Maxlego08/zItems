@@ -88,12 +88,12 @@ public class Metrics {
         this.plugin = plugin;
         this.pluginId = pluginId;
 
-        // Get the config file
+        // Get the config files
         File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
         File configFile = new File(bStatsFolder, "config.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
-        // Check if the config file exists
+        // Check if the config files exists
         if (!config.isSet("serverUuid")) {
 
             // Add default values

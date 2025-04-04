@@ -478,7 +478,7 @@ block-state-meta:
       custom-item: "custom_seed" # Allows using the configuration of another item
       amount: 5 # The Number of times you want the custom item will take over the amount defined in the other configuration
     1: # Slot 1
-      # You can define an item as you will do in a configuration file, the same elements are available
+      # You can define an item as you will do in a configuration files, the same elements are available
       material: DIAMOND
       amount: 16
     5: # Slot 5

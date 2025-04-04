@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * The MessageLoader class extends YamlUtils and implements Savable to manage message configurations.
- * This class is responsible for loading and saving custom messages to a YAML file for a Bukkit plugin.
+ * This class is responsible for loading and saving custom messages to a YAML files for a Bukkit plugin.
  */
 public class MessageLoader extends YamlUtils implements Savable {
 
@@ -35,7 +35,7 @@ public class MessageLoader extends YamlUtils implements Savable {
     }
 
     /**
-     * Saves messages to the configuration file.
+     * Saves messages to the configuration files.
      *
      * @param persist The persist instance used for saving the data.
      */
@@ -100,7 +100,7 @@ public class MessageLoader extends YamlUtils implements Savable {
     }
 
     /**
-     * Loads messages from the configuration file.
+     * Loads messages from the configuration files.
      *
      * @param persist The persist instance used for loading the data.
      */
@@ -138,7 +138,7 @@ public class MessageLoader extends YamlUtils implements Savable {
 
         // Allows you to save new parameters
         if (canSave) {
-            Logger.info("Save the message file, add new settings");
+            Logger.info("Save the message files, add new settings");
             this.save(null);
         }
     }

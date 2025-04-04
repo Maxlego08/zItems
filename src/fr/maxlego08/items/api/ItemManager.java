@@ -1,5 +1,6 @@
 package fr.maxlego08.items.api;
 
+import fr.maxlego08.items.api.utils.ItemFile;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,9 +27,9 @@ public interface ItemManager {
     void loadCrafts();
 
     /**
-     * Load an item from a configuration file.
+     * Load an item from a configuration files.
      *
-     * @param file the file to load
+     * @param file the files to load
      */
     void loadItem(File file);
 
@@ -76,4 +77,6 @@ public interface ItemManager {
      * @return the item if found, otherwise an empty Optional
      */
     Optional<Item> getItem(ItemStack itemStack);
+
+    ItemFile getItemFile();
 }

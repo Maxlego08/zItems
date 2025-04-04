@@ -12,19 +12,19 @@ public class RuneVeinMiningConfiguration extends RuneConfiguration {
         int blockLimit = configuration.getInt("vein-mining.block-limit");
 
         if(configuration.contains("vein-mining.allowed-materials") && configuration.contains("vein-mining.blacklisted-materials")) {
-            throw new IllegalArgumentException("You can't have both 'vein-mining.allowed-materials' and 'vein-mining.blacklisted-materials' in the same configuration file.");
+            throw new IllegalArgumentException("You can't have both 'vein-mining.allowed-materials' and 'vein-mining.blacklisted-materials' in the same configuration files.");
         }
 
         if (configuration.contains("vein-mining.allowed-tags") && configuration.contains("vein-mining.blacklisted-tags")) {
-            throw new IllegalArgumentException("You can't have both 'vein-mining.allowed-tags' and 'vein-mining.blacklisted-tags' in the same configuration file.");
+            throw new IllegalArgumentException("You can't have both 'vein-mining.allowed-tags' and 'vein-mining.blacklisted-tags' in the same configuration files.");
         }
 
         if (configuration.contains("vein-mining.allowed-materials") && configuration.contains("vein-mining.blacklisted-tags")) {
-            throw new IllegalArgumentException("You can't have both 'vein-mining.allowed-materials' and 'vein-mining.blacklisted-tags' in the same configuration file.");
+            throw new IllegalArgumentException("You can't have both 'vein-mining.allowed-materials' and 'vein-mining.blacklisted-tags' in the same configuration files.");
         }
 
         if (configuration.contains("vein-mining.blacklisted-materials") && configuration.contains("vein-mining.allowed-tags")) {
-            throw new IllegalArgumentException("You can't have both 'vein-mining.blacklisted-materials' and 'vein-mining.allowed-tags' in the same configuration file.");
+            throw new IllegalArgumentException("You can't have both 'vein-mining.blacklisted-materials' and 'vein-mining.allowed-tags' in the same configuration files.");
         }
 
         if (configuration.contains("vein-mining.blacklisted-materials") && configuration.contains("vein-mining.blacklisted-tags")) {

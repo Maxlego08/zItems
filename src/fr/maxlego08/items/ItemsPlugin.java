@@ -11,6 +11,7 @@ import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.hook.Hooks;
 import fr.maxlego08.items.buttons.ConfirmButton;
+import fr.maxlego08.items.buttons.ItemFilesButton;
 import fr.maxlego08.items.inventories.ApplicatorMenu;
 import fr.maxlego08.items.buttons.applicator.ApplicatorBaseInputButton;
 import fr.maxlego08.items.buttons.applicator.ApplicatorExtraInputButton;
@@ -92,6 +93,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         buttonManager.unregisters(this);
         buttonManager.register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
         buttonManager.register(new NoneLoader(this, ConfirmButton.class, "ZITEMS_CONFIRM"));
+        buttonManager.register(new NoneLoader(this, ItemFilesButton.class, "ZITEMS_ITEMS_FILES"));
         buttonManager.register(new NoneLoader(this, ApplicatorInputButton.class, "ZITEMS_RUNE_APPLICATOR_INPUTS"));
         buttonManager.register(new NoneLoader(this, ApplicatorBaseInputButton.class, "ZITEMS_RUNE_APPLICATOR_BASE_INPUT"));
         buttonManager.register(new NoneLoader(this, ApplicatorExtraInputButton.class, "ZITEMS_RUNE_APPLICATOR_EXTRA_INPUTS"));
@@ -178,6 +180,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private void loadInventories() {
         try {
             this.inventoryManager.deleteInventories(this);
+            this.inventoryManager.loadInventoryOrSaveResource(this, "inventories/items_folders.yml");
             this.inventoryManager.loadInventoryOrSaveResource(this, "inventories/item_confirmation.yml");
             this.inventoryManager.loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
             this.inventoryManager.loadInventoryOrSaveResource(this, "inventories/rune_applicator.yml", ApplicatorMenu.class);

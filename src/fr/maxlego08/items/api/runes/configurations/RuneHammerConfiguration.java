@@ -23,19 +23,19 @@ public class RuneHammerConfiguration extends RuneConfiguration {
         this.damage = configuration.getInt("damage", 0);
 
         if(configuration.contains("hammer.allowed-materials") && configuration.contains("hammer.blacklisted-materials")) {
-            throw new IllegalArgumentException("You can't have both 'hammer.allowed-materials' and 'hammer.blacklisted-materials' in the same configuration file.");
+            throw new IllegalArgumentException("You can't have both 'hammer.allowed-materials' and 'hammer.blacklisted-materials' in the same configuration files.");
         }
 
         if (configuration.contains("hammer.allowed-tags") && configuration.contains("hammer.blacklisted-tags")) {
-            throw new IllegalArgumentException("You can't have both 'hammer.allowed-tags' and 'hammer.blacklisted-tags' in the same configuration file.");
+            throw new IllegalArgumentException("You can't have both 'hammer.allowed-tags' and 'hammer.blacklisted-tags' in the same configuration files.");
         }
 
         if (configuration.contains("hammer.allowed-materials") && configuration.contains("hammer.blacklisted-tags")) {
-            throw new IllegalArgumentException("You can't have both 'hammer.allowed-materials' and 'hammer.blacklisted-tags' in the same configuration file.");
+            throw new IllegalArgumentException("You can't have both 'hammer.allowed-materials' and 'hammer.blacklisted-tags' in the same configuration files.");
         }
 
         if (configuration.contains("hammer.blacklisted-materials") && configuration.contains("hammer.allowed-tags")) {
-            throw new IllegalArgumentException("You can't have both 'hammer.blacklisted-materials' and 'hammer.allowed-tags' in the same configuration file.");
+            throw new IllegalArgumentException("You can't have both 'hammer.blacklisted-materials' and 'hammer.allowed-tags' in the same configuration files.");
         }
 
         if (configuration.contains("hammer.blacklisted-materials") && configuration.contains("hammer.blacklisted-tags")) {

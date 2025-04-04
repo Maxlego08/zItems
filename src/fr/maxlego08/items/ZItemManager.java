@@ -3,6 +3,7 @@ package fr.maxlego08.items;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
+import fr.maxlego08.items.api.utils.ItemFile;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
 
     private final ItemsPlugin plugin;
     private final List<Item> items = new ArrayList<>();
+    private ItemFile itemFile;
 
     public ZItemManager(ItemsPlugin plugin) {
         this.plugin = plugin;
@@ -66,6 +68,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
         }
 
 
+        itemFile = ItemFile.fromFolder(folder);
     }
 
     @Override
@@ -139,5 +142,10 @@ public class ZItemManager extends ZUtils implements ItemManager {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public ItemFile getItemFile() {
+        return itemFile;
     }
 }

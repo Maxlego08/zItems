@@ -33,7 +33,7 @@ public class Persist extends ZUtils {
 	}
 
 	// ------------------------------------------------------------ //
-	// GET FILE - In which file would we like to store this object?
+	// GET FILE - In which files would we like to store this object?
 	// ------------------------------------------------------------ //
 
 	public File getFile(String name) {
@@ -85,7 +85,7 @@ public class Persist extends ZUtils {
 			File backup = new File(file.getPath() + "_bad");
 			if (backup.exists())
 				backup.delete();
-			p.getLog().log("Backing up copy of bad file to: " + backup, Logger.LogType.WARNING);
+			p.getLog().log("Backing up copy of bad files to: " + backup, Logger.LogType.WARNING);
 
 			file.renameTo(backup);
 
@@ -123,7 +123,7 @@ public class Persist extends ZUtils {
 
 		} catch (Exception e) {
 
-			p.getLog().log("cannot save file " + file.getAbsolutePath(), Logger.LogType.ERROR);
+			p.getLog().log("cannot save files " + file.getAbsolutePath(), Logger.LogType.ERROR);
 			e.printStackTrace();
 
 			return false;
@@ -150,7 +150,7 @@ public class Persist extends ZUtils {
 			T instance = p.getGson().fromJson(content, clazz);
 			return instance;
 		} catch (Exception ex) { // output the error message rather than full
-									// stack trace; error parsing the file, most
+									// stack trace; error parsing the files, most
 									// likely
 			p.getLog().log(ex.getMessage(), Logger.LogType.ERROR);
 		}
@@ -174,7 +174,7 @@ public class Persist extends ZUtils {
 		try {
 			return (T) p.getGson().fromJson(content, typeOfT);
 		} catch (Exception ex) { // output the error message rather than full
-									// stack trace; error parsing the file, most
+									// stack trace; error parsing the files, most
 									// likely
 			p.getLog().log(ex.getMessage(), Logger.LogType.ERROR);
 		}

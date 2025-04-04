@@ -27,7 +27,7 @@ public abstract class YamlUtils extends ZUtils {
 	}
 
 	/**
-	 * Gets the default configuration file of the plugin.
+	 * Gets the default configuration files of the plugin.
 	 *
 	 * @return the default FileConfiguration.
 	 */
@@ -36,10 +36,10 @@ public abstract class YamlUtils extends ZUtils {
 	}
 
 	/**
-	 * Loads a YAML configuration file.
+	 * Loads a YAML configuration files.
 	 *
-	 * @param file the file to load.
-	 * @return the YamlConfiguration of the file, or null if the file is null.
+	 * @param file the files to load.
+	 * @return the YamlConfiguration of the files, or null if the files is null.
 	 */
 	protected YamlConfiguration getConfig(File file) {
 		if (file == null) {
@@ -49,10 +49,10 @@ public abstract class YamlUtils extends ZUtils {
 	}
 
 	/**
-	 * Loads a YAML configuration file from a specified path.
+	 * Loads a YAML configuration files from a specified path.
 	 *
-	 * @param path the path to the configuration file.
-	 * @return the YamlConfiguration of the file, or null if the file does not exist.
+	 * @param path the path to the configuration files.
+	 * @return the YamlConfiguration of the files, or null if the files does not exist.
 	 */
 	protected YamlConfiguration getConfig(String path) {
 		File file = new File(plugin.getDataFolder() + "/" + path);
