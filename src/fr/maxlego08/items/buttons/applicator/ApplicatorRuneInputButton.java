@@ -1,3 +1,3 @@
-package fr.maxlego08.items.api.menus.buttons;
+package fr.maxlego08.items.buttons.applicator;
 
 public class ApplicatorRuneInputButton extends ApplicatorButton { }

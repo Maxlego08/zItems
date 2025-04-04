@@ -7,18 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public record CommandsConfiguration(List<ItemCommand> commands) {
+public record CommandsConfiguration(List<ItemCommand> commands, boolean needConfirmation) {
 
     public static CommandsConfiguration loadCommandsConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
         List<ItemCommand> itemCommands = new ArrayList<>();
 
         if (!configuration.contains(path + "commands")) {
-            return new CommandsConfiguration(itemCommands);
+            return new CommandsConfiguration(itemCommands, false);
         }
 
         if (!configuration.isList(path + "commands")) {
             throw new IllegalArgumentException("Invalid command configuration in " + fileName + " at " + path);
         }
+
+        boolean needConfirm = configuration.getBoolean("commands-need-confirm", false);
 
         for (Object commandConfig : configuration.getList(path + "commands")) {
 
@@ -28,7 +30,7 @@ public record CommandsConfiguration(List<ItemCommand> commands) {
 
             Map<String, Object> commandMap = (Map<String, Object>) commandConfig;
             CommandSender sender = CommandSender.valueOf(((String) commandMap.get("sender")).toUpperCase());
-            Action action = Action.valueOf(((String) commandMap.get("action")).toUpperCase());
+            Action action = commandMap.containsKey("action") ? Action.valueOf(((String) commandMap.get("action")).toUpperCase()) : Action.CLICK;
 
             List<String> commands = new ArrayList<>();
             if (commandMap.containsKey("command")) {
@@ -77,6 +79,6 @@ public record CommandsConfiguration(List<ItemCommand> commands) {
             itemCommands.add(new ItemCommand(sender, action, commands, messages, damage, cooldown));
         }
 
-        return new CommandsConfiguration(itemCommands);
+        return new CommandsConfiguration(itemCommands, needConfirm);
     }
 }

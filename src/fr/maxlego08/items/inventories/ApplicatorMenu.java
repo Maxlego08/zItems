@@ -1,10 +1,10 @@
-package fr.maxlego08.items.api.menus;
+package fr.maxlego08.items.inventories;
 
 import fr.maxlego08.items.api.CloneUtils;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorBaseInputButton;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorExtraInputButton;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorInputButton;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorRuneInputButton;
+import fr.maxlego08.items.buttons.applicator.ApplicatorBaseInputButton;
+import fr.maxlego08.items.buttons.applicator.ApplicatorExtraInputButton;
+import fr.maxlego08.items.buttons.applicator.ApplicatorInputButton;
+import fr.maxlego08.items.buttons.applicator.ApplicatorRuneInputButton;
 import fr.maxlego08.menu.ZInventory;
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.inventory.inventories.InventoryDefault;

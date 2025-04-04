@@ -1,0 +1,33 @@
+name: '&8Confirm'
+size: 18
+
+items:
+
+  confirm:
+    type: ZITEMS_CONFIRM
+    slots:
+      - 1-3
+      - 10-12
+    close-inventory: true
+    item:
+      material: GREEN_STAINED_GLASS_PANE
+      name: '#77ff77Confirm'
+      lore:
+        - ""
+        - "#ff3535This action is irreversible"
+        - ""
+        - "&7By confirming the action, you will use this item"
+        - "&7No refund will be granted in case of error"
+        - ""
+        - "#edacfcClick to use this item"
+  cancel:
+    close-inventory: true
+    slots:
+      - 5-7
+      - 14-16
+    item:
+      material: RED_STAINED_GLASS_PANE
+      name: '#ff3535Cancel'
+      lore:
+        - ""
+        - "#edacfcClick to not use this item"

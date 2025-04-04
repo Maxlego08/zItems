@@ -1,7 +1,6 @@
-package fr.maxlego08.items.api.menus.buttons;
+package fr.maxlego08.items.buttons.applicator;
 
 import fr.maxlego08.items.api.CloneUtils;
-import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.applicators.Applicator;

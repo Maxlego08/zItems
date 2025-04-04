@@ -1,4 +1,4 @@
-package fr.maxlego08.items.api.menus.buttons;
+package fr.maxlego08.items.buttons;
 
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.CloneUtils;

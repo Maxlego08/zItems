@@ -5,19 +5,19 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
-import fr.maxlego08.items.api.configurations.commands.CommandsListener;
 import fr.maxlego08.items.api.configurations.global.GlobalConfiguration;
 import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.hook.Hooks;
-import fr.maxlego08.items.api.menus.ApplicatorMenu;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorBaseInputButton;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorExtraInputButton;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorInputButton;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorOutputButton;
-import fr.maxlego08.items.api.menus.buttons.ApplicatorRuneInputButton;
-import fr.maxlego08.items.api.menus.buttons.ItemsButton;
+import fr.maxlego08.items.buttons.ConfirmButton;
+import fr.maxlego08.items.inventories.ApplicatorMenu;
+import fr.maxlego08.items.buttons.applicator.ApplicatorBaseInputButton;
+import fr.maxlego08.items.buttons.applicator.ApplicatorExtraInputButton;
+import fr.maxlego08.items.buttons.applicator.ApplicatorInputButton;
+import fr.maxlego08.items.buttons.applicator.ApplicatorOutputButton;
+import fr.maxlego08.items.buttons.applicator.ApplicatorRuneInputButton;
+import fr.maxlego08.items.buttons.ItemsButton;
 import fr.maxlego08.items.api.recipes.ZItemHook;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
@@ -32,6 +32,7 @@ import fr.maxlego08.items.hook.jobs.ZJobsHook;
 import fr.maxlego08.items.hook.packs.ItemsAdderHook;
 import fr.maxlego08.items.hook.shops.ShopHooks;
 import fr.maxlego08.items.hook.worlds.WorldGuardHook;
+import fr.maxlego08.items.listener.CommandsListener;
 import fr.maxlego08.items.listener.GrindstoneListener;
 import fr.maxlego08.items.listener.SmithingTableListener;
 import fr.maxlego08.items.listener.SpawnerListener;
@@ -66,11 +67,13 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private final HookManager hookManager = new ZHookManager(this);
     private final Enchantments enchantments = new ZEnchantments();
     private final List<BlockAccess> blockAccesses = new ArrayList<>();
+    private InventoryManager inventoryManager;
     private ItemComponent itemComponent;
     private RuneListener runeListener;
     private PlatformScheduler scheduler;
     private RecipesAPI recipesAPI;
     private GlobalConfiguration globalConfiguration;
+    private CommandsListener commandsListener;
 
     @Override
     public void onEnable() {
@@ -83,13 +86,17 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         this.scheduler = new FoliaLib(this).getScheduler();
 
-        this.getProvider(ButtonManager.class).unregisters(this);
-        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
-        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorInputButton.class, "ZITEMS_RUNE_APPLICATOR_INPUTS"));
-        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorBaseInputButton.class, "ZITEMS_RUNE_APPLICATOR_BASE_INPUT"));
-        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorExtraInputButton.class, "ZITEMS_RUNE_APPLICATOR_EXTRA_INPUTS"));
-        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorOutputButton.class, "ZITEMS_RUNE_APPLICATOR_OUTPUT"));
-        this.getProvider(ButtonManager.class).register(new NoneLoader(this, ApplicatorRuneInputButton.class, "ZITEMS_RUNE_APPLICATOR_RUNE_INPUT"));
+        var buttonManager = this.getProvider(ButtonManager.class);
+        this.inventoryManager = this.getProvider(InventoryManager.class);
+
+        buttonManager.unregisters(this);
+        buttonManager.register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
+        buttonManager.register(new NoneLoader(this, ConfirmButton.class, "ZITEMS_CONFIRM"));
+        buttonManager.register(new NoneLoader(this, ApplicatorInputButton.class, "ZITEMS_RUNE_APPLICATOR_INPUTS"));
+        buttonManager.register(new NoneLoader(this, ApplicatorBaseInputButton.class, "ZITEMS_RUNE_APPLICATOR_BASE_INPUT"));
+        buttonManager.register(new NoneLoader(this, ApplicatorExtraInputButton.class, "ZITEMS_RUNE_APPLICATOR_EXTRA_INPUTS"));
+        buttonManager.register(new NoneLoader(this, ApplicatorOutputButton.class, "ZITEMS_RUNE_APPLICATOR_OUTPUT"));
+        buttonManager.register(new NoneLoader(this, ApplicatorRuneInputButton.class, "ZITEMS_RUNE_APPLICATOR_RUNE_INPUT"));
         this.loadInventories();
 
         this.enchantments.register();
@@ -104,10 +111,10 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         servicesManager.register(Enchantments.class, this.enchantments, this, ServicePriority.Highest);
 
         this.addListener(new DisableEnchantsListener(this.itemManager));
-        this.addListener(new CommandsListener(this.itemComponent, this.itemManager));
         this.addListener(new GrindstoneListener(this.itemManager));
         this.addListener(new SmithingTableListener(this.itemManager, this.runeManager));
         this.addListener(new SpawnerListener());
+        this.addListener(this.commandsListener = new CommandsListener(this));
 
         this.addSave(Config.getInstance());
         this.addSave(CooldownBuilder.getInstance());
@@ -170,8 +177,10 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
     private void loadInventories() {
         try {
-            this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
-            this.getProvider(InventoryManager.class).loadInventoryOrSaveResource(this, "inventories/rune_applicator.yml", ApplicatorMenu.class);
+            this.inventoryManager.deleteInventories(this);
+            this.inventoryManager.loadInventoryOrSaveResource(this, "inventories/item_confirmation.yml");
+            this.inventoryManager.loadInventoryOrSaveResource(this, "inventories/items_gui.yml");
+            this.inventoryManager.loadInventoryOrSaveResource(this, "inventories/rune_applicator.yml", ApplicatorMenu.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -246,5 +255,13 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         if (getConfig().getBoolean("enable-info", false)) {
             getLogger().info(string);
         }
+    }
+
+    public InventoryManager getInventoryManager() {
+        return this.inventoryManager;
+    }
+
+    public CommandsListener getCommandsListener() {
+        return commandsListener;
     }
 }

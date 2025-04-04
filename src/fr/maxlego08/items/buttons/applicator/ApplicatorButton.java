@@ -1,11 +1,10 @@
-package fr.maxlego08.items.api.menus.buttons;
+package fr.maxlego08.items.buttons.applicator;
 
 import fr.maxlego08.items.api.CloneUtils;
 import fr.maxlego08.menu.button.ZButton;
 import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
