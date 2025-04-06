@@ -7,6 +7,7 @@ import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Orientation;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.*;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -162,7 +163,7 @@ public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
                     boolean triggered = configuration.getBoolean(path + "block-data-meta.crafter-triggered", false);
                     String orientationAsString = configuration.getString(path + "block-data-meta.crafter-orientation");
                     if (orientationAsString != null) {
-                        crafter.setOrientation(Crafter.Orientation.valueOf(orientationAsString.toUpperCase()));
+                        crafter.setOrientation(Orientation.valueOf(orientationAsString.toUpperCase()));
                     }
                     crafter.setCrafting(crafting);
                     crafter.setTriggered(triggered);
@@ -206,7 +207,7 @@ public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
                 if (blockData instanceof Jigsaw jigsaw) {
                     String orientationAsString = configuration.getString(path + "block-data-meta.jigsaw-orientation");
                     if (orientationAsString != null) {
-                        jigsaw.setOrientation(Jigsaw.Orientation.valueOf(orientationAsString));
+                        jigsaw.setOrientation(Orientation.valueOf(orientationAsString));
                     }
                 }
 

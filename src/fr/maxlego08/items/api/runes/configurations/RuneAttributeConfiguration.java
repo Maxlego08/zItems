@@ -2,6 +2,8 @@ package fr.maxlego08.items.api.runes.configurations;
 
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.meta.AttributeConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,7 +26,6 @@ public class RuneAttributeConfiguration extends RuneConfiguration {
 
             return new AttributeConfiguration(attribute, operation, amount, slot);
         }).toList();
-
     }
 
     public List<AttributeConfiguration> getAttributes() {

@@ -42,11 +42,16 @@ public class ItemFilesButton extends ZButton implements PaginateButton {
 
                 Placeholders placeholders = new Placeholders();
                 placeholders.register("name", element.itemFile.name());
+                placeholders.register("material", element.itemFile.displayMaterial().name());
+                placeholders.register("model-id", String.valueOf(element.itemFile.displayModelId()));
 
                 inventory.addItem(slot, getItemStack().build(player, false, placeholders)).setClick(event -> {
                     player.setMetadata("zitems-files", new FixedMetadataValue(this.plugin, element.itemFile));
                     var inventoryManager = plugin.getInventoryManager();
-                    inventoryManager.getInventory(plugin, "items_folders").ifPresentOrElse(inv -> inventoryManager.openInventoryWithOldInventories(player, inv, 1), () -> player.sendMessage("§cImpossible to find the inventory !"));
+
+                    inventoryManager.getInventory(plugin, "items_folders").ifPresentOrElse(inv -> {
+                        inventoryManager.openInventoryWithOldInventories(player, inv, 1);
+                    }, () -> player.sendMessage("§cImpossible to find the inventory !"));
                 });
 
             } else {

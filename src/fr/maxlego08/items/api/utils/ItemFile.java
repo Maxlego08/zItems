@@ -1,10 +1,14 @@
 package fr.maxlego08.items.api.utils;
 
+import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ItemFile(List<ItemFile> itemFiles, List<String> files, String name) {
+public record ItemFile(List<ItemFile> itemFiles, List<String> files, String name, Material displayMaterial,
+                       int displayModelId) {
 
     public static ItemFile fromFolder(File folder) {
         if (!folder.isDirectory()) {
@@ -25,7 +29,17 @@ public record ItemFile(List<ItemFile> itemFiles, List<String> files, String name
             }
         }
 
-        return new ItemFile(subFolders, files, folder.getName());
+        Material displayMaterial = Material.PAPER;
+        int displayModelId = 0;
+
+        File file = new File(folder, ".folder-info.yml");
+        if (file.exists()) {
+            YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+            displayMaterial = Material.valueOf(configuration.getString("material", Material.PAPER.name()).toUpperCase());
+            displayModelId = configuration.getInt("model-id", 0);
+        }
+
+        return new ItemFile(subFolders, files, folder.getName(), displayMaterial, displayModelId);
     }
 
 }
