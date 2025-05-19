@@ -8,7 +8,6 @@ import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.button.SlotButton;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
-import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
 import fr.traqueur.recipes.impl.domains.ItemRecipe;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -67,47 +66,25 @@ public class ApplicatorOutputButton extends Button {
     }
 
     private List<ItemStack> getInputItems(InventoryEngine inventory) {
-        return inventory.getButtons()
-                .stream()
-                .filter(button -> button instanceof ApplicatorInputButton)
-                .flatMap(button -> button.getSlots().stream())
-                .map(slot -> inventory.getInventory().getItem(slot))
-                .filter(Objects::nonNull)
-                .toList();
+        return inventory.getButtons().stream().filter(button -> button instanceof ApplicatorInputButton).flatMap(button -> button.getSlots().stream()).map(slot -> inventory.getInventory().getItem(slot)).filter(Objects::nonNull).toList();
     }
 
     private ItemStack getBaseItem(InventoryEngine inventory) {
-        return inventory.getButtons()
-                .stream()
-                .filter(button -> button instanceof ApplicatorBaseInputButton)
-                .map(button -> {
-                    var item = inventory.getInventory().getItem(new ArrayList<>(button.getSlots()).getFirst());
-                    return item != null ? item : new ItemStack(Material.AIR);
-                })
-                .findFirst()
-                .orElse(new ItemStack(Material.AIR));
+        return inventory.getButtons().stream().filter(button -> button instanceof ApplicatorBaseInputButton).map(button -> {
+            var item = inventory.getInventory().getItem(new ArrayList<>(button.getSlots()).getFirst());
+            return item != null ? item : new ItemStack(Material.AIR);
+        }).findFirst().orElse(new ItemStack(Material.AIR));
     }
 
     private ItemStack getRuneItem(InventoryEngine inventory) {
-        return inventory.getButtons()
-                .stream()
-                .filter(button -> button instanceof ApplicatorRuneInputButton)
-                .map(button -> {
-                    var item = inventory.getInventory().getItem(new ArrayList<>(button.getSlots()).getFirst());
-                    return item != null ? item : new ItemStack(Material.AIR);
-                })
-                .findFirst()
-                .orElse(new ItemStack(Material.AIR));
+        return inventory.getButtons().stream().filter(button -> button instanceof ApplicatorRuneInputButton).map(button -> {
+            var item = inventory.getInventory().getItem(new ArrayList<>(button.getSlots()).getFirst());
+            return item != null ? item : new ItemStack(Material.AIR);
+        }).findFirst().orElse(new ItemStack(Material.AIR));
     }
 
     private List<ItemStack> getExtraInputItems(InventoryEngine inventory) {
-        return inventory.getButtons()
-                .stream()
-                .filter(button -> button instanceof ApplicatorExtraInputButton)
-                .flatMap(button -> button.getSlots().stream())
-                .map(slot -> inventory.getInventory().getItem(slot))
-                .filter(Objects::nonNull)
-                .toList();
+        return inventory.getButtons().stream().filter(button -> button instanceof ApplicatorExtraInputButton).flatMap(button -> button.getSlots().stream()).map(slot -> inventory.getInventory().getItem(slot)).filter(Objects::nonNull).toList();
     }
 
     private void onClick(InventoryClickEvent event, InventoryEngine inventoryDefault) {
