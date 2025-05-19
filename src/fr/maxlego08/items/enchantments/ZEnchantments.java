@@ -67,7 +67,9 @@ public class ZEnchantments implements Enchantments {
     }
 
     private void register(Enchantment enchantment, String... strings) {
-        this.enchantmentRegisteries.add(new ZEnchantmentRegistry(enchantment, Arrays.asList(strings)));
+        List<String> enchantments = Arrays.asList(strings);
+        enchantments.add(enchantment.getKey().value());
+        this.enchantmentRegisteries.add(new ZEnchantmentRegistry(enchantment, enchantments));
     }
 
     @Override
