@@ -7,7 +7,7 @@ import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.runes.RuneManager;
 import fr.maxlego08.items.api.utils.TrimHelper;
-import fr.maxlego08.menu.zcore.utils.folialib.impl.PlatformScheduler;
+import fr.maxlego08.menu.hooks.folialib.impl.PlatformScheduler;
 import fr.traqueur.recipes.api.RecipesAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

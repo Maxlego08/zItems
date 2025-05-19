@@ -1,7 +1,8 @@
 package fr.maxlego08.items.buttons.applicator;
 
 import fr.maxlego08.items.api.CloneUtils;
-import fr.maxlego08.menu.button.ZButton;
+import fr.maxlego08.menu.api.button.Button;
+import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,7 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class ApplicatorButton extends ZButton {
+public abstract class ApplicatorButton extends Button {
 
 
     @Override
@@ -19,23 +20,22 @@ public abstract class ApplicatorButton extends ZButton {
     }
 
     @Override
-    public void onRender(Player player, InventoryDefault inventory) {
+    public void onRender(Player player, InventoryEngine inventoryEngine) {
         for (int slot : this.slots) {
-            inventory.addItem(slot, new ItemStack(Material.AIR)).setClick(event -> this.onClick(event, inventory));
+            inventoryEngine.addItem(slot, new ItemStack(Material.AIR)).setClick(event -> this.onClick(event, inventoryEngine));
         }
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent event, Player player, InventoryDefault inventoryDefault) {
+    public void onInventoryClick(InventoryClickEvent event, Player player, InventoryEngine inventoryDefault) {
         super.onInventoryClick(event, player, inventoryDefault);
-
         var inventory = event.getClickedInventory();
         if (inventory != null && inventory.getType() == InventoryType.PLAYER && event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
             event.setCancelled(true);
         }
     }
 
-    private void onClick(InventoryClickEvent event, InventoryDefault inventoryDefault) {
+    private void onClick(InventoryClickEvent event, InventoryEngine inventoryDefault) {
         event.setCancelled(true);
         if (event.getRawSlot() >= event.getInventory().getSize()) {
             return;
@@ -59,7 +59,7 @@ public abstract class ApplicatorButton extends ZButton {
         });
     }
 
-    private void leftClick(Player player, InventoryDefault inventory, InventoryClickEvent event) {
+    private void leftClick(Player player, InventoryEngine inventory, InventoryClickEvent event) {
         switch (event.getAction()) {
             case PLACE_ALL, PLACE_SOME -> {
                 int maxStackSize = event.getCurrentItem() == null ? event.getCursor().getMaxStackSize() : event.getCurrentItem().getMaxStackSize();
@@ -77,7 +77,7 @@ public abstract class ApplicatorButton extends ZButton {
         }
     }
 
-    private void place(Player player, InventoryDefault inventoryDefault, InventoryClickEvent event, int currentAmount, int newAmount) {
+    private void place(Player player, InventoryEngine inventoryDefault, InventoryClickEvent event, int currentAmount, int newAmount) {
         int rest = player.getItemOnCursor().getAmount() - (newAmount - currentAmount);
         ItemStack item = CloneUtils.cloneItemStack(player.getItemOnCursor());
         ItemStack cursor = new ItemStack(Material.AIR);
@@ -90,7 +90,7 @@ public abstract class ApplicatorButton extends ZButton {
         player.setItemOnCursor(cursor);
     }
 
-    private void rightClick(Player player, InventoryDefault inventory, InventoryClickEvent event) {
+    private void rightClick(Player player, InventoryEngine inventory, InventoryClickEvent event) {
         switch (event.getAction()) {
             case SWAP_WITH_CURSOR -> {
                 swap(player, inventory, event);
@@ -115,7 +115,7 @@ public abstract class ApplicatorButton extends ZButton {
         }
     }
 
-    private void swap(Player player, InventoryDefault inventory, InventoryClickEvent event) {
+    private void swap(Player player, InventoryEngine inventory, InventoryClickEvent event) {
         ItemStack cursor = CloneUtils.cloneItemStack(event.getCursor());
         ItemStack current = CloneUtils.cloneItemStack(event.getCurrentItem());
         if (current != null && current.isSimilar(cursor)) {

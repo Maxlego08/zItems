@@ -108,7 +108,7 @@
             <artifactId>zMenu-API</artifactId>
             <version>1.0.3.7</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/zmenu-1.0.3.8.jar</systemPath>
+            <systemPath>${project.basedir}/libs/zMenu-1.1.0.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>fr.maxlego08</groupId>
@@ -139,7 +139,7 @@
             <artifactId>zshop</artifactId>
             <version>3.1.9</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/zshop-3.1.9.jar</systemPath>
+            <systemPath>${project.basedir}/libs/zshop-3.2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>fr.maxlego08.essentials</groupId>

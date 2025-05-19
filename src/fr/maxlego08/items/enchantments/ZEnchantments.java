@@ -1,13 +1,14 @@
 package fr.maxlego08.items.enchantments;
 
-import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.enchantments.EnchantmentRegistry;
+import fr.maxlego08.items.api.enchantments.Enchantments;
 import org.bukkit.enchantments.Enchantment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ZEnchantments implements Enchantments {
 
@@ -67,7 +68,7 @@ public class ZEnchantments implements Enchantments {
     }
 
     private void register(Enchantment enchantment, String... strings) {
-        List<String> enchantments = Arrays.asList(strings);
+        List<String> enchantments = Arrays.stream(strings).collect(Collectors.toList());
         enchantments.add(enchantment.getKey().value());
         this.enchantmentRegisteries.add(new ZEnchantmentRegistry(enchantment, enchantments));
     }
