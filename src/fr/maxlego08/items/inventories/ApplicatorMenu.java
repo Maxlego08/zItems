@@ -7,8 +7,8 @@ import fr.maxlego08.items.buttons.applicator.ApplicatorInputButton;
 import fr.maxlego08.items.buttons.applicator.ApplicatorRuneInputButton;
 import fr.maxlego08.menu.ZInventory;
 import fr.maxlego08.menu.api.button.Button;
-import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
-import fr.maxlego08.menu.zcore.utils.inventory.InventoryResult;
+import fr.maxlego08.menu.api.engine.InventoryEngine;
+import fr.maxlego08.menu.api.engine.InventoryResult;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -22,21 +22,14 @@ public class ApplicatorMenu extends ZInventory {
     }
 
     @Override
-    public InventoryResult openInventory(Player player, InventoryDefault inventoryDefault) {
+    public InventoryResult openInventory(Player player, InventoryEngine inventoryDefault) {
         inventoryDefault.setDisablePlayerInventoryClick(false);
         return super.openInventory(player, inventoryDefault);
     }
 
     @Override
-    public void closeInventory(Player player, InventoryDefault inventoryDefault) {
-        List<Button> buttons = inventoryDefault.getButtons()
-                .stream()
-                .filter(button -> button instanceof ApplicatorInputButton
-                        || button instanceof ApplicatorExtraInputButton
-                        || button instanceof ApplicatorBaseInputButton
-                        || button instanceof ApplicatorRuneInputButton
-                )
-                .toList();
+    public void closeInventory(Player player, InventoryEngine inventoryDefault) {
+        List<Button> buttons = inventoryDefault.getButtons().stream().filter(button -> button instanceof ApplicatorInputButton || button instanceof ApplicatorExtraInputButton || button instanceof ApplicatorBaseInputButton || button instanceof ApplicatorRuneInputButton).toList();
         for (Button button : buttons) {
             for (int slot : button.getSlots()) {
                 ItemStack item = inventoryDefault.getInventory().getItem(slot);

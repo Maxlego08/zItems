@@ -47,9 +47,8 @@ import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
 import fr.maxlego08.menu.api.ButtonManager;
 import fr.maxlego08.menu.api.InventoryManager;
-import fr.maxlego08.menu.button.loader.NoneLoader;
-import fr.maxlego08.menu.zcore.utils.folialib.FoliaLib;
-import fr.maxlego08.menu.zcore.utils.folialib.impl.PlatformScheduler;
+import fr.maxlego08.menu.api.loader.NoneLoader;
+import fr.maxlego08.menu.hooks.folialib.impl.PlatformScheduler;
 import fr.traqueur.recipes.api.RecipesAPI;
 import fr.traqueur.recipes.api.hook.Hook;
 import org.bukkit.Location;
@@ -85,10 +84,10 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.preEnable();
         this.saveDefaultConfig();
 
-        this.scheduler = new FoliaLib(this).getScheduler();
-
         var buttonManager = this.getProvider(ButtonManager.class);
         this.inventoryManager = this.getProvider(InventoryManager.class);
+
+        this.scheduler = inventoryManager.getScheduler();
 
         buttonManager.unregisters(this);
         buttonManager.register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));

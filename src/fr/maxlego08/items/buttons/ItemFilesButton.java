@@ -5,9 +5,8 @@ import fr.maxlego08.items.api.CloneUtils;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.utils.ItemFile;
 import fr.maxlego08.menu.api.button.PaginateButton;
+import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.utils.Placeholders;
-import fr.maxlego08.menu.button.ZButton;
-import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemFilesButton extends ZButton implements PaginateButton {
+public class ItemFilesButton extends PaginateButton {
 
     private final ItemsPlugin plugin;
 
@@ -31,7 +30,7 @@ public class ItemFilesButton extends ZButton implements PaginateButton {
     }
 
     @Override
-    public void onRender(Player player, InventoryDefault inventory) {
+    public void onRender(Player player, InventoryEngine inventory) {
 
         var elements = getElements(player);
         var manager = this.plugin.getItemManager();
@@ -88,7 +87,7 @@ public class ItemFilesButton extends ZButton implements PaginateButton {
     }
 
     @Override
-    public void onInventoryClose(Player player, InventoryDefault inventory) {
+    public void onInventoryClose(Player player, InventoryEngine inventory) {
         player.removeMetadata("zitems-files", this.plugin);
     }
 

@@ -5,15 +5,14 @@ import fr.maxlego08.items.api.CloneUtils;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.zcore.utils.inventory.Pagination;
 import fr.maxlego08.menu.api.button.PaginateButton;
-import fr.maxlego08.menu.button.ZButton;
-import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
+import fr.maxlego08.menu.api.engine.InventoryEngine;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
-public class ItemsButton extends ZButton implements PaginateButton {
+public class ItemsButton extends PaginateButton {
 
     private final ItemsPlugin plugin;
 
@@ -27,7 +26,7 @@ public class ItemsButton extends ZButton implements PaginateButton {
     }
 
     @Override
-    public void onRender(Player player, InventoryDefault inventory) {
+    public void onRender(Player player, InventoryEngine inventory) {
         Pagination<Item> pagination = new Pagination<>();
         List<Item> items = this.plugin.getItemManager().getItems();
         pagination.paginate(items, this.slots.size(), inventory.getPage());
