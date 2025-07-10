@@ -70,7 +70,7 @@ repositories {
 
 dependencies {
     api(projects.api)
-    // api(projects.hooks)
+    api(projects.hooks)
 
 }
 

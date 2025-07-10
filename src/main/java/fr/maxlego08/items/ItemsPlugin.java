@@ -29,7 +29,7 @@ import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.hook.ZHookManager;
 import fr.maxlego08.items.hook.jobs.JobsHook;
-import fr.maxlego08.items.hook.jobs.ZJobsHook;
+import fr.maxlego08.items.hooks.ZJobsHook;
 import fr.maxlego08.items.hook.packs.ItemsAdderHook;
 import fr.maxlego08.items.hook.shops.ShopHooks;
 import fr.maxlego08.items.hook.worlds.WorldGuardHook;

@@ -1,4 +1,4 @@
-package fr.maxlego08.items.hook.jobs;
+package fr.maxlego08.items.hooks;
 
 import fr.maxlego08.items.api.hook.Hook;
 import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
@@ -39,7 +39,6 @@ public class ZJobsHook implements Hook {
         }
         event.setMoney(jobsPayementEvent.getAmount());
     }
-
 }
 
 
