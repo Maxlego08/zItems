@@ -4,7 +4,7 @@ contributors: [ Traqueur_ ]
 main: fr.maxlego08.items.ItemsPlugin
 website: https://groupez.dev
 description: Custom items
-version: 1.0.0
+version: ${version}
 api-version: 1.21
 folia-supported: true
 softdepend:

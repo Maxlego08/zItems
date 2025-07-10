@@ -1,7 +1,7 @@
 package fr.maxlego08.items.api.configurations.meta;
 
 import fr.maxlego08.items.ItemsPlugin;
-import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;

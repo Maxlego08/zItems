@@ -10,17 +10,17 @@ import org.bukkit.persistence.PersistentDataContainer;
 public class CloneUtils {
 
     public static ItemStack cloneItemStack(ItemStack itemStack) {
-        if(itemStack == null) {
+        if (itemStack == null) {
             return null;
         }
         ItemStack clone = itemStack.clone();
         ItemMeta cloneMeta = clone.getItemMeta();
-        if(cloneMeta == null) {
+        if (cloneMeta == null) {
             return clone;
         }
         PersistentDataContainer container = cloneMeta.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(Bukkit.getServer().getPluginManager().getPlugin("zMenu"), DupeManager.KEY);
-        if(container.has(key)) {
+        if (container.has(key)) {
             container.remove(key);
         }
         clone.setItemMeta(cloneMeta);

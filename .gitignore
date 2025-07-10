@@ -43,4 +43,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
-src/fr/maxlego08/items/enchantments/ZEnchantments.java~
+src/main/java/fr/maxlego08/items/enchantments/ZEnchantments.java~
