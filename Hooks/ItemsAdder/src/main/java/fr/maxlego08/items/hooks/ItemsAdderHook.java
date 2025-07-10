@@ -1,4 +1,4 @@
-package fr.maxlego08.items.hook.packs;
+package fr.maxlego08.items.hooks;
 
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.maxlego08.items.api.ItemPlugin;

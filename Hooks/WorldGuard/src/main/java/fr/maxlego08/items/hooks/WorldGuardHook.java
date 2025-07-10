@@ -1,4 +1,4 @@
-package fr.maxlego08.items.hook.worlds;
+package fr.maxlego08.items.hooks;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;

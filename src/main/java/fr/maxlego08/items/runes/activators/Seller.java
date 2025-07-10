@@ -35,7 +35,7 @@ public class Seller implements RuneActivator, BreakHandler<RuneSellingConfigurat
             List<ItemStack> dropsList = new ArrayList<>(itemStacks);
 
             dropsList.forEach(itemStack -> {
-                boolean result = provider.sellItems(event.getPlayer(), itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier());
+                boolean result = provider.sellItems(plugin, itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier(), event.getPlayer());
                 if (result) itemStacks.remove(itemStack);
             });
             drops.put(locationListEntry.getKey(), itemStacks);
@@ -53,7 +53,7 @@ public class Seller implements RuneActivator, BreakHandler<RuneSellingConfigurat
         List<ItemStack> drops = new ArrayList<>(event.getDrops());
 
         drops.forEach(itemStack -> {
-            boolean result = provider.sellItems(event.getEntity().getKiller(), itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier());
+            boolean result = provider.sellItems(plugin, itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier(), event.getEntity().getKiller());
             if (result) event.getDrops().remove(itemStack);
         });
     }

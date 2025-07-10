@@ -1,5 +1,6 @@
-package fr.maxlego08.items.hook.shops;
+package fr.maxlego08.items.hooks;
 
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.shop.ShopProvider;
 import me.gypopo.economyshopgui.api.EconomyShopGUIHook;
 import me.gypopo.economyshopgui.api.objects.SellPrice;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 public class EconomyShopGUIProvider implements ShopProvider {
     @Override
-    public boolean sellItems(OfflinePlayer player, ItemStack item, int amount, double multiplier) {
+    public boolean sellItems(ItemPlugin plugin, ItemStack item, int amount, double multiplier, OfflinePlayer player) {
         Optional<SellPrice> optional = EconomyShopGUIHook.getSellPrice(player, item);
         if (optional.isEmpty())
             return false;

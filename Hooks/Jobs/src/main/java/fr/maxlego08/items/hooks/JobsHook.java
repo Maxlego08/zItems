@@ -1,4 +1,4 @@
-package fr.maxlego08.items.hook.jobs;
+package fr.maxlego08.items.hooks;
 
 import com.gamingmesh.jobs.api.JobsExpGainEvent;
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent;

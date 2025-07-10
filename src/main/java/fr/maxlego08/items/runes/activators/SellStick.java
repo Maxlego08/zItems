@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SellStick implements RuneActivator, InteractionHandler<RuneSellingConfiguration> {
+
     @Override
     public int getPriority() {
         return 0;
@@ -28,30 +29,30 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
 
     @Override
     public void interactBlock(ItemPlugin plugin, PlayerInteractEvent event, RuneSellingConfiguration runeConfiguration) {
-        if(event.getHand() != runeConfiguration.getHand()) {
+        if (event.getHand() != runeConfiguration.getHand()) {
             return;
         }
         Plugins plugins = runeConfiguration.getPlugins();
         ShopProvider provider = plugins == null ? plugin.getHookManager().getProviders().values().stream().findFirst().orElse(null) : plugin.getHookManager().getProviders().get(plugins);
         Player player = event.getPlayer();
-        if(provider == null) return;
+        if (provider == null) return;
 
-        if(event.getItem() == null) return;
+        if (event.getItem() == null) return;
 
         Block block = event.getClickedBlock();
-        if(block == null) return;
+        if (block == null) return;
 
         Action action;
         switch (event.getAction()) {
             case RIGHT_CLICK_BLOCK:
-                if(player.isSneaking()) {
+                if (player.isSneaking()) {
                     action = Action.SHIFT_RIGHT_CLICK;
                 } else {
                     action = Action.RIGHT_CLICK;
                 }
                 break;
             case LEFT_CLICK_BLOCK:
-                if(player.isSneaking()) {
+                if (player.isSneaking()) {
                     action = Action.SHIFT_LEFT_CLICK;
                 } else {
                     action = Action.LEFT_CLICK;
@@ -61,7 +62,7 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
                 return;
         }
 
-        if(runeConfiguration.getAction() != Action.CLICK && runeConfiguration.getAction() != action) {
+        if (runeConfiguration.getAction() != Action.CLICK && runeConfiguration.getAction() != action) {
             return;
         }
 
@@ -71,29 +72,29 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
 
         List<ItemStack> itemStacks = new ArrayList<>();
         for (ItemStack itemStack : container.getInventory().getContents()) {
-            if(itemStack == null) {
+            if (itemStack == null) {
                 itemStacks.add(new ItemStack(Material.AIR));
             } else {
-                boolean result = provider.sellItems(event.getPlayer(), itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier());
-                if(!result) {
+                boolean result = provider.sellItems(, itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier(), event.getPlayer());
+                if (!result) {
                     itemStacks.add(itemStack);
                 }
             }
         }
         container.getInventory().setContents(itemStacks.toArray(new ItemStack[0]));
         event.setCancelled(true);
-        if(runeConfiguration.isDamage()) {
+        if (runeConfiguration.isDamage()) {
             PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(event.getPlayer(), event.getItem(), 1, 1);
             plugin.getServer().getPluginManager().callEvent(damageEvent);
-            if(damageEvent.isCancelled()) {
+            if (damageEvent.isCancelled()) {
                 return;
             }
-            if(event.getItem().getItemMeta() instanceof Damageable damageable) {
+            if (event.getItem().getItemMeta() instanceof Damageable damageable) {
                 damageable.setDamage(damageable.getDamage() + damageEvent.getDamage());
                 event.getItem().setItemMeta(damageable);
             } else {
                 int amount = event.getItem().getAmount();
-                if(amount > damageEvent.getDamage()) {
+                if (amount > damageEvent.getDamage()) {
                     event.getItem().setAmount(amount - damageEvent.getDamage());
                 } else {
                     event.getPlayer().getInventory().remove(event.getItem());

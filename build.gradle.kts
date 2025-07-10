@@ -27,7 +27,10 @@ allprojects {
         mavenCentral()
 
         maven(url = "https://jitpack.io")
-        maven(url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven {
+            name = "papermc"
+            url = uri("https://repo.papermc.io/repository/maven-public/")
+        }
         maven(url = "https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven(url = "https://libraries.minecraft.net/")
     }
@@ -56,7 +59,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.spigotmc:spigot-api:1.21.5-R0.1-SNAPSHOT")
+        compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
         compileOnly("com.mojang:authlib:1.5.26")
         compileOnly("me.clip:placeholderapi:2.11.6")
 
