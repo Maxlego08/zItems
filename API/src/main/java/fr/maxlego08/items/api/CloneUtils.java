@@ -15,6 +15,7 @@ public class CloneUtils {
         }
         ItemStack clone = itemStack.clone();
         ItemMeta cloneMeta = clone.getItemMeta();
+
         if (cloneMeta == null) {
             return clone;
         }

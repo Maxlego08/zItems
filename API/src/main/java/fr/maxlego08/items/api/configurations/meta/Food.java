@@ -2,14 +2,10 @@ package fr.maxlego08.items.api.configurations.meta;
 
 import fr.maxlego08.items.ItemsPlugin;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record Food(boolean enable, int nutrition, int saturation, boolean canAlwaysEat, int eatSeconds,
                    List<FoodEffect> effects, String usingConvertsTo) {

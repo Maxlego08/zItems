@@ -3,7 +3,6 @@ package fr.maxlego08.items.hook.shops;
 import fr.maxlego08.items.api.shop.ShopHook;
 import fr.maxlego08.items.api.shop.ShopProvider;
 import fr.maxlego08.items.zcore.utils.plugins.Plugins;
-import org.bukkit.Bukkit;
 
 public enum ShopHooks implements ShopHook {
 

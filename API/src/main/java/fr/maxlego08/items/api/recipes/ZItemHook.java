@@ -4,8 +4,6 @@ import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.zcore.ZPlugin;
 import fr.traqueur.recipes.api.domains.BaseIngredient;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class ZItemHook implements Hook {
 
