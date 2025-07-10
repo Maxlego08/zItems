@@ -1,0 +1,421 @@
+package fr.maxlego08.items.runes;
+
+import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.Item;
+import fr.maxlego08.items.api.ItemType;
+import fr.maxlego08.items.api.recipes.ZItemIngredient;
+import fr.maxlego08.items.api.runes.Rune;
+import fr.maxlego08.items.api.runes.RuneManager;
+import fr.maxlego08.items.api.runes.RunePipeline;
+import fr.maxlego08.items.api.runes.RuneType;
+import fr.maxlego08.items.api.runes.applicators.Applicator;
+import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.api.runes.exceptions.ItemContainsAlreadyRuneException;
+import fr.maxlego08.items.api.runes.exceptions.NoMetaException;
+import fr.maxlego08.items.api.runes.exceptions.RuneAppliedException;
+import fr.maxlego08.items.api.runes.exceptions.RuneException;
+import fr.maxlego08.items.api.runes.exceptions.RuneNotAllowedException;
+import fr.maxlego08.items.api.runes.handlers.ItemApplicationHandler;
+import fr.maxlego08.items.api.utils.TagRegistry;
+import fr.maxlego08.items.zcore.enums.Message;
+import fr.maxlego08.items.zcore.utils.ZUtils;
+import fr.traqueur.recipes.api.RecipeType;
+import fr.traqueur.recipes.api.domains.Ingredient;
+import fr.traqueur.recipes.api.hook.Hook;
+import fr.traqueur.recipes.impl.domains.ItemRecipe;
+import fr.traqueur.recipes.impl.domains.ingredients.MaterialIngredient;
+import fr.traqueur.recipes.impl.domains.ingredients.TagIngredient;
+import fr.traqueur.recipes.impl.domains.recipes.RecipeBuilder;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class ZRuneManager extends ZUtils implements RuneManager {
+
+    private final ItemsPlugin plugin;
+    private final List<Rune> runes = new ArrayList<>();
+    private final NamespacedKey namespacedKey;
+    private final NamespacedKey runeNamespacedKey;
+    private final PersistentDataType<String, Rune> runeDataType;
+    private final Map<Rune, List<ItemRecipe>> recipesUseRunes = new HashMap<>();
+    private final List<Applicator> applicators = new ArrayList<>();
+
+    public ZRuneManager(ItemsPlugin plugin) {
+        this.plugin = plugin;
+        this.namespacedKey = new NamespacedKey(plugin, "runes");
+        this.runeNamespacedKey = new NamespacedKey(plugin, "rune-represent");
+        this.runeDataType = new RuneDataType(this);
+    }
+
+    @Override
+    public void loadRunes() {
+
+        File folder = new File(plugin.getDataFolder(), "runes");
+        if (!folder.exists()) {
+            if (folder.mkdirs()) {
+                this.plugin.saveResource("runes/vein-mining.yml", false);
+                this.plugin.saveResource("runes/melt-mining.yml", false);
+                this.plugin.saveResource("runes/farming-hoe.yml", false);
+                this.plugin.saveResource("runes/protection.yml", false);
+                this.plugin.saveResource("runes/unbreakable.yml", false);
+                this.plugin.saveResource("runes/hammer.yml", false);
+                this.plugin.saveResource("runes/silk-spawner.yml", false);
+                this.plugin.saveResource("runes/absorption.yml", false);
+                this.plugin.saveResource("runes/xp-boost.yml", false);
+                this.plugin.saveResource("runes/job-xp-boost.yml", false);
+                this.plugin.saveResource("runes/job-money-boost.yml", false);
+                this.plugin.saveResource("runes/tree-cutter.yml", false);
+                this.plugin.saveResource("runes/health-up.yml", false);
+                this.plugin.saveResource("runes/seller.yml", false);
+                this.plugin.saveResource("runes/sell-stick.yml", false);
+            }
+        }
+
+        this.runes.clear();
+
+        try (Stream<Path> stream = Files.walk(folder.toPath())) {
+            stream.skip(1).map(Path::toFile).filter(File::isFile).filter(e -> e.getName().endsWith(".yml")).forEach(this::loadRune);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public void loadCraftWithRunes() {
+        this.plugin.getItemManager().getItems().stream().filter(item -> item.getConfiguration().getItemType() == ItemType.RUNE).filter(item -> item.getConfiguration().getItemRuneConfiguration().enableCrafting()).forEach(this::createRecipeWithRuneItem);
+    }
+
+    @Override
+    public void loadRune(File file) {
+
+        var logger = this.plugin.getLogger();
+
+        try {
+
+            String runeName = file.getName().replace(".yml", "");
+            YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+
+            RuneType runeType = RuneType.getRuneType(configuration.getString("type", "ERROR").toUpperCase()).orElseThrow();
+            String displayName = configuration.getString("display-name");
+            List<Material> materials = configuration.getStringList("allowed-materials").stream().map(String::toUpperCase).map(Material::valueOf).toList();
+            List<Tag<Material>> tags = configuration.getStringList("allowed-tags").stream().map(String::toUpperCase).map(TagRegistry::getTag).filter(Objects::nonNull).toList();
+
+            RuneConfiguration runeConfiguration = runeType.getConfiguration(plugin, configuration, runeName);
+
+            String parent = configuration.getString("parent", "");
+
+            Rune rune = new ZRune(runeName, parent, displayName, runeType, materials, tags, runeConfiguration);
+
+            this.runes.add(rune);
+
+            plugin.info("Loaded rune " + file.getPath());
+
+        } catch (Exception exception) {
+            logger.severe("Unable to load the rune " + file.getPath());
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public Optional<Rune> getRune(String name) {
+        return this.runes.stream().filter(rune -> rune.getName().equalsIgnoreCase(name)).findFirst();
+    }
+
+    @Override
+    public List<Rune> getRunes() {
+        return this.runes;
+    }
+
+    @Override
+    public List<Rune> getRunes(RuneType runeType) {
+        return this.runes.stream().filter(rune -> rune.getType() == runeType).toList();
+    }
+
+    @Override
+    public void applyRune(Player player, String runeName) {
+
+        var optional = getRune(runeName);
+        if (optional.isEmpty()) {
+            message(player, Message.COMMAND_RUNE_NOT_FOUND, "%rune%", runeName);
+            return;
+        }
+
+        var rune = optional.get();
+
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+
+        try {
+            this.applyRune(itemStack, rune);
+        } catch (RuneException exception) {
+            switch (exception) {
+                case NoMetaException ignored -> message(player, Message.ITEM_HAVE_NOT_META);
+                case ItemContainsAlreadyRuneException ignored ->
+                        message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
+                case RuneNotAllowedException ignored ->
+                        message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
+                case RuneAppliedException ignored ->
+                        message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
+                default -> throw new IllegalStateException("Unexpected value: " + exception);
+            }
+        }
+    }
+
+    @Override
+    public void applyRune(ItemStack itemStack, Rune rune) throws RuneException {
+        if (itemStack.isEmpty()) {
+            throw new NoMetaException();
+        }
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
+
+        int nbRunesView = -1;
+
+        if (persistentDataContainer.has(Item.ITEM_KEY, PersistentDataType.STRING)) {
+            Optional<Item> itemOptional = plugin.getItemManager().getItem(persistentDataContainer.get(Item.ITEM_KEY, PersistentDataType.STRING));
+            if (itemOptional.isPresent()) {
+                Item item = itemOptional.get();
+                nbRunesView = item.getConfiguration().getNbRunesView();
+                if (item.getConfiguration().getDisableRunes().contains(rune)) {
+                    throw new RuneNotAllowedException();
+                }
+            }
+        }
+
+        List<Rune> runes = persistentDataContainer.getOrDefault(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), new ArrayList<>());
+        runes = new ArrayList<>(runes);
+
+        if (runes.contains(rune)) {
+            throw new ItemContainsAlreadyRuneException();
+        }
+
+        if (runes.stream().anyMatch(r -> r.getType().getIncompatibles().contains(rune.getType()))) {
+            throw new RuneNotAllowedException();
+        }
+
+        if (!rune.isAllowed(itemStack.getType())) {
+            throw new RuneNotAllowedException();
+        }
+
+        try {
+            if (rune.getType().getActivator() instanceof ItemApplicationHandler<?> itemApplicationHandler) {
+                itemApplicationHandler.applyOnItems(plugin, itemMeta, rune.getConfiguration());
+            }
+        } catch (Exception exception) {
+            throw new RuneAppliedException(exception);
+        }
+
+
+        List<String> lore = itemMeta.hasLore() ? new ArrayList<>(itemMeta.getLore()) : new ArrayList<>();
+
+        if (nbRunesView != 0) {
+            if (runes.isEmpty()) {
+                lore.addAll(generateRuneLore(rune));
+            } else {
+                AtomicInteger line = new AtomicInteger();
+                AtomicBoolean removeParent = new AtomicBoolean(false);
+                this.getRune(rune.getParent()).ifPresent(parent -> {
+                    String displayRune = color(getMessage(Message.RUNE_LINE, "%rune%", parent.getDisplayName()));
+                    line.set(lore.indexOf(displayRune));
+                    if (line.get() != -1) {
+                        lore.remove(line.get());
+                        removeParent.set(true);
+                    }
+                });
+                if (removeParent.get()) {
+                    lore.set(line.get(), color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                } else {
+                    if (nbRunesView != -1 && runes.size() == nbRunesView) {
+                        lore.add(color(getMessage(Message.RUNE_MORE)));
+                    } else {
+                        lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                    }
+                }
+
+
+            }
+        }
+
+        itemMeta.setLore(lore);
+
+        runes.add(rune);
+        persistentDataContainer.set(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), runes);
+
+        itemStack.setItemMeta(itemMeta);
+    }
+
+    @Override
+    public Optional<List<Rune>> getRunes(ItemStack itemStack) {
+        if (itemStack == null || !itemStack.hasItemMeta()) return Optional.empty();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
+        if (!persistentDataContainer.has(this.getKey(), PersistentDataType.LIST.listTypeFrom(this.getDataType()))) {
+            return Optional.empty();
+        }
+
+        var runesList = persistentDataContainer.getOrDefault(this.getKey(), PersistentDataType.LIST.listTypeFrom(this.getDataType()), new ArrayList<>());
+        runesList = new ArrayList<>(runesList);
+        return Optional.of(runesList);
+    }
+
+    @Override
+    public NamespacedKey getKey() {
+        return this.namespacedKey;
+    }
+
+    @Override
+    public NamespacedKey getRuneRepresentKey() {
+        return this.runeNamespacedKey;
+    }
+
+    @Override
+    public PersistentDataType<String, Rune> getDataType() {
+        return this.runeDataType;
+    }
+
+    @Override
+    public void deleteCrafts() {
+        this.recipesUseRunes.forEach((rune, recipes) -> recipes.forEach(recipe -> this.plugin.getRecipesAPI().removeRecipe(recipe)));
+        this.applicators.clear();
+    }
+
+    @Override
+    public <T extends PlayerEvent> void onPlayerEvent(T event) {
+        var player = event.getPlayer();
+        var itemStack = player.getInventory().getItemInMainHand();
+        var optional = this.getRunes(itemStack);
+        if (optional.isEmpty()) return;
+
+        RunePipeline pipeline = new RunePipeline(optional.get());
+        pipeline.pipeline(plugin, event);
+    }
+
+    @Override
+    public List<Applicator> getApplicators() {
+        return this.applicators;
+    }
+
+    @Override
+    public Map<Rune, List<ItemRecipe>> getRecipesUseRunes() {
+        return recipesUseRunes;
+    }
+
+    private List<String> generateRuneLore(Rune rune) {
+        List<String> runeLore = Message.RUNE_LORE.getMessages();
+        List<String> formattedLore = new ArrayList<>();
+
+        runeLore.forEach(line -> formattedLore.add(color(line)));
+        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+
+        return formattedLore;
+    }
+
+
+    private void createRecipeWithRuneItem(Item runeItem) {
+        switch (runeItem.getConfiguration().getItemRuneConfiguration().type()) {
+            case SMITHING_TABLE -> {
+                this.createSmithingCraft(runeItem);
+            }
+            case ZITEMS_APPLICATOR -> {
+                this.createCustomApplicator(runeItem);
+            }
+        }
+    }
+
+    private void createSmithingCraft(Item runeItem) {
+        Rune rune = runeItem.getConfiguration().getItemRuneConfiguration().rune();
+        String template = runeItem.getConfiguration().getItemRuneConfiguration().ingredientList().getFirst();
+        Set<Material> materials = new HashSet<>(rune.getMaterials());
+        rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
+        materials.forEach(material -> {
+            ItemStack result = new ItemStack(material);
+            try {
+                this.plugin.getRuneManager().applyRune(result, rune);
+            } catch (RuneException ignored) {
+                result = new ItemStack(material);
+            }
+            ItemRecipe recipe = new RecipeBuilder().setType(RecipeType.SMITHING_TRANSFORM).addIngredient(getIngredient(template)).addIngredient(material).addIngredient(new ZItemIngredient(runeItem.getName(), '-')).setResult(result).setAmount(1).setName("rune_" + rune.getName() + "_" + material.name().toLowerCase()).build();
+
+            this.recipesUseRunes.computeIfAbsent(rune, k -> new ArrayList<>()).add(recipe);
+            this.plugin.getRecipesAPI().addRecipe(recipe);
+        });
+    }
+
+    private void createCustomApplicator(Item runeItem) {
+        Rune rune = runeItem.getConfiguration().getItemRuneConfiguration().rune();
+        Set<Material> materials = new HashSet<>(rune.getMaterials());
+        rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
+        List<Ingredient> ingredients = runeItem.getConfiguration().getItemRuneConfiguration().ingredientList().stream().map(this::getIngredient).collect(Collectors.toList());
+        ingredients.add(new ZItemIngredient(runeItem.getName(), '-'));
+        int nbInputs = ingredients.size() - 1;
+        ingredients.addAll(runeItem.getConfiguration().getItemRuneConfiguration().extraIngredients().stream().map(this::getIngredient).toList());
+        int nbExtra = ingredients.size() - nbInputs - 1;
+        for (Material material : materials) {
+            ItemStack result = new ItemStack(material);
+            /*try {
+                this.plugin.getRuneManager().applyRune(result, rune);
+            } catch (RuneException exception) {
+                exception.printStackTrace();
+            }*/
+            List<Ingredient> ingredientsInner = new ArrayList<>(ingredients);
+            ingredientsInner.add(new MaterialIngredient(material));
+            ItemRecipe recipe = new ItemRecipe("rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator", "", "", null, result, 1, ingredientsInner.toArray(Ingredient[]::new), null, 0, 0);
+            this.applicators.add(new Applicator(this.plugin, recipe, rune, material, nbInputs, nbExtra));
+            this.plugin.info("Loaded applicator " + "rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator");
+        }
+    }
+
+    private Ingredient getIngredient(String template) {
+        String[] parts = template.split(":");
+        if (parts.length == 1) {
+            return new MaterialIngredient(Material.valueOf(parts[0]));
+        } else {
+            for (Hook hook : Hook.HOOKS) {
+                if (hook.getPluginName().equalsIgnoreCase(parts[0])) {
+                    return hook.getIngredient(parts[1], '-');
+                }
+            }
+            switch (parts[0]) {
+                case "tag" -> {
+                    Tag<Material> tag = TagRegistry.getTag(parts[1]);
+                    if (tag == null) {
+                        throw new IllegalArgumentException("Tag not found: " + parts[1]);
+                    }
+                    return new TagIngredient(tag);
+                }
+                case "minecraft", "material" -> {
+                    Material material = Material.matchMaterial(parts[1]);
+                    if (material == null) {
+                        throw new IllegalArgumentException("Material not found: " + parts[1]);
+                    }
+                    return new MaterialIngredient(material);
+                }
+                default -> throw new IllegalArgumentException("Unknown ingredient type: " + parts[0]);
+            }
+        }
+    }
+}
