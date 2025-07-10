@@ -1,10 +1,13 @@
 package fr.maxlego08.items.api.configurations.meta;
 
-import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
-import fr.maxlego08.items.api.configurations.state.*;
+import fr.maxlego08.items.api.configurations.state.ItemSlot;
+import fr.maxlego08.items.api.configurations.state.ItemSlotCustomItem;
+import fr.maxlego08.items.api.configurations.state.ItemSlotItem;
+import fr.maxlego08.items.api.configurations.state.SignConfiguration;
+import fr.maxlego08.items.api.configurations.state.SignLine;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
@@ -21,7 +24,7 @@ import java.util.List;
 public record BlockStateMetaConfiguration(boolean enable, List<ItemSlot> containerItems, boolean signWaxed,
                                           SignConfiguration frontSign, SignConfiguration backSign) {
 
-    public static BlockStateMetaConfiguration loadBlockStateMeta(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+    public static BlockStateMetaConfiguration loadBlockStateMeta(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
         boolean enableBlockStateMeta = configuration.getBoolean(path + "block-state-meta.enable", false);
         List<ItemSlot> containerItems = new ArrayList<>();
         SignConfiguration frontSign = null;
@@ -56,7 +59,7 @@ public record BlockStateMetaConfiguration(boolean enable, List<ItemSlot> contain
         return new SignConfiguration(glow, lines);
     }
 
-    private static List<ItemSlot> loadContainer(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+    private static List<ItemSlot> loadContainer(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
         List<ItemSlot> containerItems = new ArrayList<>();
         ConfigurationSection configurationSection = configuration.getConfigurationSection(path + "block-state-meta.container");
         if (configurationSection != null) {

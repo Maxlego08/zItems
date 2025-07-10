@@ -13,7 +13,7 @@ import fr.maxlego08.items.placeholder.Placeholder;
 import fr.maxlego08.items.zcore.logger.Logger;
 import fr.maxlego08.items.zcore.utils.gson.LocationAdapter;
 import fr.maxlego08.items.zcore.utils.gson.PotionEffectAdapter;
-import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.items.zcore.utils.storage.NoReloadable;
 import fr.maxlego08.items.zcore.utils.storage.Persist;
 import fr.maxlego08.items.zcore.utils.storage.Savable;

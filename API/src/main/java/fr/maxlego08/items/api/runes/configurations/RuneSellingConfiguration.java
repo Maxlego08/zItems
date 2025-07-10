@@ -2,7 +2,7 @@ package fr.maxlego08.items.api.runes.configurations;
 
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.configurations.commands.Action;
-import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import fr.maxlego08.items.api.utils.Plugins;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.EquipmentSlot;
 

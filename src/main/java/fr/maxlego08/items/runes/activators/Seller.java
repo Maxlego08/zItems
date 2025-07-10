@@ -6,7 +6,7 @@ import fr.maxlego08.items.api.runes.configurations.RuneSellingConfiguration;
 import fr.maxlego08.items.api.runes.handlers.BreakHandler;
 import fr.maxlego08.items.api.runes.handlers.EntityDeathHandler;
 import fr.maxlego08.items.api.shop.ShopProvider;
-import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import fr.maxlego08.items.api.utils.Plugins;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;

@@ -2,7 +2,6 @@ package fr.maxlego08.items.api.runes;
 
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
-import fr.maxlego08.items.runes.RuneTypes;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;

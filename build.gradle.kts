@@ -63,7 +63,10 @@ allprojects {
         compileOnly("com.mojang:authlib:1.5.26")
         compileOnly("me.clip:placeholderapi:2.11.6")
 
-        compileOnly("fr.maxlego08.menu:zmenu-api:1.1.0.1")
+        compileOnly(files("libs/zMenu-1.1.0.1.jar"))
+        compileOnly(files("libs/API-1.0.2.6-all.jar"))
+        implementation("com.github.Traqueur-dev:RecipesAPI:1.4.4")
+        implementation("com.jeff-media:armor-equip-event:1.0.3")
     }
 }
 
@@ -79,7 +82,8 @@ dependencies {
 
 tasks {
     shadowJar {
-
+        relocate("fr.traqueur.recipes", "fr.maxlego08.items.hooks.recipes")
+        relocate("com.jeff_media.armorequipevent", "fr.maxlego08.items.hooks.armorequipevent")
 
         rootProject.extra.properties["sha"]?.let { sha ->
             archiveClassifier.set("${rootProject.extra.properties["classifier"]}-${sha}")

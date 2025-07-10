@@ -6,7 +6,7 @@ import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.RuneSellingConfiguration;
 import fr.maxlego08.items.api.runes.handlers.InteractionHandler;
 import fr.maxlego08.items.api.shop.ShopProvider;
-import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import fr.maxlego08.items.api.utils.Plugins;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
@@ -75,7 +75,7 @@ public class SellStick implements RuneActivator, InteractionHandler<RuneSellingC
             if (itemStack == null) {
                 itemStacks.add(new ItemStack(Material.AIR));
             } else {
-                boolean result = provider.sellItems(, itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier(), event.getPlayer());
+                boolean result = provider.sellItems(plugin, itemStack, itemStack.getAmount(), runeConfiguration.getMultiplier(), event.getPlayer());
                 if (!result) {
                     itemStacks.add(itemStack);
                 }

@@ -17,6 +17,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -33,42 +34,34 @@ public class ZRecipeConfiguration implements Recipe {
      * The name of the recipe.
      */
     private final String name;
-
-    /**
-     * The result of the recipe.
-     */
-    private ItemStack result;
-
     /**
      * The amount of the result.
      */
     private final int amount;
-
     /**
      * The type of the recipe.
      */
     private final RecipeType type;
-
     /**
      * The group of the recipe.
      */
     private final String group;
-
     /**
      * The category of the recipe.
      */
     private final String category;
-
     /**
      * The pattern of the recipe.
      */
     private final int cookingTime;
-
     /**
      * The experience of the recipe.
      */
     private final float experience;
-
+    /**
+     * The result of the recipe.
+     */
+    private ItemStack result;
     /**
      * The pattern of the recipe.
      */
@@ -76,8 +69,9 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * The constructor of the recipe.
-     * @param plugin the plugin of the recipe.
-     * @param name the name of the recipe.
+     *
+     * @param plugin        the plugin of the recipe.
+     * @param name          the name of the recipe.
      * @param configuration the configuration of the recipe.
      */
     public ZRecipeConfiguration(JavaPlugin plugin, String name, YamlConfiguration configuration) {
@@ -86,14 +80,15 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * The constructor of the recipe.
-     * @param plugin the plugin of the recipe.
-     * @param name the name of the recipe.
-     * @param path the path of the recipe.
+     *
+     * @param plugin        the plugin of the recipe.
+     * @param name          the name of the recipe.
+     * @param path          the path of the recipe.
      * @param configuration the configuration of the recipe.
      */
-    public ZRecipeConfiguration(JavaPlugin plugin, String name, String path, YamlConfiguration configuration) {
+    public ZRecipeConfiguration(Plugin plugin, String name, String path, YamlConfiguration configuration) {
         this.name = name.replace(".yml", "");
-        if(!path.endsWith(".") && !path.isEmpty()) {
+        if (!path.endsWith(".") && !path.isEmpty()) {
             path += ".";
         }
         String strType = configuration.getString(path + "type", "ERROR");
@@ -104,25 +99,25 @@ public class ZRecipeConfiguration implements Recipe {
         }
         this.category = configuration.getString(path + "category", "");
         this.group = configuration.getString(path + "group", "");
-        if(!this.checkGategory(this.category)) {
+        if (!this.checkGategory(this.category)) {
             throw new IllegalArgumentException("The category " + this.category + " isn't valid.");
         }
 
-        if(configuration.contains(path + "pattern")) {
-            this.pattern = configuration.getStringList(path+"pattern").toArray(new String[0]);
+        if (configuration.contains(path + "pattern")) {
+            this.pattern = configuration.getStringList(path + "pattern").toArray(new String[0]);
         }
 
-        if(!configuration.contains(path + "ingredients")) {
+        if (!configuration.contains(path + "ingredients")) {
             throw new IllegalArgumentException("The recipe " + name + " doesn't have ingredients.");
         }
 
-        for(Map<?,?> ingredient : configuration.getMapList(path + "ingredients")) {
+        for (Map<?, ?> ingredient : configuration.getMapList(path + "ingredients")) {
             String material = (String) ingredient.get("item");
             var objSign = ingredient.getOrDefault("sign", null);
             Character sign = objSign == null ? null : objSign.toString().charAt(0);
 
             String[] data = material.split(":");
-            if(data.length == 1) {
+            if (data.length == 1) {
                 this.ingredientList.add(new MaterialIngredient(this.getMaterial(data[0]), sign));
             } else {
                 Ingredient ingred = switch (data[0]) {
@@ -130,13 +125,13 @@ public class ZRecipeConfiguration implements Recipe {
                     case "tag" -> new TagIngredient(this.getTag(data[1]), sign);
                     case "item" -> {
                         boolean strict = this.isStrict(ingredient);
-                        if(strict) {
+                        if (strict) {
                             yield new StrictItemStackIngredient(this.getItemStack(data[1]), sign);
                         }
                         yield new ItemStackIngredient(this.getItemStack(data[1]), sign);
                     }
                     default -> Hook.HOOKS.stream()
-                            .filter(hook -> hook.isEnable(plugin))
+                            .filter(hook -> plugin.getServer().getPluginManager().isPluginEnabled(hook.getPluginName()))
                             .filter(hook -> hook.getPluginName().equalsIgnoreCase(data[0]))
                             .findFirst()
                             .orElseThrow(() -> new IllegalArgumentException("The data " + data[0] + " isn't valid."))
@@ -156,6 +151,7 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * This method is used to get Tag from the string.
+     *
      * @param data the data to get the tag.
      * @return the tag.
      */
@@ -165,14 +161,16 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * This method is used to check if the ingredient is strict.
+     *
      * @param ingredient the ingredient to check.
      */
-    private boolean isStrict(Map<?,?> ingredient) {
+    private boolean isStrict(Map<?, ?> ingredient) {
         return ingredient.containsKey("strict") && (boolean) ingredient.get("strict");
     }
 
     /**
      * This method is used to get the itemstack from base64 string
+     *
      * @param base64itemstack the base64 item stack.
      * @return the item stack.
      */
@@ -182,6 +180,7 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * This method is used to get the material from the string.
+     *
      * @param material the material string.
      * @return the material.
      */
@@ -195,6 +194,7 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * This method is used to check if the category is valid.
+     *
      * @param category the group to check.
      * @return true if the category is valid.
      */

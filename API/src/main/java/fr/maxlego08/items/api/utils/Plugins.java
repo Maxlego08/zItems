@@ -1,4 +1,4 @@
-package fr.maxlego08.items.zcore.utils.plugins;
+package fr.maxlego08.items.api.utils;
 
 import org.bukkit.Bukkit;
 

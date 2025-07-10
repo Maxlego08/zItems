@@ -10,6 +10,11 @@ import fr.maxlego08.items.api.runes.RunePipeline;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.applicators.Applicator;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.api.runes.exceptions.ItemContainsAlreadyRuneException;
+import fr.maxlego08.items.api.runes.exceptions.NoMetaException;
+import fr.maxlego08.items.api.runes.exceptions.RuneAppliedException;
+import fr.maxlego08.items.api.runes.exceptions.RuneException;
+import fr.maxlego08.items.api.runes.exceptions.RuneNotAllowedException;
 import fr.maxlego08.items.api.runes.handlers.ItemApplicationHandler;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.zcore.enums.Message;
@@ -36,7 +41,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -94,11 +106,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
     @Override
     public void loadCraftWithRunes() {
-        this.plugin.getItemManager().getItems()
-                .stream()
-                .filter(item -> item.getConfiguration().getItemType() == ItemType.RUNE)
-                .filter(item -> item.getConfiguration().getItemRuneConfiguration().enableCrafting())
-                .forEach(this::createRecipeWithRuneItem);
+        this.plugin.getItemManager().getItems().stream().filter(item -> item.getConfiguration().getItemType() == ItemType.RUNE).filter(item -> item.getConfiguration().getItemRuneConfiguration().enableCrafting()).forEach(this::createRecipeWithRuneItem);
     }
 
     @Override
@@ -165,9 +173,12 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         } catch (RuneException exception) {
             switch (exception) {
                 case NoMetaException ignored -> message(player, Message.ITEM_HAVE_NOT_META);
-                case ItemContainsAlreadyRuneException ignored -> message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
-                case RuneNotAllowedException ignored -> message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
-                case RuneAppliedException ignored -> message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
+                case ItemContainsAlreadyRuneException ignored ->
+                        message(player, Message.COMMAND_RUNE_ALREADY_APPLIED, "%rune%", rune.getDisplayName());
+                case RuneNotAllowedException ignored ->
+                        message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
+                case RuneAppliedException ignored ->
+                        message(player, Message.COMMAND_RUNE_NOT_ALLOWED, "%rune%", rune.getDisplayName());
                 default -> throw new IllegalStateException("Unexpected value: " + exception);
             }
         }
@@ -189,7 +200,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             if (itemOptional.isPresent()) {
                 Item item = itemOptional.get();
                 nbRunesView = item.getConfiguration().getNbRunesView();
-                if(item.getConfiguration().getDisableRunes().contains(rune)) {
+                if (item.getConfiguration().getDisableRunes().contains(rune)) {
                     throw new RuneNotAllowedException();
                 }
             }
@@ -202,16 +213,16 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             throw new ItemContainsAlreadyRuneException();
         }
 
-        if(runes.stream().anyMatch(r -> r.getType().getIncompatibles().contains(rune.getType()))) {
+        if (runes.stream().anyMatch(r -> r.getType().getIncompatibles().contains(rune.getType()))) {
             throw new RuneNotAllowedException();
         }
 
-        if(!rune.isAllowed(itemStack.getType())) {
-           throw new RuneNotAllowedException();
+        if (!rune.isAllowed(itemStack.getType())) {
+            throw new RuneNotAllowedException();
         }
 
         try {
-            if(rune.getType().getActivator() instanceof ItemApplicationHandler<?> itemApplicationHandler) {
+            if (rune.getType().getActivator() instanceof ItemApplicationHandler<?> itemApplicationHandler) {
                 itemApplicationHandler.applyOnItems(plugin, itemMeta, rune.getConfiguration());
             }
         } catch (Exception exception) {
@@ -221,7 +232,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
         List<String> lore = itemMeta.hasLore() ? new ArrayList<>(itemMeta.getLore()) : new ArrayList<>();
 
-        if(nbRunesView != 0) {
+        if (nbRunesView != 0) {
             if (runes.isEmpty()) {
                 lore.addAll(generateRuneLore(rune));
             } else {
@@ -238,7 +249,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 if (removeParent.get()) {
                     lore.set(line.get(), color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
                 } else {
-                    if(nbRunesView != -1 && runes.size() == nbRunesView) {
+                    if (nbRunesView != -1 && runes.size() == nbRunesView) {
                         lore.add(color(getMessage(Message.RUNE_MORE)));
                     } else {
                         lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
@@ -347,14 +358,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             } catch (RuneException ignored) {
                 result = new ItemStack(material);
             }
-            ItemRecipe recipe = new RecipeBuilder()
-                    .setType(RecipeType.SMITHING_TRANSFORM)
-                    .addIngredient(getIngredient(template))
-                    .addIngredient(material)
-                    .addIngredient(new ZItemIngredient(runeItem.getName(), '-'))
-                    .setResult(result)
-                    .setAmount(1)
-                    .setName("rune_" + rune.getName() + "_" + material.name().toLowerCase()).build();
+            ItemRecipe recipe = new RecipeBuilder().setType(RecipeType.SMITHING_TRANSFORM).addIngredient(getIngredient(template)).addIngredient(material).addIngredient(new ZItemIngredient(runeItem.getName(), '-')).setResult(result).setAmount(1).setName("rune_" + rune.getName() + "_" + material.name().toLowerCase()).build();
 
             this.recipesUseRunes.computeIfAbsent(rune, k -> new ArrayList<>()).add(recipe);
             this.plugin.getRecipesAPI().addRecipe(recipe);
@@ -365,18 +369,10 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         Rune rune = runeItem.getConfiguration().getItemRuneConfiguration().rune();
         Set<Material> materials = new HashSet<>(rune.getMaterials());
         rune.getTags().forEach(tag -> materials.addAll(tag.getValues()));
-        List<Ingredient> ingredients = runeItem.getConfiguration()
-                .getItemRuneConfiguration()
-                .ingredientList()
-                .stream()
-                .map(this::getIngredient)
-                .collect(Collectors.toList());
+        List<Ingredient> ingredients = runeItem.getConfiguration().getItemRuneConfiguration().ingredientList().stream().map(this::getIngredient).collect(Collectors.toList());
         ingredients.add(new ZItemIngredient(runeItem.getName(), '-'));
         int nbInputs = ingredients.size() - 1;
-        ingredients.addAll(runeItem.getConfiguration()
-                .getItemRuneConfiguration().extraIngredients().stream()
-                .map(this::getIngredient)
-                .toList());
+        ingredients.addAll(runeItem.getConfiguration().getItemRuneConfiguration().extraIngredients().stream().map(this::getIngredient).toList());
         int nbExtra = ingredients.size() - nbInputs - 1;
         for (Material material : materials) {
             ItemStack result = new ItemStack(material);
@@ -387,13 +383,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             }*/
             List<Ingredient> ingredientsInner = new ArrayList<>(ingredients);
             ingredientsInner.add(new MaterialIngredient(material));
-            ItemRecipe recipe = new ItemRecipe(
-                    "rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator",
-                    "", "", null,
-                    result,
-                    1,
-                    ingredientsInner.toArray(Ingredient[]::new),
-                    null, 0, 0);
+            ItemRecipe recipe = new ItemRecipe("rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator", "", "", null, result, 1, ingredientsInner.toArray(Ingredient[]::new), null, 0, 0);
             this.applicators.add(new Applicator(this.plugin, recipe, rune, material, nbInputs, nbExtra));
             this.plugin.info("Loaded applicator " + "rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator");
         }
@@ -405,7 +395,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             return new MaterialIngredient(Material.valueOf(parts[0]));
         } else {
             for (Hook hook : Hook.HOOKS) {
-                if(hook.getPluginName().equalsIgnoreCase(parts[0])) {
+                if (hook.getPluginName().equalsIgnoreCase(parts[0])) {
                     return hook.getIngredient(parts[1], '-');
                 }
             }

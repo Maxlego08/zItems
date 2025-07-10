@@ -1,7 +1,6 @@
 package fr.maxlego08.items.api.configurations;
 
 import com.destroystokyo.paper.inventory.meta.ArmorStandMeta;
-import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
@@ -106,15 +105,15 @@ public class ItemConfiguration {
     private final int nbRunesView;
     private final List<ItemRecipe> recipes;
     private final YamlConfiguration configuration;
+    private final boolean repairDisabled;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
     private ItemRuneConfiguration itemRuneConfiguration;
     private Food food;
     private ItemRarity itemRarity;
-    private final boolean repairDisabled;
 
-    public ItemConfiguration(ItemsPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
+    public ItemConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
         this.recipes = new ArrayList<>();
         this.configuration = configuration;
@@ -582,7 +581,7 @@ public class ItemConfiguration {
         }
     }
 
-    public void createRecipe(ItemsPlugin plugin, Item item) {
+    public void createRecipe(ItemPlugin plugin, Item item) {
         if (configuration.contains("recipes")) {
             for (String key : configuration.getConfigurationSection("recipes").getKeys(false)) {
                 var recipeConfig = new ZRecipeConfiguration(plugin, key, "recipes." + key, configuration);

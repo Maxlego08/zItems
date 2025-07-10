@@ -1,6 +1,6 @@
 package fr.maxlego08.items.api.configurations.meta;
 
-import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.ItemPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
@@ -15,7 +15,7 @@ public record Food(boolean enable, int nutrition, int saturation, boolean canAlw
     }
 
 
-    public void applyToItemMeta(ItemMeta itemMeta, Player player, ItemsPlugin plugin) {
+    public void applyToItemMeta(ItemMeta itemMeta, Player player, ItemPlugin plugin) {
 
         FoodComponent foodComponent = itemMeta.getFood();
 

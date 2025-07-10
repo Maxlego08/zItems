@@ -1,11 +1,11 @@
-package fr.maxlego08.items.hook;
+package fr.maxlego08.items.hooks;
 
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.hook.Hook;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.shop.ShopHook;
 import fr.maxlego08.items.api.shop.ShopProvider;
-import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import fr.maxlego08.items.api.utils.Plugins;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

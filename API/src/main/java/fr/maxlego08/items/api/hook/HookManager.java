@@ -1,7 +1,7 @@
 package fr.maxlego08.items.api.hook;
 
 import fr.maxlego08.items.api.shop.ShopProvider;
-import fr.maxlego08.items.zcore.utils.plugins.Plugins;
+import fr.maxlego08.items.api.utils.Plugins;
 
 import java.util.Map;
 import java.util.function.Function;

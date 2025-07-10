@@ -1,10 +1,7 @@
-package fr.maxlego08.items.runes;
+package fr.maxlego08.items.api.runes;
 
 import fr.maxlego08.items.api.ItemPlugin;
-import fr.maxlego08.items.api.runes.RuneActivator;
-import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.configurations.*;
-import fr.maxlego08.items.runes.activators.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.lang.reflect.InvocationTargetException;
@@ -12,48 +9,52 @@ import java.util.List;
 
 public enum RuneTypes implements RuneType {
 
-    VEIN_MINING(new VeinMiner(), RuneVeinMiningConfiguration.class) {
+    VEIN_MINING("VeinMiner", RuneVeinMiningConfiguration.class) {
         @Override
         public List<RuneType> getIncompatibles() {
             return List.of(HAMMER);
         }
     },
-    MELT_MINING(new MeltMining(), EmptyConfiguration.class),
-    FARMING_HOE(new FarmingHoe(), RuneFarmingHoeConfiguration.class),
-    ENCHANT_APPLICATOR(new EnchantApplicator(), RuneEnchantApplicatorConfiguration.class),
-    UNBREAKABLE(new Unbreakable(), EmptyConfiguration.class),
-    HAMMER(new Hammer(), RuneHammerConfiguration.class) {
+    MELT_MINING("MeltMining", EmptyConfiguration.class),
+    FARMING_HOE("FarmingHoe", RuneFarmingHoeConfiguration.class),
+    ENCHANT_APPLICATOR("EnchantApplicator", RuneEnchantApplicatorConfiguration.class),
+    UNBREAKABLE("Unbreakable", EmptyConfiguration.class),
+    HAMMER("Hammer", RuneHammerConfiguration.class) {
         @Override
         public List<RuneType> getIncompatibles() {
             return List.of(VEIN_MINING);
         }
     },
-    SILK_SPAWNER(new SilkSpawner(), EmptyConfiguration.class),
-    ABSORPTION(new Absorption(), EmptyConfiguration.class) {
+    SILK_SPAWNER("SilkSpawner", EmptyConfiguration.class),
+    ABSORPTION("Absorption", EmptyConfiguration.class) {
         @Override
         public List<RuneType> getIncompatibles() {
             return List.of(SELLER);
         }
     },
-    XP_BOOST(new XPBoost(), RuneXPBoostConfiguration.class),
-    JOB_XP_BOOST(new JobXPBoost(), RuneXPBoostConfiguration.class),
-    JOB_MONEY_BOOST(new JobMoneyBoost(), RuneMoneyBoostConfiguration.class),
-    ATTRIBUTE_APPLICATOR(new AttributeApplicator(), RuneAttributeConfiguration.class),
-    SELLER(new Seller(), RuneSellingConfiguration.class) {
+    XP_BOOST("XPBoost", RuneXPBoostConfiguration.class),
+    JOB_XP_BOOST("JobXPBoost", RuneXPBoostConfiguration.class),
+    JOB_MONEY_BOOST("JobMoneyBoost", RuneMoneyBoostConfiguration.class),
+    ATTRIBUTE_APPLICATOR("AttributeApplicator", RuneAttributeConfiguration.class),
+    SELLER("Seller", RuneSellingConfiguration.class) {
         @Override
         public List<RuneType> getIncompatibles() {
             return List.of(ABSORPTION);
         }
     },
-    SELL_STICK(new SellStick(), RuneSellingConfiguration.class),
-    SLOT_CHANGE(new SlotChange(), SlotChangeConfiguration.class),
+    SELL_STICK("SellStick", RuneSellingConfiguration.class),
+    SLOT_CHANGE("SlotChange", SlotChangeConfiguration.class),
     ;
 
     private final RuneActivator activator;
     private final Class<? extends RuneConfiguration> configuration;
 
-    RuneTypes(RuneActivator activator, Class<? extends RuneConfiguration> configuration) {
-        this.activator = activator;
+    RuneTypes(String className, Class<? extends RuneConfiguration> configuration) {
+        try {
+            this.activator = (RuneActivator) Class.forName("fr.maxlego08.items.runes.activators." + className).newInstance();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException exception) {
+            throw new RuntimeException(exception);
+        }
         this.configuration = configuration;
     }
 
