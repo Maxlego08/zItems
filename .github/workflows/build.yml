@@ -17,13 +17,13 @@ concurrency:
 
 jobs:
   build:
-    name: Build and Publish zMenu
+    name: Build and Publish zItems
     uses: GroupeZ-dev/actions/.github/workflows/build.yml@main
     with:
-      project-name: "zMenu"
+      project-name: "zItems"
       publish: true
       project-to-publish: "API:publish"
-      discord-avatar-url: "https://minecraft-inventory-builder.com/storage/images/9UgcfGZyrmbVrXw5lbj5kXq6fW8F4nhwj6Cx4nVG.png"
+      discord-avatar-url: "https://groupez.dev/storage/images/334.png"
     secrets:
       WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
       MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
