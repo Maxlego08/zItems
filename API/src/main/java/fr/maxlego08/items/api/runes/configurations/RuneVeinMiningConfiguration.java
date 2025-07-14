@@ -36,6 +36,7 @@ public class RuneVeinMiningConfiguration extends RuneConfiguration {
             this.tags = this.loadTags("vein-mining.allowed-tags");
         }
         this.blockLimit = blockLimit;
+        this.eventBlockBreakEvent = this.loadEventBlockBreakEvent("enable-block-break-event");
     }
 
     public int blockLimit() {

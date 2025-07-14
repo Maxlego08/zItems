@@ -75,6 +75,7 @@ public class VeinMiner implements BreakHandler<RuneVeinMiningConfiguration>, Run
         var blocks = this.getVeinBlocks(block, configuration.blockLimit());
         this.isValidTargetBlock(plugin, player, block, origin, configuration);
         blocks.removeIf(veinBlock -> !this.isValidTargetBlock(plugin, player, veinBlock, origin, configuration));
+        blocks.removeIf(veinBlock -> triggerBlockBreakEvent(configuration, veinBlock, player));
         blocks.forEach(veinBlock -> drops.put(veinBlock.getLocation(), new ArrayList<>(veinBlock.getDrops(itemStack))));
         return blocks;
     }

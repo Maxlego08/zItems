@@ -39,7 +39,6 @@ public class RunePipeline {
     private void handleBreak(ItemPlugin plugin, BlockBreakEvent event) {
         Map<Location, List<ItemStack>> drops = new HashMap<>();
         Set<Block> blocks = breakBlocks(plugin, event, drops);
-        System.out.println("Je casse des blocks " + event.isCancelled() + " - " + blocks);
         if (blocks.isEmpty()) return;
 
         event.setDropItems(false);
