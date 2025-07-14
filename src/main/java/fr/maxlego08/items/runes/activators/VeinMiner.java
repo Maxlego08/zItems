@@ -10,16 +10,25 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 public class VeinMiner implements BreakHandler<RuneVeinMiningConfiguration>, RuneActivator {
 
+
     /**
-     * Cette méthode prend un bloc de départ et renvoie un ensemble de tous les blocs connectés du même type.
+     * Retrieves a set of connected blocks of the same type as the given starting block,
+     * up to a specified maximum vein size. The method explores adjacent blocks in all
+     * directions (including diagonals and different heights) to form a vein.
      *
-     * @param startBlock  Le bloc de départ
-     * @param maxVeinSize La taille maximale de la veine
-     * @return Un ensemble de blocs connectés du même type
+     * @param startBlock  the initial block to begin the vein search
+     * @param maxVeinSize the maximum number of blocks to include in the vein
+     * @return a set of blocks forming the vein, including the starting block
      */
     private Set<Block> getVeinBlocks(Block startBlock, int maxVeinSize) {
         Set<Block> veinBlocks = new HashSet<>();
@@ -37,15 +46,15 @@ public class VeinMiner implements BreakHandler<RuneVeinMiningConfiguration>, Run
 
             veinBlocks.add(currentBlock);
 
-            // Explore les 26 positions autour du bloc courant (y compris les diagonales et les hauteurs)
+            // Explore the 26 positions around the current block (including diagonals and heights)
             for (int x = -1; x <= 1; x++) {
                 for (int y = -1; y <= 1; y++) {
                     for (int z = -1; z <= 1; z++) {
-                        if (x == 0 && y == 0 && z == 0) continue;  // Ignore le bloc courant lui-même
+                        if (x == 0 && y == 0 && z == 0) continue;  // Ignore the current block itself
 
                         Block adjacentBlock = currentBlock.getRelative(x, y, z);
 
-                        // Ajoute seulement les blocs non déjà visités
+                        // Add only the blocks not already visited
                         if (!veinBlocks.contains(adjacentBlock)) {
                             blocksToCheck.add(adjacentBlock);
                         }

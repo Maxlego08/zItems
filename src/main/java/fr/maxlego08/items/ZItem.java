@@ -9,13 +9,16 @@ import fr.maxlego08.items.api.events.ItemBuildEvent;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import fr.maxlego08.items.zcore.utils.ZUtils;
+import io.papermc.paper.datacomponent.item.Equippable;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -129,6 +132,8 @@ public class ZItem extends ZUtils implements Item {
             }
 
             this.configuration.applyLeatherArmorMeta(itemMeta);
+
+
 
             itemStack.setItemMeta(itemMeta);
 
