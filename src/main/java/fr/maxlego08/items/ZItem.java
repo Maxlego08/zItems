@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.components.EquippableComponent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -129,6 +130,13 @@ public class ZItem extends ZUtils implements Item {
 
             if (this.configuration.getItemType() == ItemType.RUNE) {
                 persistentDataContainer.set(this.plugin.getRuneManager().getRuneRepresentKey(), this.plugin.getRuneManager().getDataType(), this.configuration.getItemRuneConfiguration().rune());
+            }
+
+            if (this.configuration.getEquippedModel() != null){
+                String[] split = this.configuration.getEquippedModel().split(":",2);
+                EquippableComponent equippableComponent = itemMeta.getEquippable();
+                equippableComponent.setModel(new NamespacedKey(split[0], split[1]));
+                itemMeta.setEquippable(equippableComponent);
             }
 
             this.configuration.applyLeatherArmorMeta(itemMeta);

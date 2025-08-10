@@ -106,6 +106,7 @@ public class ItemConfiguration {
     private final List<ItemRecipe> recipes;
     private final YamlConfiguration configuration;
     private final boolean repairDisabled;
+    private String equippedModel= null;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
@@ -240,6 +241,11 @@ public class ItemConfiguration {
         } else this.trimConfiguration = new TrimConfiguration(false, null, null);
 
         this.armorStandConfig = new ArmorStandConfig(configuration.getBoolean(path + "armor-stand.enable"), configuration.getBoolean(path + "armor-stand.invisible"), configuration.getBoolean(path + "armor-stand.no_base_plate"), configuration.getBoolean(path + "armor-stand.show_arms"), configuration.getBoolean(path + "armor-stand.small"), configuration.getBoolean(path + "armor-stand.marker"));
+
+        String equippedModel = configuration.getString(path + "equipped-model");
+        if (equippedModel != null && !equippedModel.isEmpty()) {
+            this.equippedModel = equippedModel;
+        }
 
         this.loadAxolotl(plugin, configuration, fileName, path);
         this.loadBanner(plugin, configuration, fileName, path);
@@ -601,6 +607,10 @@ public class ItemConfiguration {
 
     public ItemRarity getItemRarity() {
         return itemRarity;
+    }
+
+    public String getEquippedModel() {
+        return equippedModel;
     }
 
     public CommandsConfiguration getCommandsConfiguration() {
