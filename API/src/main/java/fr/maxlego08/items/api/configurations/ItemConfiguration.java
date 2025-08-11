@@ -39,6 +39,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -107,6 +108,8 @@ public class ItemConfiguration {
     private final YamlConfiguration configuration;
     private final boolean repairDisabled;
     private String equippedModel= null;
+    private EquipmentSlot equippedSlot = null;
+    private boolean swappableEquipment = false;
     private AxolotlBucketConfiguration axolotlBucketConfiguration;
     private BannerMetaConfiguration bannerMetaConfiguration;
     private PotionMetaConfiguration potionMetaConfiguration;
@@ -245,6 +248,18 @@ public class ItemConfiguration {
         String equippedModel = configuration.getString(path + "equipped-model");
         if (equippedModel != null && !equippedModel.isEmpty()) {
             this.equippedModel = equippedModel;
+        }
+        String equippedSlotString = configuration.getString(path + "equipped-slot");
+        if (equippedSlotString != null && !equippedSlotString.isEmpty()) {
+            try {
+                this.equippedSlot = EquipmentSlot.valueOf(equippedSlotString.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().severe("Equipped slot " + equippedSlotString + " is not valid for item " + fileName);
+            }
+        }
+        boolean swappableEquipment = configuration.getBoolean(path + "swappable-equipment", false);
+        if (swappableEquipment && this.equippedModel != null && this.equippedSlot != null) {
+            this.swappableEquipment = true;
         }
 
         this.loadAxolotl(plugin, configuration, fileName, path);
@@ -611,6 +626,14 @@ public class ItemConfiguration {
 
     public String getEquippedModel() {
         return equippedModel;
+    }
+
+    public EquipmentSlot getEquippedSlot() {
+        return equippedSlot;
+    }
+
+    public boolean isSwappableEquipment() {
+        return swappableEquipment;
     }
 
     public CommandsConfiguration getCommandsConfiguration() {
