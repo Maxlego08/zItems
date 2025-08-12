@@ -12,6 +12,7 @@ import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.hook.Hooks;
 import fr.maxlego08.items.buttons.ConfirmButton;
 import fr.maxlego08.items.buttons.ItemFilesButton;
+import fr.maxlego08.items.hooks.*;
 import fr.maxlego08.items.inventories.ApplicatorMenu;
 import fr.maxlego08.items.buttons.applicator.ApplicatorBaseInputButton;
 import fr.maxlego08.items.buttons.applicator.ApplicatorExtraInputButton;
@@ -27,12 +28,6 @@ import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
 import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
-import fr.maxlego08.items.hooks.ZHookManager;
-import fr.maxlego08.items.hooks.JobsHook;
-import fr.maxlego08.items.hooks.ZJobsHook;
-import fr.maxlego08.items.hooks.ItemsAdderHook;
-import fr.maxlego08.items.hooks.ShopHooks;
-import fr.maxlego08.items.hooks.WorldGuardHook;
 import fr.maxlego08.items.listener.CommandsListener;
 import fr.maxlego08.items.listener.GrindstoneListener;
 import fr.maxlego08.items.listener.SmithingTableListener;
@@ -136,6 +131,9 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         if (this.isEnable(Plugins.WORLDGUARD)) {
             this.registerBlockAccess(new WorldGuardHook());
+        }
+        if (this.isEnable(Plugins.SUPERIORSKYBLOCK2)){
+            this.registerBlockAccess(new SuperiorSkyBlock2Hook());
         }
 
         //Register all internal hooks

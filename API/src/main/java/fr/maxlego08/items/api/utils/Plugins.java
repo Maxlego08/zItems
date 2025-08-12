@@ -20,6 +20,7 @@ public enum Plugins {
     ZSHOP("zShop"),
     SHOPGUIPLUS("ShopGUIPlus"),
     ECONOMYSHPOGUI("EconomyShopGUI"),
+    SUPERIORSKYBLOCK2("SuperiorSkyblock2"),
     ;
 
     private final String name;

@@ -13,6 +13,7 @@ softdepend:
   - zShop
   - zJobs
   - ShopGuiPlus
+  - SuperiorSkyblock2
 depend:
   - zMenu
 commands:
