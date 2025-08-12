@@ -13,6 +13,7 @@ import io.papermc.paper.datacomponent.item.Equippable;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -132,10 +133,18 @@ public class ZItem extends ZUtils implements Item {
                 persistentDataContainer.set(this.plugin.getRuneManager().getRuneRepresentKey(), this.plugin.getRuneManager().getDataType(), this.configuration.getItemRuneConfiguration().rune());
             }
 
-            if (this.configuration.getEquippedModel() != null){
-                String[] split = this.configuration.getEquippedModel().split(":",2);
+            if (this.configuration.getEquippedModel() != null || this.configuration.getEquippedSlot() != null) {
                 EquippableComponent equippableComponent = itemMeta.getEquippable();
-                equippableComponent.setModel(new NamespacedKey(split[0], split[1]));
+                if (this.configuration.getEquippedModel() != null) {
+                    String[] split = this.configuration.getEquippedModel().split(":",2);
+                    equippableComponent.setModel(new NamespacedKey(split[0], split[1]));
+                }
+                if (this.configuration.getEquippedSlot() != null) {
+                    equippableComponent.setSlot(this.configuration.getEquippedSlot());
+                }
+                if (this.configuration.isSwappableEquipment()){
+                    equippableComponent.setSwappable(this.configuration.isSwappableEquipment());
+                }
                 itemMeta.setEquippable(equippableComponent);
             }
 
