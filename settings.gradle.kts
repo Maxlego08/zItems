@@ -21,3 +21,5 @@ file("Hooks").listFiles()?.forEach { file ->
         include(":Hooks:${file.name}")
     }
 }
+
+include("Hooks:SuperiorSkyBlock2")
