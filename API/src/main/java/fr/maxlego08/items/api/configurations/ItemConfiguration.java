@@ -116,6 +116,7 @@ public class ItemConfiguration {
     private ItemRuneConfiguration itemRuneConfiguration;
     private Food food;
     private ItemRarity itemRarity;
+    private String tooltipstyle;
 
     public ItemConfiguration(ItemPlugin plugin, YamlConfiguration configuration, String fileName, String path) {
 
@@ -260,6 +261,10 @@ public class ItemConfiguration {
         boolean swappableEquipment = configuration.getBoolean(path + "swappable-equipment", false);
         if (swappableEquipment && this.equippedModel != null && this.equippedSlot != null) {
             this.swappableEquipment = true;
+        }
+        String tooltypestyleString = configuration.getString(path + "tooltip-style", null);
+        if (tooltypestyleString != null) {
+            this.tooltipstyle = tooltypestyleString;
         }
 
         this.loadAxolotl(plugin, configuration, fileName, path);
@@ -646,6 +651,10 @@ public class ItemConfiguration {
 
     public List<Rune> getRunes() {
         return runes;
+    }
+
+    public String getTooltipstyle() {
+        return tooltipstyle;
     }
 
     public int getNbRunesView() {

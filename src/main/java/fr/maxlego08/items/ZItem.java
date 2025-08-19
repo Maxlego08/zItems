@@ -147,6 +147,12 @@ public class ZItem extends ZUtils implements Item {
                 }
                 itemMeta.setEquippable(equippableComponent);
             }
+            if (this.configuration.getTooltipstyle() != null && !this.configuration.getTooltipstyle().isEmpty()) {
+                String[] tooltipStyleSplit = this.configuration.getTooltipstyle().split(":", 2);
+                if (tooltipStyleSplit.length == 2) {
+                    itemMeta.setTooltipStyle(new NamespacedKey(tooltipStyleSplit[0], tooltipStyleSplit[1]));
+                }
+            }
 
             this.configuration.applyLeatherArmorMeta(itemMeta);
 
