@@ -6,15 +6,11 @@ import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.recipes.ZItemIngredient;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
-import fr.maxlego08.items.api.runes.RunePipeline;
+import fr.maxlego08.items.runes.RunePipeline;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.applicators.Applicator;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
-import fr.maxlego08.items.api.runes.exceptions.ItemContainsAlreadyRuneException;
-import fr.maxlego08.items.api.runes.exceptions.NoMetaException;
-import fr.maxlego08.items.api.runes.exceptions.RuneAppliedException;
-import fr.maxlego08.items.api.runes.exceptions.RuneException;
-import fr.maxlego08.items.api.runes.exceptions.RuneNotAllowedException;
+import fr.maxlego08.items.api.runes.exceptions.*;
 import fr.maxlego08.items.api.runes.handlers.ItemApplicationHandler;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.zcore.enums.Message;
@@ -41,16 +37,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -100,7 +90,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         try (Stream<Path> stream = Files.walk(folder.toPath())) {
             stream.skip(1).map(Path::toFile).filter(File::isFile).filter(e -> e.getName().endsWith(".yml")).forEach(this::loadRune);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to load runes from folder: " + folder.getPath(), exception);
         }
     }
 
@@ -135,8 +125,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             plugin.info("Loaded rune " + file.getPath());
 
         } catch (Exception exception) {
-            logger.severe("Unable to load the rune " + file.getPath());
-            exception.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to load rune from file: " + file.getPath(), exception);
         }
     }
 

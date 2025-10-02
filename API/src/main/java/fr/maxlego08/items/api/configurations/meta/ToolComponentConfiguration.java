@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public record ToolComponentConfiguration(boolean enable, int damagePerBlock, float defaultMiningSpeed,
                                          List<ToolRuleTag> toolRuleTags, List<ToolMaterialTag> toolMaterialsTags) {
@@ -68,8 +69,7 @@ public record ToolComponentConfiguration(boolean enable, int damagePerBlock, flo
 
                 return new ToolComponentConfiguration(true, damagePerBlock, defaultMiningSpeed, toolRuleTags, toolMaterialTags);
             } catch (Exception exception) {
-                plugin.getLogger().severe("Invalid tool component configuration in " + fileName);
-                exception.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Invalid tool component configuration in file: " + fileName, exception);
             }
         }
         return new ToolComponentConfiguration(false, 0, 0f, null, null);

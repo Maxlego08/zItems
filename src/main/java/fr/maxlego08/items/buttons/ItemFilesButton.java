@@ -1,7 +1,7 @@
 package fr.maxlego08.items.buttons;
 
 import fr.maxlego08.items.ItemsPlugin;
-import fr.maxlego08.items.api.CloneUtils;
+import fr.maxlego08.items.utils.CloneUtils;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.utils.ItemFile;
 import fr.maxlego08.menu.api.button.PaginateButton;

@@ -6,11 +6,14 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 public class ItemStackUtils {
 
     private static final NmsVersion NMS_VERSION = NmsVersion.nmsVersion;
+    private static final Logger LOGGER = Logger.getLogger(ItemStackUtils.class.getName());
 
     /**
      * Change {@link ItemStack} to {@link String}
@@ -153,7 +156,7 @@ public class ItemStackUtils {
             try {
                 localClass = Class.forName(var3);
             } catch (ClassNotFoundException localClassNotFoundException) {
-                localClassNotFoundException.printStackTrace();
+                LOGGER.log(Level.SEVERE, "Failed to find NMS class: " + var3, localClassNotFoundException);
             }
             return localClass;
         }

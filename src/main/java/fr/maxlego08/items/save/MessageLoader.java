@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 
 /**
@@ -49,7 +50,7 @@ public class MessageLoader extends YamlUtils implements Savable {
             try {
                 file.createNewFile();
             } catch (IOException exception) {
-                exception.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Failed to create messages.yml file", exception);
             }
         }
 
@@ -93,7 +94,7 @@ public class MessageLoader extends YamlUtils implements Savable {
         try {
             configuration.save(file);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to save messages.yml file", exception);
         }
 
         loadMessages(configuration);

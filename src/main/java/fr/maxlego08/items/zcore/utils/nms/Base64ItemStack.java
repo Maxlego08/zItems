@@ -6,6 +6,8 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -15,6 +17,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class Base64ItemStack {
 
+    private static final Logger LOGGER = Logger.getLogger(Base64ItemStack.class.getName());
 
     public static String encode(ItemStack item) {
         try {
@@ -25,7 +28,7 @@ public class Base64ItemStack {
             objectOutputStream.close();
             return Base64.encode(byteArrayOutputStream.toByteArray());
         } catch (IOException exception) {
-            exception.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to encode ItemStack to Base64", exception);
             return null;
         }
     }
@@ -39,7 +42,7 @@ public class Base64ItemStack {
             objectInputStream.close();
             return item;
         } catch (IOException | ClassNotFoundException exception) {
-            exception.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to decode Base64 to ItemStack", exception);
             return null;
         }
     }

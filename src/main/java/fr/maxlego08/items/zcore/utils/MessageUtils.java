@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -199,7 +200,7 @@ public abstract class MessageUtils extends LocationUtils {
         try {
             return Class.forName("net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + "." + name);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to find NMS class: " + name, e);
         }
         return null;
     }
@@ -232,7 +233,7 @@ public abstract class MessageUtils extends LocationUtils {
             sendPacket(player, packet);
             sendPacket(player, timingPacket);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to send title to player: " + player.getName(), e);
         }
     }
 
@@ -248,7 +249,7 @@ public abstract class MessageUtils extends LocationUtils {
             Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
             playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to send packet to player: " + player.getName(), e);
         }
     }
 

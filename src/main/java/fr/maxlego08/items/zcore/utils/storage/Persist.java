@@ -7,6 +7,7 @@ import fr.maxlego08.items.zcore.utils.ZUtils;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.logging.Level;
 
 public class Persist extends ZUtils {
 
@@ -123,8 +124,7 @@ public class Persist extends ZUtils {
 
 		} catch (Exception e) {
 
-			p.getLog().log("cannot save files " + file.getAbsolutePath(), Logger.LogType.ERROR);
-			e.printStackTrace();
+			p.getLogger().log(Level.SEVERE, "Failed to save file: " + file.getAbsolutePath(), e);
 
 			return false;
 		}

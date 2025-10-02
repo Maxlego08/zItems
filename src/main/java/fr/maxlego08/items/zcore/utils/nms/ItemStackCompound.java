@@ -1,6 +1,9 @@
 package fr.maxlego08.items.zcore.utils.nms;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.logging.Level;
 
 public class ItemStackCompound {
 
@@ -62,7 +65,7 @@ public class ItemStackCompound {
 
             return this.applyCompound(itemStack, compoundObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return null;
 
@@ -78,7 +81,7 @@ public class ItemStackCompound {
                     .invoke(compoundObject, new Object[]{key});
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return null;
 
@@ -94,7 +97,7 @@ public class ItemStackCompound {
                     .invoke(compoundObject, new Object[]{key});
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return 0;
 
@@ -110,7 +113,7 @@ public class ItemStackCompound {
                     .invoke(compoundObject, new Object[]{key});
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return 0;
 
@@ -126,7 +129,7 @@ public class ItemStackCompound {
                     .invoke(compoundObject, new Object[]{key});
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return 0;
 
@@ -142,7 +145,7 @@ public class ItemStackCompound {
                     .invoke(compoundObject, new Object[]{key});
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return 0;
 
@@ -158,7 +161,7 @@ public class ItemStackCompound {
                     .invoke(compoundObject, new Object[]{key});
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return false;
 
@@ -175,7 +178,7 @@ public class ItemStackCompound {
 
             return this.applyCompound(itemStack, compoundObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return null;
 
@@ -192,7 +195,7 @@ public class ItemStackCompound {
 
             return this.applyCompound(itemStack, compoundObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return null;
 
@@ -209,7 +212,7 @@ public class ItemStackCompound {
 
             return this.applyCompound(itemStack, compoundObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return null;
 
@@ -226,7 +229,7 @@ public class ItemStackCompound {
 
             return this.applyCompound(itemStack, compoundObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return null;
 
@@ -243,7 +246,7 @@ public class ItemStackCompound {
 
             return this.applyCompound(itemStack, compoundObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return null;
 
@@ -269,7 +272,7 @@ public class ItemStackCompound {
                     .getMethod(this.reflection.getMethodHaskey(), new Class[]{String.class})
                     .invoke(nbttagCompound, new Object[]{key});
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to access NBT tag compound", e);
         }
         return false;
 

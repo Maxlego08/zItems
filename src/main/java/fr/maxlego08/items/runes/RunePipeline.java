@@ -1,14 +1,10 @@
-package fr.maxlego08.items.api.runes;
+package fr.maxlego08.items.runes;
 
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.hook.jobs.JobsExpGainEventWrapper;
 import fr.maxlego08.items.api.hook.jobs.JobsPayementEventWrapper;
-import fr.maxlego08.items.api.runes.handlers.BreakHandler;
-import fr.maxlego08.items.api.runes.handlers.EntityDeathHandler;
-import fr.maxlego08.items.api.runes.handlers.InteractionHandler;
-import fr.maxlego08.items.api.runes.handlers.InventorySlotChangeHandler;
-import fr.maxlego08.items.api.runes.handlers.JobsExperienceHandler;
-import fr.maxlego08.items.api.runes.handlers.JobsMoneyHandler;
+import fr.maxlego08.items.api.runes.Rune;
+import fr.maxlego08.items.api.runes.handlers.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,21 +15,43 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RunePipeline {
 
     private final List<Rune> runes;
 
+    // Cached filtered rune lists for performance - avoid repeated stream filtering
+    private final List<Rune> breakHandlerRunes;
+    private final List<Rune> inventorySlotChangeRunes;
+    private final List<Rune> interactionHandlerRunes;
+    private final List<Rune> jobsExperienceRunes;
+    private final List<Rune> jobsMoneyRunes;
+    private final List<Rune> entityDeathRunes;
+
     public RunePipeline(List<Rune> activators) {
         activators.sort(Comparator.comparingInt(rune -> rune.getType().getActivator().getPriority()));
         this.runes = activators.reversed();
+
+        // Pre-filter runes by handler type once during initialization
+        this.breakHandlerRunes = runes.stream()
+                .filter(rune -> rune.getType().getActivator() instanceof BreakHandler<?>)
+                .toList();
+        this.inventorySlotChangeRunes = runes.stream()
+                .filter(rune -> rune.getType().getActivator() instanceof InventorySlotChangeHandler<?>)
+                .toList();
+        this.interactionHandlerRunes = runes.stream()
+                .filter(rune -> rune.getType().getActivator() instanceof InteractionHandler<?>)
+                .toList();
+        this.jobsExperienceRunes = runes.stream()
+                .filter(rune -> rune.getType().getActivator() instanceof JobsExperienceHandler<?>)
+                .toList();
+        this.jobsMoneyRunes = runes.stream()
+                .filter(rune -> rune.getType().getActivator() instanceof JobsMoneyHandler<?>)
+                .toList();
+        this.entityDeathRunes = runes.stream()
+                .filter(rune -> rune.getType().getActivator() instanceof EntityDeathHandler<?>)
+                .toList();
     }
 
     private void handleBreak(ItemPlugin plugin, BlockBreakEvent event) {
@@ -51,21 +69,22 @@ public class RunePipeline {
 
     private Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, Map<Location, List<ItemStack>> drops) {
 
-        var activeRunes = runes.stream().filter(rune -> rune.getType().getActivator() instanceof BreakHandler<?>).toList();
-        if (activeRunes.isEmpty()) return new HashSet<>();
+        // Use cached filtered list instead of streaming every time
+        if (breakHandlerRunes.isEmpty()) return new HashSet<>();
 
         Set<Block> currentBlocks = new HashSet<>();
         currentBlocks.add(event.getBlock());
         drops.put(event.getBlock().getLocation(), new ArrayList<>(event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand())));
 
-        for (Rune rune : activeRunes) {
+        for (Rune rune : breakHandlerRunes) {
             currentBlocks = new HashSet<>(((BreakHandler<?>) rune.getType().getActivator()).breakBlocks(plugin, event, rune.getConfiguration(), new HashSet<>(currentBlocks), drops));
         }
         return currentBlocks;
     }
 
     public void pipeline(ItemPlugin plugin, Player player, InventorySlotChangeHandler.InventorySlotChangeType type) {
-        for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof InventorySlotChangeHandler<?>).toList()) {
+        // Use cached filtered list instead of streaming every time
+        for (Rune rune : inventorySlotChangeRunes) {
             if (type == ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).getType(rune.getConfiguration())) {
                 ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).onInventorySlotChange(plugin, player, rune.getConfiguration());
             }
@@ -75,23 +94,27 @@ public class RunePipeline {
     public <T extends Event> void pipeline(ItemPlugin plugin, T event) {
         switch (event) {
             case PlayerInteractEvent playerInteractEvent -> {
-                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof InteractionHandler<?>).toList()) {
+                // Use cached filtered list instead of streaming every time
+                for (Rune rune : interactionHandlerRunes) {
                     ((InteractionHandler<?>) rune.getType().getActivator()).interactBlock(plugin, playerInteractEvent, rune.getConfiguration());
                 }
             }
             case JobsExpGainEventWrapper jobsExpGainEventWrapper -> {
-                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof JobsExperienceHandler<?>).toList()) {
+                // Use cached filtered list instead of streaming every time
+                for (Rune rune : jobsExperienceRunes) {
                     ((JobsExperienceHandler<?>) rune.getType().getActivator()).jobsGainExperience(plugin, jobsExpGainEventWrapper, rune.getConfiguration());
                 }
             }
             case JobsPayementEventWrapper jobsPayementEventWrapper -> {
-                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof JobsMoneyHandler<?>).toList()) {
+                // Use cached filtered list instead of streaming every time
+                for (Rune rune : jobsMoneyRunes) {
                     ((JobsMoneyHandler<?>) rune.getType().getActivator()).jobsGainMoney(plugin, jobsPayementEventWrapper, rune.getConfiguration());
                 }
             }
             case BlockBreakEvent blockBreakEvent -> handleBreak(plugin, blockBreakEvent);
             case EntityDeathEvent entityDeathEvent -> {
-                for (Rune rune : runes.stream().filter(rune -> rune.getType().getActivator() instanceof EntityDeathHandler<?>).toList()) {
+                // Use cached filtered list instead of streaming every time
+                for (Rune rune : entityDeathRunes) {
                     ((EntityDeathHandler<?>) rune.getType().getActivator()).onEntityDeath(plugin, entityDeathEvent, rune.getConfiguration());
                 }
             }

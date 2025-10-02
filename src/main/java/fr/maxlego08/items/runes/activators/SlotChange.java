@@ -5,7 +5,6 @@ import fr.maxlego08.items.api.runes.RuneActivator;
 import fr.maxlego08.items.api.runes.configurations.SlotChangeConfiguration;
 import fr.maxlego08.items.api.runes.handlers.InventorySlotChangeHandler;
 import fr.maxlego08.items.zcore.utils.ZUtils;
-import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.entity.Player;
 
 public class SlotChange extends ZUtils implements RuneActivator, InventorySlotChangeHandler<SlotChangeConfiguration> {

@@ -9,9 +9,12 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ActionBar {
 
+    private static final Logger LOGGER = Logger.getLogger(ActionBar.class.getName());
     private static Class<?> craftPlayerClass;
     private static Class<?> packetClass;
     private static Method getHandleMethod;
@@ -60,7 +63,7 @@ public class ActionBar {
             Method packetMethod = packet.getClass().getDeclaredMethod("sendPacket", packetClass);
             packetMethod.invoke(packet, packetContent);
         } catch (Exception error) {
-            error.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to send action bar to player: " + player.getName(), error);
         }
     }
 }

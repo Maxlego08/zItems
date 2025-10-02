@@ -3,6 +3,7 @@ package fr.maxlego08.items.zcore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.items.command.CommandManager;
 import fr.maxlego08.items.command.VCommand;
 import fr.maxlego08.items.exceptions.ListenerNullException;
@@ -13,7 +14,6 @@ import fr.maxlego08.items.placeholder.Placeholder;
 import fr.maxlego08.items.zcore.logger.Logger;
 import fr.maxlego08.items.zcore.utils.gson.LocationAdapter;
 import fr.maxlego08.items.zcore.utils.gson.PotionEffectAdapter;
-import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.items.zcore.utils.storage.NoReloadable;
 import fr.maxlego08.items.zcore.utils.storage.Persist;
 import fr.maxlego08.items.zcore.utils.storage.Savable;
@@ -80,6 +80,23 @@ public abstract class ZPlugin extends JavaPlugin {
     }
 
     protected void postDisable() {
+        // Shutdown the executor service to prevent thread leaks
+        if (!service.isShutdown()) {
+            this.log.log("Shutting down executor service...", Logger.LogType.INFO);
+            service.shutdown();
+            try {
+                // Wait for tasks to complete for up to 5 seconds
+                if (!service.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                    this.log.log("Executor service did not terminate in time, forcing shutdown...", Logger.LogType.WARNING);
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                this.log.log("Executor service shutdown interrupted", Logger.LogType.ERROR);
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+
         this.log.log("=== DISABLE DONE <&>7(<&>6" + Math.abs(enableTime - System.currentTimeMillis()) + "ms<&>7) <&>e===");
 
     }

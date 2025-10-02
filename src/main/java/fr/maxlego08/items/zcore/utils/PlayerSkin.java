@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Utility class for managing player skins, including fetching textures and signatures.
@@ -25,6 +27,7 @@ public class PlayerSkin {
 
 	private static final Map<String, String> textures = new HashMap<>();
 	private static final ExecutorService pool = Executors.newCachedThreadPool();
+	private static final Logger LOGGER = Logger.getLogger(PlayerSkin.class.getName());
 
 	/**
 	 * Gets the texture of a player.
@@ -42,7 +45,7 @@ public class PlayerSkin {
 			PlayerSkin.textures.put(player.getName(), texture);
 			return texture;
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Failed to get player texture", e);
 		}
 		return null;
 	}
@@ -69,7 +72,7 @@ public class PlayerSkin {
 				String texture = textures[0];
 				PlayerSkin.textures.put(name, texture);
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.log(Level.SEVERE, "Failed to get player texture asynchronously for: " + name, e);
 			}
 		});
 		return null;
@@ -112,8 +115,7 @@ public class PlayerSkin {
 
 			return new String[]{texture, signature};
 		} catch (IOException e) {
-			System.err.println("Could not get skin data from session servers!");
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Could not get skin data from session servers for player: " + name, e);
 			return null;
 		}
 	}
@@ -129,7 +131,7 @@ public class PlayerSkin {
 			Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
 			return (GameProfile) entityPlayer.getClass().getMethod(getMethodName()).invoke(entityPlayer);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Failed to get GameProfile for player: " + player.getName(), e);
 		}
 		return null;
 	}

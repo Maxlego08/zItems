@@ -6,23 +6,10 @@ import fr.maxlego08.items.api.ItemComponent;
 import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
-import fr.maxlego08.items.api.configurations.meta.ArmorStandConfig;
-import fr.maxlego08.items.api.configurations.meta.AttributeConfiguration;
-import fr.maxlego08.items.api.configurations.meta.AxolotlBucketConfiguration;
-import fr.maxlego08.items.api.configurations.meta.BannerMetaConfiguration;
-import fr.maxlego08.items.api.configurations.meta.BlockDataMetaConfiguration;
-import fr.maxlego08.items.api.configurations.meta.BlockStateMetaConfiguration;
-import fr.maxlego08.items.api.configurations.meta.CustomPotionEffect;
-import fr.maxlego08.items.api.configurations.meta.Food;
-import fr.maxlego08.items.api.configurations.meta.FoodEffect;
-import fr.maxlego08.items.api.configurations.meta.ItemEnchantment;
-import fr.maxlego08.items.api.configurations.meta.LeatherArmorMetaConfiguration;
-import fr.maxlego08.items.api.configurations.meta.PotionMetaConfiguration;
-import fr.maxlego08.items.api.configurations.meta.ToolComponentConfiguration;
-import fr.maxlego08.items.api.configurations.meta.TrimConfiguration;
+import fr.maxlego08.items.api.configurations.meta.*;
 import fr.maxlego08.items.api.enchantments.EnchantmentRegistry;
 import fr.maxlego08.items.api.enchantments.Enchantments;
-import fr.maxlego08.items.api.recipes.ZRecipeConfiguration;
+import fr.maxlego08.items.api.configurations.recipes.ZRecipeConfiguration;
 import fr.maxlego08.items.api.runes.ItemRuneConfiguration;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.utils.Colors;
@@ -43,15 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
-import org.bukkit.inventory.meta.ArmorMeta;
-import org.bukkit.inventory.meta.AxolotlBucketMeta;
-import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.inventory.meta.BlockDataMeta;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
@@ -337,8 +316,7 @@ public class ItemConfiguration {
                 this.potionMetaConfiguration = new PotionMetaConfiguration(true, potionColor, customEffects, basePotionType);
 
             } catch (Exception exception) {
-                plugin.getLogger().severe("Impossible to load the potion meta for item " + fileName);
-                exception.printStackTrace();
+                plugin.getLogger().severe("Failed to load potion meta for item " + fileName + ": " + exception.getMessage());
                 this.potionMetaConfiguration = new PotionMetaConfiguration(false, null, null, null);
             }
         } else {
@@ -606,7 +584,7 @@ public class ItemConfiguration {
     public void createRecipe(ItemPlugin plugin, Item item) {
         if (configuration.contains("recipes")) {
             for (String key : configuration.getConfigurationSection("recipes").getKeys(false)) {
-                var recipeConfig = new ZRecipeConfiguration(plugin, key, "recipes." + key, configuration);
+                var recipeConfig = new ZRecipeConfiguration(key, "recipes." + key, configuration);
                 recipeConfig.setResult(item.build(null, 1));
                 var recipe = recipeConfig.build();
                 this.recipes.add(recipe);

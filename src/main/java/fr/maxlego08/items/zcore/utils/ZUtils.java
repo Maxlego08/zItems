@@ -3,8 +3,6 @@ package fr.maxlego08.items.zcore.utils;
 import com.google.common.base.Strings;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import fr.maxlego08.items.ItemsPlugin;
-import fr.maxlego08.items.zcore.enums.EnumInventory;
 import fr.maxlego08.items.zcore.enums.Permission;
 import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
 import fr.maxlego08.items.zcore.utils.builder.TimerBuilder;
@@ -39,6 +37,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -46,6 +45,9 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public abstract class ZUtils extends MessageUtils {
+
+    // Compiled pattern for color code reversal - cached for performance
+    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile(net.md_5.bungee.api.ChatColor.COLOR_CHAR + "x[a-fA-F0-9-" + net.md_5.bungee.api.ChatColor.COLOR_CHAR + "]{12}");
 
     // For plugin support from 1.8 to 1.12
     private static Material[] byId;
@@ -446,17 +448,35 @@ public abstract class ZUtils extends MessageUtils {
      * @return the message string with reversed color codes.
      */
     protected String colorReverse(String message) {
-        Pattern pattern = Pattern.compile(net.md_5.bungee.api.ChatColor.COLOR_CHAR + "x[a-fA-F0-9-" + net.md_5.bungee.api.ChatColor.COLOR_CHAR + "]{12}");
-        Matcher matcher = pattern.matcher(message);
+        if (message == null) return null;
+
+        // Use StringBuilder for efficient string manipulation
+        StringBuilder result = new StringBuilder(message);
+        Matcher matcher = HEX_COLOR_PATTERN.matcher(result);
+
+        // Process matches in reverse order to maintain correct indices
+        List<int[]> matches = new ArrayList<>();
         while (matcher.find()) {
-            String color = message.substring(matcher.start(), matcher.end());
-            String colorReplace = color.replace("§x", "#");
-            colorReplace = colorReplace.replace("§", "");
-            message = message.replace(color, colorReplace);
-            matcher = pattern.matcher(message);
+            matches.add(new int[]{matcher.start(), matcher.end()});
         }
 
-        return message == null ? null : message.replace("§", "&");
+        // Replace from end to beginning to avoid index shifting
+        for (int i = matches.size() - 1; i >= 0; i--) {
+            int start = matches.get(i)[0];
+            int end = matches.get(i)[1];
+            String color = result.substring(start, end);
+            String colorReplace = color.replace("§x", "#").replace("§", "");
+            result.replace(start, end, colorReplace);
+        }
+
+        // Replace all remaining § with &
+        for (int i = 0; i < result.length(); i++) {
+            if (result.charAt(i) == '§') {
+                result.setCharAt(i, '&');
+            }
+        }
+
+        return result.toString();
     }
 
     /**
@@ -915,7 +935,7 @@ public abstract class ZUtils extends MessageUtils {
             profileField.set(headMeta, profile);
 
         } catch (IllegalArgumentException | NoSuchFieldException | SecurityException | IllegalAccessException error) {
-            error.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to create skull from URL: " + url, error);
         }
         head.setItemMeta(headMeta);
         return head;
@@ -975,7 +995,7 @@ public abstract class ZUtils extends MessageUtils {
                 knownCommands.remove(plugin.getName() + ":" + alias);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to unregister command: " + command.getName(), e);
         }
     }
 
