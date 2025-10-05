@@ -3,6 +3,7 @@ package fr.maxlego08.items;
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemManager;
 import fr.maxlego08.items.api.configurations.ItemConfiguration;
+import fr.maxlego08.items.api.events.ZItemsLoadedEvent;
 import fr.maxlego08.items.api.utils.ItemFile;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.utils.ZUtils;
@@ -69,6 +70,8 @@ public class ZItemManager extends ZUtils implements ItemManager {
 
 
         itemFile = ItemFile.fromFolder(folder);
+        ZItemsLoadedEvent itemsLoadedEvent = new ZItemsLoadedEvent();
+        this.plugin.getServer().getPluginManager().callEvent(itemsLoadedEvent);
     }
 
     @Override
