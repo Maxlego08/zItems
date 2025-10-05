@@ -2,9 +2,7 @@ package fr.maxlego08.items.api.utils;
 
 import fr.maxlego08.items.api.Item;
 import fr.maxlego08.items.api.ItemPlugin;
-import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.RecipeChoice;
 
 public class Helper {
@@ -32,29 +30,12 @@ public class Helper {
             case "tag" -> {
                 return new RecipeChoice.MaterialChoice(TagRegistry.getTag(ingredientArray[1].trim().toUpperCase()));
             }
-            default -> throw new IllegalArgumentException("Invalid ingredient type for ingredient "+ ingredient + " in " + fileName);
+            default ->
+                    throw new IllegalArgumentException("Invalid ingredient type for ingredient " + ingredient + " in " + fileName);
         }
     }
 
     public static int between(int value, int min, int max) {
         return value > max ? max : Math.max(value, min);
     }
-
-    public static Color getColor(YamlConfiguration configuration, String path, Color defaultColor) {
-
-        try {
-            String[] split = configuration.getString(path, "").split(",");
-
-            if (split.length == 3) {
-                return Color.fromRGB(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-            } else if (split.length == 4) {
-                return Color.fromARGB(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]));
-            }
-        } catch (Exception ignored) {
-        }
-
-        return defaultColor;
-    }
-
-
 }

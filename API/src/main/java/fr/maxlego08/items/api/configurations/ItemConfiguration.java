@@ -25,6 +25,7 @@ import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.recipes.ZRecipeConfiguration;
 import fr.maxlego08.items.api.runes.ItemRuneConfiguration;
 import fr.maxlego08.items.api.runes.Rune;
+import fr.maxlego08.items.api.utils.Colors;
 import fr.maxlego08.items.api.utils.Helper;
 import fr.maxlego08.items.api.utils.TrimHelper;
 import fr.traqueur.recipes.impl.domains.ItemRecipe;
@@ -316,7 +317,7 @@ public class ItemConfiguration {
         if (enablePotion) {
             try {
 
-                Color potionColor = Helper.getColor(configuration, path + "potion-meta.color", null);
+                Color potionColor = Colors.parseColor(configuration.getString(path + "potion-meta.color", null));
                 PotionType basePotionType = null;
                 String value = configuration.getString(path + "potion-meta.base-potion-type");
                 if (value != null) {
