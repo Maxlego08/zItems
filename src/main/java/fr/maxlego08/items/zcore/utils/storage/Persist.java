@@ -1,7 +1,6 @@
 package fr.maxlego08.items.zcore.utils.storage;
 
 import fr.maxlego08.items.zcore.ZPlugin;
-import fr.maxlego08.items.zcore.enums.Folder;
 import fr.maxlego08.items.zcore.logger.Logger;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 

@@ -3,7 +3,6 @@ package fr.maxlego08.items.zcore.utils;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.enums.MessageType;
 import fr.maxlego08.items.zcore.utils.nms.NmsVersion;
-import fr.maxlego08.items.zcore.utils.players.ActionBar;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -155,7 +154,7 @@ public abstract class MessageUtils extends LocationUtils {
      * @param args    the arguments for the message.
      */
     protected void actionMessage(Player player, Message message, Object... args) {
-        ActionBar.sendActionBar(player, color(this.papi(getMessage(message, args), player)));
+        player.sendActionBar(color(this.papi(getMessage(message, args), player)));
     }
 
     /**
@@ -314,7 +313,7 @@ public abstract class MessageUtils extends LocationUtils {
      */
     protected void broadcastAction(String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            ActionBar.sendActionBar(player, papi(message, player));
+            player.sendActionBar(papi(message, player));
         }
     }
 

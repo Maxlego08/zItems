@@ -3,9 +3,9 @@ package fr.maxlego08.items.save;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.enums.MessageType;
 import fr.maxlego08.items.zcore.logger.Logger;
+import fr.maxlego08.items.zcore.utils.ZUtils;
 import fr.maxlego08.items.zcore.utils.storage.Persist;
 import fr.maxlego08.items.zcore.utils.storage.Savable;
-import fr.maxlego08.items.zcore.utils.yaml.YamlUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,8 +22,9 @@ import java.util.logging.Level;
  * The MessageLoader class extends YamlUtils and implements Savable to manage message configurations.
  * This class is responsible for loading and saving custom messages to a YAML files for a Bukkit plugin.
  */
-public class MessageLoader extends YamlUtils implements Savable {
+public class MessageLoader extends ZUtils implements Savable {
 
+    private final JavaPlugin plugin;
     private final List<Message> loadedMessages = new ArrayList<>();
 
     /**
@@ -32,7 +33,7 @@ public class MessageLoader extends YamlUtils implements Savable {
      * @param plugin The JavaPlugin instance associated with this loader.
      */
     public MessageLoader(JavaPlugin plugin) {
-        super(plugin);
+        this.plugin = plugin;
     }
 
     /**
@@ -54,7 +55,7 @@ public class MessageLoader extends YamlUtils implements Savable {
             }
         }
 
-        YamlConfiguration configuration = getConfig(file);
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
         for (Message message : Message.values()) {
 
             if (!message.isUse()) continue;
@@ -114,7 +115,7 @@ public class MessageLoader extends YamlUtils implements Savable {
             return;
         }
 
-        YamlConfiguration configuration = getConfig(file);
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
         this.save(null);
 
         loadMessages(configuration);
