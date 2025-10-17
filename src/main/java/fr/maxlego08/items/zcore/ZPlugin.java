@@ -6,9 +6,6 @@ import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.items.command.CommandManager;
 import fr.maxlego08.items.command.VCommand;
-import fr.maxlego08.items.exceptions.ListenerNullException;
-import fr.maxlego08.items.listener.AdapterListener;
-import fr.maxlego08.items.listener.ListenerAdapter;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.placeholder.Placeholder;
 import fr.maxlego08.items.zcore.logger.Logger;
@@ -37,7 +34,6 @@ public abstract class ZPlugin extends JavaPlugin {
     public static final ExecutorService service = Executors.newFixedThreadPool(5);
     private final Logger log = new Logger(this.getDescription().getFullName());
     private final List<Savable> savers = new ArrayList<>();
-    private final List<ListenerAdapter> listenerAdapters = new ArrayList<>();
     protected CommandManager commandManager;
     private Gson gson;
     private Persist persist;
@@ -59,9 +55,6 @@ public abstract class ZPlugin extends JavaPlugin {
         this.persist = new Persist(this);
 
         this.commandManager = new CommandManager((ItemsPlugin) this);
-
-        /* Add Listener */
-        this.addListener(new AdapterListener((ItemsPlugin) this));
     }
 
     protected void postEnable() {
@@ -121,17 +114,6 @@ public abstract class ZPlugin extends JavaPlugin {
     }
 
     /**
-     * Add a listener from ListenerAdapter
-     *
-     * @param adapter
-     */
-    public void addListener(ListenerAdapter adapter) {
-        if (adapter == null) throw new ListenerNullException("Warning, your listener is null");
-        if (adapter instanceof Savable) this.addSave((Savable) adapter);
-        this.listenerAdapters.add(adapter);
-    }
-
-    /**
      * Add a Saveable
      *
      * @param saver
@@ -182,13 +164,6 @@ public abstract class ZPlugin extends JavaPlugin {
             return null;
         }
         return provider.getProvider() != null ? provider.getProvider() : null;
-    }
-
-    /**
-     * @return listenerAdapters
-     */
-    public List<ListenerAdapter> getListenerAdapters() {
-        return listenerAdapters;
     }
 
     /**

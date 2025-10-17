@@ -39,7 +39,6 @@ import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
 import fr.maxlego08.menu.api.ButtonManager;
 import fr.maxlego08.menu.api.InventoryManager;
 import fr.maxlego08.menu.api.loader.NoneLoader;
-import fr.maxlego08.menu.hooks.folialib.impl.PlatformScheduler;
 import fr.traqueur.recipes.api.RecipesAPI;
 import fr.traqueur.recipes.api.hook.Hook;
 import org.bukkit.Location;
@@ -61,7 +60,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private InventoryManager inventoryManager;
     private ItemComponent itemComponent;
     private RuneListener runeListener;
-    private PlatformScheduler scheduler;
     private RecipesAPI recipesAPI;
     private GlobalConfiguration globalConfiguration;
     private CommandsListener commandsListener;
@@ -77,8 +75,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         var buttonManager = this.getProvider(ButtonManager.class);
         this.inventoryManager = this.getProvider(InventoryManager.class);
-
-        this.scheduler = inventoryManager.getScheduler();
 
         buttonManager.unregisters(this);
         buttonManager.register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
@@ -137,7 +133,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
                 new Hooks(Plugins.JOBS, new JobsHook(this.runeManager)),
                 new Hooks(Plugins.ZJOBS, new ZJobsHook(this.runeManager)),
                 new Hooks(Plugins.ITEMSADDER, new ItemsAdderHook(this))
-                // ToDo, add more hook
         ));
         Stream.of(ShopHooks.values()).forEach(shopHooks -> hooksList.add(new Hooks(shopHooks.getPlugin(), shopHooks)));
 
@@ -224,11 +219,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     }
 
     @Override
-    public PlatformScheduler getScheduler() {
-        return scheduler;
-    }
-
-    @Override
     public RecipesAPI getRecipesAPI() {
         return this.recipesAPI;
     }
@@ -241,10 +231,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     @Override
     public RuneManager getRuneManager() {
         return runeManager;
-    }
-
-    public RuneListener getRuneListener() {
-        return runeListener;
     }
 
     public void info(String string) {

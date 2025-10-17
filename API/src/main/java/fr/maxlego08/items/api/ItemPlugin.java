@@ -25,8 +25,6 @@ public interface ItemPlugin extends Plugin {
 
     ItemManager getItemManager();
 
-    PlatformScheduler getScheduler();
-
     RecipesAPI getRecipesAPI();
 
     HookManager getHookManager();
