@@ -54,6 +54,7 @@ public enum RuneTypes implements RuneType {
     },
     SELL_STICK("SellStick", RuneSellingConfiguration.class),
     SLOT_CHANGE("SlotChange", SlotChangeConfiguration.class),
+    INFINITE_BUCKET("InfiniteBucket", EmptyConfiguration.class),
     EMPTY("Empty", EmptyConfiguration.class),
     ;
 

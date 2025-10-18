@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,6 +30,7 @@ public class RunePipeline {
     private final List<Rune> jobsExperienceRunes;
     private final List<Rune> jobsMoneyRunes;
     private final List<Rune> entityDeathRunes;
+    private final List<Rune> bucketHandlerRunes;
 
     public RunePipeline(List<Rune> activators) {
         activators.sort(Comparator.comparingInt(rune -> rune.getType().getActivator().getPriority()));
@@ -52,6 +55,9 @@ public class RunePipeline {
         this.entityDeathRunes = runes.stream()
                 .filter(rune -> rune.getType().getActivator() instanceof EntityDeathHandler<?>)
                 .toList();
+        this.bucketHandlerRunes = runes.stream()
+                .filter(rune -> rune.getType().getActivator() instanceof BucketHandler<?>)
+                .toList();
     }
 
     private void handleBreak(ItemPlugin plugin, BlockBreakEvent event) {
@@ -68,8 +74,7 @@ public class RunePipeline {
     }
 
     private Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, Map<Location, List<ItemStack>> drops) {
-
-        // Use cached filtered list instead of streaming every time
+        
         if (breakHandlerRunes.isEmpty()) return new HashSet<>();
 
         Set<Block> currentBlocks = new HashSet<>();
@@ -83,7 +88,6 @@ public class RunePipeline {
     }
 
     public void pipeline(ItemPlugin plugin, Player player, InventorySlotChangeHandler.InventorySlotChangeType type) {
-        // Use cached filtered list instead of streaming every time
         for (Rune rune : inventorySlotChangeRunes) {
             if (type == ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).getType(rune.getConfiguration())) {
                 ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).onInventorySlotChange(plugin, player, rune.getConfiguration());
@@ -112,6 +116,18 @@ public class RunePipeline {
             case EntityDeathEvent entityDeathEvent -> {
                 for (Rune rune : entityDeathRunes) {
                     ((EntityDeathHandler<?>) rune.getType().getActivator()).onEntityDeath(plugin, entityDeathEvent, rune.getConfiguration());
+                }
+            }
+            case PlayerBucketEmptyEvent bucketEmptyEvent -> {
+                for (Rune rune : bucketHandlerRunes) {
+                    System.out.println("Processing rune: " + rune.getType().getName());
+                    ((BucketHandler<?>) rune.getType().getActivator()).onBucketEmpty(plugin, bucketEmptyEvent, rune.getConfiguration());
+                }
+            }
+            case PlayerBucketFillEvent bucketFillEvent -> {
+                for (Rune rune : bucketHandlerRunes) {
+                    System.out.println("Processing rune: " + rune.getType().getName());
+                    ((BucketHandler<?>) rune.getType().getActivator()).onBucketFill(plugin, bucketFillEvent, rune.getConfiguration());
                 }
             }
             default -> throw new IllegalStateException("Unexpected value: " + event);

@@ -1,0 +1,23 @@
+# Type of the rune.
+# "INFINITE_BUCKET" makes buckets infinite based on their current state:
+# - Empty bucket: Stays empty forever (can pick up water/lava infinitely)
+# - Water bucket: Never empties (infinite water source)
+# - Lava bucket: Never empties (infinite lava source)
+# - Other filled buckets: Never empty
+type: INFINITE_BUCKET
+
+# Display name of the rune.
+# This is the name that will appear when the player hovers over the item.
+display-name: "<gradient:#4da6ff:#001a33>ɪɴғɪɴɪᴛᴇ ʙᴜᴄᴋᴇᴛ</gradient>"
+
+# Allowed materials for applying the rune.
+# Only bucket types can have this rune applied.
+# Reference: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+allowed-materials:
+  - BUCKET
+  - WATER_BUCKET
+  - LAVA_BUCKET
+
+# Allowed material tags for applying the rune.
+# Empty since we're using specific materials above.
+allowed-tags: []
