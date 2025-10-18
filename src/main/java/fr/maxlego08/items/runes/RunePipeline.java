@@ -22,42 +22,32 @@ import java.util.*;
 public class RunePipeline {
 
     private final List<Rune> runes;
+    // Map containing runes filtered by handler type for performance
+    private final Map<Class<?>, List<Rune>> runesByHandler;
 
-    // Cached filtered rune lists for performance - avoid repeated stream filtering
-    private final List<Rune> breakHandlerRunes;
-    private final List<Rune> inventorySlotChangeRunes;
-    private final List<Rune> interactionHandlerRunes;
-    private final List<Rune> jobsExperienceRunes;
-    private final List<Rune> jobsMoneyRunes;
-    private final List<Rune> entityDeathRunes;
-    private final List<Rune> bucketHandlerRunes;
+    // List of all handler types to initialize
+    private static final List<Class<?>> HANDLER_TYPES = List.of(
+            BreakHandler.class,
+            InventorySlotChangeHandler.class,
+            InteractionHandler.class,
+            JobsExperienceHandler.class,
+            JobsMoneyHandler.class,
+            EntityDeathHandler.class,
+            BucketHandler.class
+    );
 
     public RunePipeline(List<Rune> activators) {
         activators.sort(Comparator.comparingInt(rune -> rune.getType().getActivator().getPriority()));
         this.runes = activators.reversed();
 
         // Pre-filter runes by handler type once during initialization
-        this.breakHandlerRunes = runes.stream()
-                .filter(rune -> rune.getType().getActivator() instanceof BreakHandler<?>)
-                .toList();
-        this.inventorySlotChangeRunes = runes.stream()
-                .filter(rune -> rune.getType().getActivator() instanceof InventorySlotChangeHandler<?>)
-                .toList();
-        this.interactionHandlerRunes = runes.stream()
-                .filter(rune -> rune.getType().getActivator() instanceof InteractionHandler<?>)
-                .toList();
-        this.jobsExperienceRunes = runes.stream()
-                .filter(rune -> rune.getType().getActivator() instanceof JobsExperienceHandler<?>)
-                .toList();
-        this.jobsMoneyRunes = runes.stream()
-                .filter(rune -> rune.getType().getActivator() instanceof JobsMoneyHandler<?>)
-                .toList();
-        this.entityDeathRunes = runes.stream()
-                .filter(rune -> rune.getType().getActivator() instanceof EntityDeathHandler<?>)
-                .toList();
-        this.bucketHandlerRunes = runes.stream()
-                .filter(rune -> rune.getType().getActivator() instanceof BucketHandler<?>)
-                .toList();
+        this.runesByHandler = new HashMap<>();
+        for (Class<?> handlerType : HANDLER_TYPES) {
+            List<Rune> filteredRunes = runes.stream()
+                    .filter(rune -> handlerType.isInstance(rune.getType().getActivator()))
+                    .toList();
+            runesByHandler.put(handlerType, filteredRunes);
+        }
     }
 
     private void handleBreak(ItemPlugin plugin, BlockBreakEvent event) {
@@ -74,7 +64,7 @@ public class RunePipeline {
     }
 
     private Set<Block> breakBlocks(ItemPlugin plugin, BlockBreakEvent event, Map<Location, List<ItemStack>> drops) {
-        
+        List<Rune> breakHandlerRunes = runesByHandler.get(BreakHandler.class);
         if (breakHandlerRunes.isEmpty()) return new HashSet<>();
 
         Set<Block> currentBlocks = new HashSet<>();
@@ -88,6 +78,7 @@ public class RunePipeline {
     }
 
     public void pipeline(ItemPlugin plugin, Player player, InventorySlotChangeHandler.InventorySlotChangeType type) {
+        List<Rune> inventorySlotChangeRunes = runesByHandler.get(InventorySlotChangeHandler.class);
         for (Rune rune : inventorySlotChangeRunes) {
             if (type == ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).getType(rune.getConfiguration())) {
                 ((InventorySlotChangeHandler<?>) rune.getType().getActivator()).onInventorySlotChange(plugin, player, rune.getConfiguration());
@@ -98,35 +89,39 @@ public class RunePipeline {
     public <T extends Event> void pipeline(ItemPlugin plugin, T event) {
         switch (event) {
             case PlayerInteractEvent playerInteractEvent -> {
+                List<Rune> interactionHandlerRunes = runesByHandler.get(InteractionHandler.class);
                 for (Rune rune : interactionHandlerRunes) {
                     ((InteractionHandler<?>) rune.getType().getActivator()).interactBlock(plugin, playerInteractEvent, rune.getConfiguration());
                 }
             }
             case JobsExpGainEventWrapper jobsExpGainEventWrapper -> {
+                List<Rune> jobsExperienceRunes = runesByHandler.get(JobsExperienceHandler.class);
                 for (Rune rune : jobsExperienceRunes) {
                     ((JobsExperienceHandler<?>) rune.getType().getActivator()).jobsGainExperience(plugin, jobsExpGainEventWrapper, rune.getConfiguration());
                 }
             }
             case JobsPayementEventWrapper jobsPayementEventWrapper -> {
+                List<Rune> jobsMoneyRunes = runesByHandler.get(JobsMoneyHandler.class);
                 for (Rune rune : jobsMoneyRunes) {
                     ((JobsMoneyHandler<?>) rune.getType().getActivator()).jobsGainMoney(plugin, jobsPayementEventWrapper, rune.getConfiguration());
                 }
             }
             case BlockBreakEvent blockBreakEvent -> handleBreak(plugin, blockBreakEvent);
             case EntityDeathEvent entityDeathEvent -> {
+                List<Rune> entityDeathRunes = runesByHandler.get(EntityDeathHandler.class);
                 for (Rune rune : entityDeathRunes) {
                     ((EntityDeathHandler<?>) rune.getType().getActivator()).onEntityDeath(plugin, entityDeathEvent, rune.getConfiguration());
                 }
             }
             case PlayerBucketEmptyEvent bucketEmptyEvent -> {
+                List<Rune> bucketHandlerRunes = runesByHandler.get(BucketHandler.class);
                 for (Rune rune : bucketHandlerRunes) {
-                    System.out.println("Processing rune: " + rune.getType().getName());
                     ((BucketHandler<?>) rune.getType().getActivator()).onBucketEmpty(plugin, bucketEmptyEvent, rune.getConfiguration());
                 }
             }
             case PlayerBucketFillEvent bucketFillEvent -> {
+                List<Rune> bucketHandlerRunes = runesByHandler.get(BucketHandler.class);
                 for (Rune rune : bucketHandlerRunes) {
-                    System.out.println("Processing rune: " + rune.getType().getName());
                     ((BucketHandler<?>) rune.getType().getActivator()).onBucketFill(plugin, bucketFillEvent, rune.getConfiguration());
                 }
             }
