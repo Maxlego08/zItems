@@ -228,7 +228,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 AtomicInteger line = new AtomicInteger();
                 AtomicBoolean removeParent = new AtomicBoolean(false);
                 this.getRune(rune.getParent()).ifPresent(parent -> {
-                    String displayRune = color(getMessage(Message.RUNE_LINE, "%rune%", parent.getDisplayName()));
+                    String displayRune = getMessage(Message.RUNE_LINE, "%rune%", parent.getDisplayName());
                     line.set(lore.indexOf(displayRune));
                     if (line.get() != -1) {
                         lore.remove(line.get());
@@ -236,12 +236,12 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                     }
                 });
                 if (removeParent.get()) {
-                    lore.set(line.get(), color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                    lore.set(line.get(), getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName()));
                 } else {
                     if (nbRunesView != -1 && runes.size() == nbRunesView) {
-                        lore.add(color(getMessage(Message.RUNE_MORE)));
+                        lore.add(getMessage(Message.RUNE_MORE));
                     } else {
-                        lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                        lore.add(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName()));
                     }
                 }
 
@@ -249,7 +249,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             }
         }
 
-        itemMeta.setLore(lore);
+        this.plugin.getItemComponent().setLore(itemMeta, lore);
 
         runes.add(rune);
         persistentDataContainer.set(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), runes);
@@ -315,10 +315,9 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
     private List<String> generateRuneLore(Rune rune) {
         List<String> runeLore = Message.RUNE_LORE.getMessages();
-        List<String> formattedLore = new ArrayList<>();
 
-        runeLore.forEach(line -> formattedLore.add(color(line)));
-        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+        List<String> formattedLore = new ArrayList<>(runeLore);
+        formattedLore.add(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName()));
 
         return formattedLore;
     }
@@ -365,11 +364,6 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         int nbExtra = ingredients.size() - nbInputs - 1;
         for (Material material : materials) {
             ItemStack result = new ItemStack(material);
-            /*try {
-                this.plugin.getRuneManager().applyRune(result, rune);
-            } catch (RuneException exception) {
-                exception.printStackTrace();
-            }*/
             List<Ingredient> ingredientsInner = new ArrayList<>(ingredients);
             ingredientsInner.add(new MaterialIngredient(material));
             ItemRecipe recipe = new ItemRecipe("rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator", "", "", null, result, 1, ingredientsInner.toArray(Ingredient[]::new), null, 0, 0);

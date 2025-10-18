@@ -7,6 +7,8 @@ plugins {
 group = "fr.maxlego08.items"
 version = "1.0.0"
 
+apply("gradle/copy-build.gradle")
+
 extra.set("targetFolder", file("target/"))
 extra.set("apiFolder", file("target-api/"))
 extra.set("classifier", System.getProperty("archive.classifier"))

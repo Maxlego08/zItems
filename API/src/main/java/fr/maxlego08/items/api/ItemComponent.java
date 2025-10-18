@@ -24,4 +24,8 @@ public interface ItemComponent {
     void sendItemLore(Player player, ItemMeta itemMeta);
 
     void sendMessage(CommandSender sender, String string);
+
+    void sendActionBar(Player player, String message);
+
+    void sendTitle(Player player, String title, String subtitle, int fadeInTime, int showTime, int fadeOutTime);
 }

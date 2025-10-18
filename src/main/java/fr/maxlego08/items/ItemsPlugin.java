@@ -25,6 +25,7 @@ import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
 import fr.maxlego08.items.hooks.*;
 import fr.maxlego08.items.inventories.ApplicatorMenu;
+import fr.maxlego08.items.listener.AnvilRuneFusionListener;
 import fr.maxlego08.items.listener.CommandsListener;
 import fr.maxlego08.items.listener.GrindstoneListener;
 import fr.maxlego08.items.listener.SmithingTableListener;
@@ -101,6 +102,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addListener(new DisableEnchantsListener(this.itemManager));
         this.addListener(new GrindstoneListener(this.itemManager));
         this.addListener(new SmithingTableListener(this.itemManager, this.runeManager));
+        this.addListener(new AnvilRuneFusionListener(this, this.runeManager));
         this.addListener(new SpawnerListener());
         this.addListener(this.commandsListener = new CommandsListener(this));
 

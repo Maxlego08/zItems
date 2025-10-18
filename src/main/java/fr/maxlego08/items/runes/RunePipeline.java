@@ -94,26 +94,22 @@ public class RunePipeline {
     public <T extends Event> void pipeline(ItemPlugin plugin, T event) {
         switch (event) {
             case PlayerInteractEvent playerInteractEvent -> {
-                // Use cached filtered list instead of streaming every time
                 for (Rune rune : interactionHandlerRunes) {
                     ((InteractionHandler<?>) rune.getType().getActivator()).interactBlock(plugin, playerInteractEvent, rune.getConfiguration());
                 }
             }
             case JobsExpGainEventWrapper jobsExpGainEventWrapper -> {
-                // Use cached filtered list instead of streaming every time
                 for (Rune rune : jobsExperienceRunes) {
                     ((JobsExperienceHandler<?>) rune.getType().getActivator()).jobsGainExperience(plugin, jobsExpGainEventWrapper, rune.getConfiguration());
                 }
             }
             case JobsPayementEventWrapper jobsPayementEventWrapper -> {
-                // Use cached filtered list instead of streaming every time
                 for (Rune rune : jobsMoneyRunes) {
                     ((JobsMoneyHandler<?>) rune.getType().getActivator()).jobsGainMoney(plugin, jobsPayementEventWrapper, rune.getConfiguration());
                 }
             }
             case BlockBreakEvent blockBreakEvent -> handleBreak(plugin, blockBreakEvent);
             case EntityDeathEvent entityDeathEvent -> {
-                // Use cached filtered list instead of streaming every time
                 for (Rune rune : entityDeathRunes) {
                     ((EntityDeathHandler<?>) rune.getType().getActivator()).onEntityDeath(plugin, entityDeathEvent, rune.getConfiguration());
                 }

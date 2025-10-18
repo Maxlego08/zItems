@@ -62,10 +62,6 @@ public class Persist extends ZUtils {
 		return loadOrSaveDefault(def, clazz, getFile(name));
 	}
 
-	public <T> T loadOrSaveDefault(T def, Class<T> clazz, Folder folder, String name) {
-		return loadOrSaveDefault(def, clazz, getFile(folder.toFolder() + File.separator + name));
-	}
-
 	public <T> T loadOrSaveDefault(T def, Class<T> clazz, File file) {
 		if (!file.exists()) {
 			p.getLog().log("Creating default: " + file, Logger.LogType.SUCCESS);
@@ -107,10 +103,6 @@ public class Persist extends ZUtils {
 
 	public boolean save(Object instance, String name) {
 		return save(instance, getFile(name));
-	}
-
-	public boolean save(Object instance, Folder folder, String name) {
-		return save(instance, getFile(folder.toFolder() + File.separator + name));
 	}
 
 	public boolean save(Object instance, File file) {

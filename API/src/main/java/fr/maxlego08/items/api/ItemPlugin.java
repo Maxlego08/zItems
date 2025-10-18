@@ -31,6 +31,8 @@ public interface ItemPlugin extends Plugin {
 
     RuneManager getRuneManager();
 
+    ItemComponent getItemComponent();
+
     List<BlockAccess> getBlockAccess();
 
     void registerBlockAccess(BlockAccess blockAccess);

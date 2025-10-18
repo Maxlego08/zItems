@@ -1,15 +1,11 @@
 package fr.maxlego08.items.zcore.utils;
 
 import fr.maxlego08.items.zcore.ZPlugin;
-import fr.maxlego08.items.zcore.enums.Permission;
 import fr.maxlego08.items.zcore.utils.nms.NmsVersion;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.permissions.Permissible;
 
 import java.text.DecimalFormat;
@@ -62,10 +58,6 @@ public abstract class ZUtils extends MessageUtils {
 
     public void runAsync(ZPlugin plugin, Runnable runnable) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
-    }
-
-    protected List<String> color(List<String> messages) {
-        return messages.stream().map(this::color).collect(Collectors.toList());
     }
 
     protected List<String> colorReverse(List<String> messages) {
@@ -138,7 +130,6 @@ public abstract class ZUtils extends MessageUtils {
             player.getInventory().addItem(item);
         }
     }
-
 
     /**
      * Checks if a permissible entity has a specific permission.

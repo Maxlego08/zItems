@@ -182,8 +182,8 @@ public class MessageLoader extends ZUtils implements Savable {
                         int showTime = configuration.getInt(key + ".showTime");
                         int fadeOutTime = configuration.getInt(key + ".fadeOutTime");
                         Map<String, Object> titles = new HashMap<>();
-                        titles.put("title", color(title));
-                        titles.put("subtitle", color(subtitle));
+                        titles.put("title",title);
+                        titles.put("subtitle", subtitle);
                         titles.put("start", fadeInTime);
                         titles.put("time", showTime);
                         titles.put("end", fadeOutTime);
