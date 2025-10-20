@@ -1,6 +1,6 @@
 package fr.maxlego08.items.buttons.applicator;
 
-import fr.maxlego08.items.api.CloneUtils;
+import fr.maxlego08.items.utils.CloneUtils;
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import org.bukkit.Material;

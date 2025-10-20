@@ -23,16 +23,14 @@ public class CommandItemViewRunes extends VCommand {
         var optRunes = plugin.getRuneManager().getRunes(this.player.getInventory().getItemInMainHand());
         if(optRunes.isPresent()) {
             List<String> runeLore = Message.RUNE_LORE.getMessages();
-            //remove first empty line
             runeLore.removeFirst();
-
-            List<String> formattedLore = new ArrayList<>();
-
-            runeLore.forEach(line -> formattedLore.add(color(line)));
+            List<String> formattedLore = new ArrayList<>(runeLore);
             for (Rune rune : optRunes.get()) {
-                formattedLore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                formattedLore.add(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName()));
             }
-            this.player.sendMessage(formattedLore.toArray(new String[0]));
+            for (String s : formattedLore) {
+                plugin.getItemComponent().sendMessage(this.player, s);
+            }
         }
         return CommandType.SUCCESS;
     }

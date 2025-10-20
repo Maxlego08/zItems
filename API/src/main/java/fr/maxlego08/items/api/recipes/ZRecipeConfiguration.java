@@ -1,6 +1,5 @@
-package fr.maxlego08.items.api.recipes;
+package fr.maxlego08.items.api.configurations.recipes;
 
-import fr.traqueur.recipes.api.Base64;
 import fr.traqueur.recipes.api.RecipeType;
 import fr.traqueur.recipes.api.TagRegistry;
 import fr.traqueur.recipes.api.domains.Ingredient;
@@ -19,10 +18,14 @@ import org.bukkit.inventory.recipe.CookingBookCategory;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.*;
+import java.util.zip.GZIPInputStream;
 
 public class ZRecipeConfiguration implements Recipe {
     /**
@@ -70,25 +73,13 @@ public class ZRecipeConfiguration implements Recipe {
     /**
      * The constructor of the recipe.
      *
-     * @param plugin        the plugin of the recipe.
-     * @param name          the name of the recipe.
-     * @param configuration the configuration of the recipe.
-     */
-    public ZRecipeConfiguration(JavaPlugin plugin, String name, YamlConfiguration configuration) {
-        this(plugin, name, "", configuration);
-    }
-
-    /**
-     * The constructor of the recipe.
-     *
-     * @param plugin        the plugin of the recipe.
      * @param name          the name of the recipe.
      * @param path          the path of the recipe.
      * @param configuration the configuration of the recipe.
      */
-    public ZRecipeConfiguration(Plugin plugin, String name, String path, YamlConfiguration configuration) {
+    public ZRecipeConfiguration(String name, String path, YamlConfiguration configuration) {
         this.name = name.replace(".yml", "");
-        if (!path.endsWith(".") && !path.isEmpty()) {
+        if(!path.endsWith(".") && !path.isEmpty()) {
             path += ".";
         }
         String strType = configuration.getString(path + "type", "ERROR");
@@ -99,25 +90,26 @@ public class ZRecipeConfiguration implements Recipe {
         }
         this.category = configuration.getString(path + "category", "");
         this.group = configuration.getString(path + "group", "");
-        if (!this.checkGategory(this.category)) {
+        if(!this.checkCategory(this.category)) {
             throw new IllegalArgumentException("The category " + this.category + " isn't valid.");
         }
 
-        if (configuration.contains(path + "pattern")) {
-            this.pattern = configuration.getStringList(path + "pattern").toArray(new String[0]);
+        if(configuration.contains(path + "pattern")) {
+            this.pattern = configuration.getStringList(path+"pattern").toArray(new String[0]);
+            this.validatePattern();
         }
 
-        if (!configuration.contains(path + "ingredients")) {
+        if(!configuration.contains(path + "ingredients")) {
             throw new IllegalArgumentException("The recipe " + name + " doesn't have ingredients.");
         }
 
-        for (Map<?, ?> ingredient : configuration.getMapList(path + "ingredients")) {
+        for(Map<?,?> ingredient : configuration.getMapList(path + "ingredients")) {
             String material = (String) ingredient.get("item");
             var objSign = ingredient.getOrDefault("sign", null);
             Character sign = objSign == null ? null : objSign.toString().charAt(0);
 
             String[] data = material.split(":");
-            if (data.length == 1) {
+            if(data.length == 1) {
                 this.ingredientList.add(new MaterialIngredient(this.getMaterial(data[0]), sign));
             } else {
                 Ingredient ingred = switch (data[0]) {
@@ -125,13 +117,13 @@ public class ZRecipeConfiguration implements Recipe {
                     case "tag" -> new TagIngredient(this.getTag(data[1]), sign);
                     case "item" -> {
                         boolean strict = this.isStrict(ingredient);
-                        if (strict) {
+                        if(strict) {
                             yield new StrictItemStackIngredient(this.getItemStack(data[1]), sign);
                         }
                         yield new ItemStackIngredient(this.getItemStack(data[1]), sign);
                     }
                     default -> Hook.HOOKS.stream()
-                            .filter(hook -> plugin.getServer().getPluginManager().isPluginEnabled(hook.getPluginName()))
+                            .filter(Hook::isEnable)
                             .filter(hook -> hook.getPluginName().equalsIgnoreCase(data[0]))
                             .findFirst()
                             .orElseThrow(() -> new IllegalArgumentException("The data " + data[0] + " isn't valid."))
@@ -142,7 +134,29 @@ public class ZRecipeConfiguration implements Recipe {
 
         }
 
-        this.amount = configuration.getInt(path + "result-amount", 1);
+        if(!configuration.contains(path + "result.item")) {
+            throw new IllegalArgumentException("The recipe " + name + " doesn't have a result.");
+        }
+        String strItem = configuration.getString(path + "result.item");
+        if (strItem == null) {
+            throw new IllegalArgumentException("The recipe " + name + " doesn't have a result.");
+        }
+        String[] resultParts = strItem.split(":");
+        if(resultParts.length == 1) {
+            this.result = this.getItemStack(resultParts[0]);
+        } else {
+            this.result = switch (resultParts[0]) {
+                case "material" -> new ItemStack(this.getMaterial(resultParts[1]));
+                case "item", "base64" -> this.getItemStack(resultParts[1]);
+                default -> Hook.HOOKS.stream()
+                        .filter(Hook::isEnable)
+                        .filter(hook -> hook.getPluginName().equalsIgnoreCase(resultParts[0]))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("The result " + strItem + " isn't valid."))
+                        .getItemStack(resultParts[1]);
+            };
+        }
+        this.amount = configuration.getInt(path + "result.amount", 1);
 
 
         this.cookingTime = configuration.getInt(path + "cooking-time", 0);
@@ -151,7 +165,6 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * This method is used to get Tag from the string.
-     *
      * @param data the data to get the tag.
      * @return the tag.
      */
@@ -161,26 +174,41 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * This method is used to check if the ingredient is strict.
-     *
      * @param ingredient the ingredient to check.
      */
-    private boolean isStrict(Map<?, ?> ingredient) {
+    private boolean isStrict(Map<?,?> ingredient) {
         return ingredient.containsKey("strict") && (boolean) ingredient.get("strict");
     }
 
     /**
      * This method is used to get the itemstack from base64 string
-     *
      * @param base64itemstack the base64 item stack.
      * @return the item stack.
      */
     private ItemStack getItemStack(String base64itemstack) {
-        return Base64.decodeItem(base64itemstack);
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode(base64itemstack));
+            GZIPInputStream gzipInputStream = new GZIPInputStream(byteArrayInputStream);
+            ObjectInputStream objectInputStream = new BukkitObjectInputStream(gzipInputStream);
+            Object deserialized = objectInputStream.readObject();
+            objectInputStream.close();
+
+            if (!(deserialized instanceof ItemStack)) {
+                throw new IllegalArgumentException("The deserialized object is not an ItemStack.");
+            }
+
+            return (ItemStack) deserialized;
+        } catch (IOException exception) {
+            throw new IllegalArgumentException("The itemstack " + base64itemstack + " is not a valid base64 or corrupted: " + exception.getMessage());
+        } catch (ClassNotFoundException exception) {
+            throw new IllegalArgumentException("The itemstack " + base64itemstack + " contains an unknown class: " + exception.getMessage());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("The itemstack " + base64itemstack + " is not valid: " + exception.getMessage());
+        }
     }
 
     /**
      * This method is used to get the material from the string.
-     *
      * @param material the material string.
      * @return the material.
      */
@@ -194,22 +222,78 @@ public class ZRecipeConfiguration implements Recipe {
 
     /**
      * This method is used to check if the category is valid.
-     *
      * @param category the group to check.
      * @return true if the category is valid.
      */
-    private boolean checkGategory(String category) {
-        category = category.toUpperCase();
-        try {
-            CookingBookCategory.valueOf(category);
-        } catch (IllegalArgumentException ignored) {
-            try {
-                CraftingBookCategory.valueOf(category);
-            } catch (IllegalArgumentException ignored_2) {
-                return false;
+    private boolean checkCategory(@NotNull String category) {
+        if(category.isEmpty()) {
+            return true;
+        }
+
+        String upperCategory = category.toUpperCase();
+
+        for(CookingBookCategory cookingCategory : CookingBookCategory.values()) {
+            if(cookingCategory.name().equals(upperCategory)) {
+                return true;
             }
         }
-        return true;
+
+        for(CraftingBookCategory craftingCategory : CraftingBookCategory.values()) {
+            if(craftingCategory.name().equals(upperCategory)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * This method is used to validate the pattern.
+     * It checks if the pattern is valid for a shaped recipe.
+     */
+    private void validatePattern() {
+        if (this.pattern == null || this.pattern.length == 0) {
+            throw new IllegalArgumentException("The recipe " + name + " has an empty pattern.");
+        }
+
+        // Validate pattern size (max 3 rows)
+        if (this.pattern.length > 3) {
+            throw new IllegalArgumentException("The recipe " + name + " has a pattern with more than 3 rows.");
+        }
+
+        // Validate each row length (max 3 characters) and collect all characters
+        Set<Character> patternChars = new HashSet<>();
+        for (int i = 0; i < this.pattern.length; i++) {
+            String row = this.pattern[i];
+            if (row.length() > 3) {
+                throw new IllegalArgumentException("The recipe " + name + " has a pattern row '" + row + "' with more than 3 characters.");
+            }
+            if (row.isEmpty()) {
+                throw new IllegalArgumentException("The recipe " + name + " has an empty pattern row at index " + i + ".");
+            }
+            // Collect all non-space characters
+            for (char c : row.toCharArray()) {
+                if (c != ' ') {
+                    patternChars.add(c);
+                }
+            }
+        }
+
+        // Validate that all pattern characters will have corresponding ingredients
+        if (!patternChars.isEmpty()) {
+            Set<Character> ingredientSigns = new HashSet<>();
+            for (Ingredient ingredient : ingredientList) {
+                if (ingredient.sign() != null) {
+                    ingredientSigns.add(ingredient.sign());
+                }
+            }
+
+            for (Character patternChar : patternChars) {
+                if (!ingredientSigns.contains(patternChar)) {
+                    throw new IllegalArgumentException("The recipe " + name + " has a pattern character '" + patternChar + "' that doesn't match any ingredient sign.");
+                }
+            }
+        }
     }
 
     /**

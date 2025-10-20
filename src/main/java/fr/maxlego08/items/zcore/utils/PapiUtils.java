@@ -10,32 +10,6 @@ import java.util.List;
 public class PapiUtils {
 
     /**
-     * Applies PlaceholderAPI transformations to the display name and lore of an ItemStack.
-     *
-     * @param itemStack the ItemStack to transform.
-     * @param player    the player context for the placeholders.
-     * @return the transformed ItemStack.
-     */
-    protected ItemStack papi(ItemStack itemStack, Player player) {
-        if (itemStack == null) {
-            return itemStack;
-        }
-
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if (itemMeta.hasDisplayName()) {
-            itemMeta.setDisplayName(Placeholder.getPlaceholder().setPlaceholders(player, itemMeta.getDisplayName()));
-        }
-
-        if (itemMeta.hasLore()) {
-            itemMeta.setLore(Placeholder.getPlaceholder().setPlaceholders(player, itemMeta.getLore()));
-        }
-
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
-    }
-
-    /**
      * Applies PlaceholderAPI transformations to a string.
      *
      * @param placeHolder the string to transform.

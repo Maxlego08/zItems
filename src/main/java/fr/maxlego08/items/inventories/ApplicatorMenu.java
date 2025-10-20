@@ -1,6 +1,6 @@
 package fr.maxlego08.items.inventories;
 
-import fr.maxlego08.items.api.CloneUtils;
+import fr.maxlego08.items.utils.CloneUtils;
 import fr.maxlego08.items.buttons.applicator.ApplicatorBaseInputButton;
 import fr.maxlego08.items.buttons.applicator.ApplicatorExtraInputButton;
 import fr.maxlego08.items.buttons.applicator.ApplicatorInputButton;

@@ -9,7 +9,6 @@ import fr.maxlego08.items.api.configurations.commands.CommandsConfiguration;
 import fr.maxlego08.items.api.configurations.commands.ItemCommand;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -100,8 +99,6 @@ public class CommandsListener extends ZUtils implements Listener {
         for (ItemCommand itemCommand : commands.stream().filter(command -> command.action() == itemAction || command.action() == fr.maxlego08.items.api.configurations.commands.Action.CLICK).collect(Collectors.toSet())) {
 
             if (itemCommand.cooldown() > 0 && CooldownBuilder.isCooldown(this.generateCooldownName(item, itemCommand), player.getUniqueId())) {
-                //TODO add message
-                Bukkit.getLogger().info("ToDo Add Message - ItemCooldown");
                 return;
             }
 

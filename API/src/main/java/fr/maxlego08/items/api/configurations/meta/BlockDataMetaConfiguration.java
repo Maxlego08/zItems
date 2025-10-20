@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
 
@@ -390,8 +391,7 @@ public record BlockDataMetaConfiguration(boolean enable, BlockData blockData) {
 
 
             } catch (Exception exception) {
-                plugin.getLogger().severe("Invalid block data or material configuration in " + fileName);
-                exception.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Invalid block data or material configuration in file: " + fileName, exception);
                 enableBlockDataMeta = false;
             }
             return new BlockDataMetaConfiguration(enableBlockDataMeta, blockData);

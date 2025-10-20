@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DiscUtils {
 
@@ -12,6 +14,7 @@ public class DiscUtils {
 	// -------------------------------------------- //
 
 	private final static String UTF8 = "UTF-8";
+	private static final Logger LOGGER = Logger.getLogger(DiscUtils.class.getName());
 
 	// -------------------------------------------- //
 	// BYTE
@@ -81,7 +84,7 @@ public class DiscUtils {
 			fos.getChannel().transferFrom(rbc, 0, 1 << 24);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Error in DiscUtils operation", e);
 			return false;
 		}
 	}
@@ -114,7 +117,7 @@ public class DiscUtils {
 		try {
 			return string.getBytes(UTF8);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Failed to encode string to UTF-8", e);
 			return null;
 		}
 	}
@@ -123,7 +126,7 @@ public class DiscUtils {
 		try {
 			return new String(bytes, UTF8);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Failed to decode UTF-8 bytes to string", e);
 			return null;
 		}
 	}

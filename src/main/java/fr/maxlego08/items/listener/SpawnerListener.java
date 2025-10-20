@@ -5,16 +5,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpawnerListener extends ListenerAdapter {
+public class SpawnerListener implements Listener {
 
-    @Override
-    protected void onBlockPlace(BlockPlaceEvent event, Player player) {
-
+    @EventHandler
+    protected void onBlockPlace(BlockPlaceEvent event) {
         Block block = event.getBlock();
         Material material = block.getType();
         if (material != Material.SPAWNER) return;

@@ -9,23 +9,20 @@ import fr.maxlego08.items.api.events.ItemBuildEvent;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.exceptions.RuneException;
 import fr.maxlego08.items.zcore.utils.ZUtils;
-import io.papermc.paper.datacomponent.item.Equippable;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.components.EquippableComponent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class ZItem extends ZUtils implements Item {
 
@@ -158,7 +155,7 @@ public class ZItem extends ZUtils implements Item {
                 try {
                     this.plugin.getRuneManager().applyRune(itemStack, rune);
                 } catch (RuneException exception) {
-                    exception.printStackTrace();
+                    plugin.getLogger().log(Level.SEVERE, "Failed to apply rune " + rune.getName() + " to item " + this.name, exception);
                 }
             }
 

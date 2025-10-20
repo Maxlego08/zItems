@@ -4,17 +4,9 @@ import org.bukkit.Bukkit;
 
 public enum Plugins {
 
-    VAULT("Vault"),
-    ESSENTIALS("Essentials"),
-    HEADDATABASE("HeadDatabase"),
-    PLACEHOLDER("PlaceholderAPI"),
-    CITIZENS("Citizens"),
-    TRANSLATIONAPI("TranslationAPI"),
-    ZTRANSLATOR("zTranslator"),
     WORLDGUARD("WorldGuard"),
     JOBS("Jobs"),
     ZJOBS("zJobs"),
-    ZMENU("zMenu"),
     ZESSENTIALS("zEssentials"),
     ITEMSADDER("ItemsAdder"),
     ZSHOP("zShop"),

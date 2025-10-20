@@ -1,7 +1,7 @@
 package fr.maxlego08.items.api.recipes;
 
 import fr.maxlego08.items.api.ItemPlugin;
-import fr.traqueur.recipes.api.domains.BaseIngredient;
+import fr.traqueur.recipes.api.domains.Ingredient;
 import fr.traqueur.recipes.api.hook.Hook;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,7 +19,7 @@ public class ZItemHook implements Hook {
     }
 
     @Override
-    public BaseIngredient getIngredient(String s, Character character) {
+    public Ingredient getIngredient(String s, Character character) {
         return new ZItemIngredient(s, character);
     }
 

@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class CommandManager extends ZUtils implements CommandExecutor, TabCompleter {
 
@@ -157,7 +158,7 @@ public class CommandManager extends ZUtils implements CommandExecutor, TabComple
 		if (command.getPermission() == null || hasPermission(sender, command.getPermission())) {
 
 			if (command.runAsync) {
-				super.runAsync(this.plugin, () -> {
+				this.runAsync(this.plugin, () -> {
 					CommandType returnType = command.prePerform(this.plugin, sender, strings);
 					if (returnType == CommandType.SYNTAX_ERROR) {
 						message(sender, Message.COMMAND_SYNTAX_ERROR, "%syntax%", command.getSyntax());
@@ -287,7 +288,7 @@ public class CommandManager extends ZUtils implements CommandExecutor, TabComple
                 Logger.info("Unable to add the command " + vCommand.getSyntax());
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to register command: " + vCommand.getSyntax(), exception);
         }
     }
 

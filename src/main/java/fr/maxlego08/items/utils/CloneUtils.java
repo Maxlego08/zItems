@@ -1,4 +1,4 @@
-package fr.maxlego08.items.api;
+package fr.maxlego08.items.utils;
 
 import fr.maxlego08.menu.api.dupe.DupeManager;
 import org.bukkit.Bukkit;
