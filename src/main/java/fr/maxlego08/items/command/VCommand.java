@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Abstract class representing a command in the plugin.
@@ -525,7 +526,7 @@ public abstract class VCommand extends Arguments {
             return perform(plugin);
         } catch (Exception e) {
             if (Config.enableDebug)
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Error executing command " + this.getFirst(), e);
             return CommandType.SYNTAX_ERROR;
         }
     }

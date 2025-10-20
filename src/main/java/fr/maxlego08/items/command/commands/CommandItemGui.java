@@ -5,7 +5,6 @@ import fr.maxlego08.items.command.VCommand;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.enums.Permission;
 import fr.maxlego08.items.zcore.utils.commands.CommandType;
-import fr.maxlego08.menu.api.InventoryManager;
 
 public class CommandItemGui extends VCommand {
 

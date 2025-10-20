@@ -10,24 +10,22 @@ import fr.maxlego08.items.api.enchantments.Enchantments;
 import fr.maxlego08.items.api.hook.BlockAccess;
 import fr.maxlego08.items.api.hook.HookManager;
 import fr.maxlego08.items.api.hook.Hooks;
-import fr.maxlego08.items.buttons.ConfirmButton;
-import fr.maxlego08.items.buttons.ItemFilesButton;
-import fr.maxlego08.items.hooks.*;
-import fr.maxlego08.items.inventories.ApplicatorMenu;
-import fr.maxlego08.items.buttons.applicator.ApplicatorBaseInputButton;
-import fr.maxlego08.items.buttons.applicator.ApplicatorExtraInputButton;
-import fr.maxlego08.items.buttons.applicator.ApplicatorInputButton;
-import fr.maxlego08.items.buttons.applicator.ApplicatorOutputButton;
-import fr.maxlego08.items.buttons.applicator.ApplicatorRuneInputButton;
-import fr.maxlego08.items.buttons.ItemsButton;
 import fr.maxlego08.items.api.recipes.ZItemHook;
 import fr.maxlego08.items.api.runes.RuneManager;
+import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.items.api.utils.TrimHelper;
+import fr.maxlego08.items.buttons.ConfirmButton;
+import fr.maxlego08.items.buttons.ItemFilesButton;
+import fr.maxlego08.items.buttons.ItemsButton;
+import fr.maxlego08.items.buttons.applicator.*;
 import fr.maxlego08.items.command.commands.CommandItem;
 import fr.maxlego08.items.components.PaperComponent;
 import fr.maxlego08.items.components.SpigotComponent;
 import fr.maxlego08.items.enchantments.DisableEnchantsListener;
 import fr.maxlego08.items.enchantments.ZEnchantments;
+import fr.maxlego08.items.hooks.*;
+import fr.maxlego08.items.inventories.ApplicatorMenu;
+import fr.maxlego08.items.listener.AnvilRuneFusionListener;
 import fr.maxlego08.items.listener.CommandsListener;
 import fr.maxlego08.items.listener.GrindstoneListener;
 import fr.maxlego08.items.listener.SmithingTableListener;
@@ -39,11 +37,9 @@ import fr.maxlego08.items.save.Config;
 import fr.maxlego08.items.save.MessageLoader;
 import fr.maxlego08.items.zcore.ZPlugin;
 import fr.maxlego08.items.zcore.utils.builder.CooldownBuilder;
-import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.menu.api.ButtonManager;
 import fr.maxlego08.menu.api.InventoryManager;
 import fr.maxlego08.menu.api.loader.NoneLoader;
-import fr.maxlego08.menu.hooks.folialib.impl.PlatformScheduler;
 import fr.traqueur.recipes.api.RecipesAPI;
 import fr.traqueur.recipes.api.hook.Hook;
 import org.bukkit.Location;
@@ -65,7 +61,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     private InventoryManager inventoryManager;
     private ItemComponent itemComponent;
     private RuneListener runeListener;
-    private PlatformScheduler scheduler;
     private RecipesAPI recipesAPI;
     private GlobalConfiguration globalConfiguration;
     private CommandsListener commandsListener;
@@ -81,8 +76,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
 
         var buttonManager = this.getProvider(ButtonManager.class);
         this.inventoryManager = this.getProvider(InventoryManager.class);
-
-        this.scheduler = inventoryManager.getScheduler();
 
         buttonManager.unregisters(this);
         buttonManager.register(new NoneLoader(this, ItemsButton.class, "ZITEMS_ITEMS"));
@@ -109,6 +102,7 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
         this.addListener(new DisableEnchantsListener(this.itemManager));
         this.addListener(new GrindstoneListener(this.itemManager));
         this.addListener(new SmithingTableListener(this.itemManager, this.runeManager));
+        this.addListener(new AnvilRuneFusionListener(this, this.runeManager));
         this.addListener(new SpawnerListener());
         this.addListener(this.commandsListener = new CommandsListener(this));
 
@@ -141,7 +135,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
                 new Hooks(Plugins.JOBS, new JobsHook(this.runeManager)),
                 new Hooks(Plugins.ZJOBS, new ZJobsHook(this.runeManager)),
                 new Hooks(Plugins.ITEMSADDER, new ItemsAdderHook(this))
-                // ToDo, add more hook
         ));
         Stream.of(ShopHooks.values()).forEach(shopHooks -> hooksList.add(new Hooks(shopHooks.getPlugin(), shopHooks)));
 
@@ -228,11 +221,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     }
 
     @Override
-    public PlatformScheduler getScheduler() {
-        return scheduler;
-    }
-
-    @Override
     public RecipesAPI getRecipesAPI() {
         return this.recipesAPI;
     }
@@ -245,10 +233,6 @@ public class ItemsPlugin extends ZPlugin implements ItemPlugin {
     @Override
     public RuneManager getRuneManager() {
         return runeManager;
-    }
-
-    public RuneListener getRuneListener() {
-        return runeListener;
     }
 
     public void info(String string) {

@@ -1,7 +1,9 @@
 package fr.maxlego08.items.components;
 
 import fr.maxlego08.items.api.ItemComponent;
+import fr.maxlego08.items.api.ItemPlugin;
 import fr.maxlego08.items.zcore.enums.Message;
+import fr.maxlego08.items.zcore.utils.MessageUtils;
 import fr.maxlego08.items.zcore.utils.ZUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -20,59 +22,84 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PaperComponent extends ZUtils implements ItemComponent {
+public class PaperComponent implements ItemComponent {
 
-    private final MiniMessage MINI_MESSAGE = MiniMessage.builder().tags(TagResolver.builder().resolver(StandardTags.defaults()).build()).build();
-    private final Map<String, String> COLORS_MAPPINGS = new HashMap<>();
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.builder().tags(TagResolver.builder().resolver(StandardTags.defaults()).build()).build();
+    private static final Map<String, String> COLORS_MAPPINGS = new HashMap<>();
 
-    public PaperComponent() {
-        this.COLORS_MAPPINGS.put("0", "black");
-        this.COLORS_MAPPINGS.put("1", "dark_blue");
-        this.COLORS_MAPPINGS.put("2", "dark_green");
-        this.COLORS_MAPPINGS.put("3", "dark_aqua");
-        this.COLORS_MAPPINGS.put("4", "dark_red");
-        this.COLORS_MAPPINGS.put("5", "dark_purple");
-        this.COLORS_MAPPINGS.put("6", "gold");
-        this.COLORS_MAPPINGS.put("7", "gray");
-        this.COLORS_MAPPINGS.put("8", "dark_gray");
-        this.COLORS_MAPPINGS.put("9", "blue");
-        this.COLORS_MAPPINGS.put("a", "green");
-        this.COLORS_MAPPINGS.put("b", "aqua");
-        this.COLORS_MAPPINGS.put("c", "red");
-        this.COLORS_MAPPINGS.put("d", "light_purple");
-        this.COLORS_MAPPINGS.put("e", "yellow");
-        this.COLORS_MAPPINGS.put("f", "white");
-        this.COLORS_MAPPINGS.put("k", "obfuscated");
-        this.COLORS_MAPPINGS.put("l", "bold");
-        this.COLORS_MAPPINGS.put("m", "strikethrough");
-        this.COLORS_MAPPINGS.put("n", "underlined");
-        this.COLORS_MAPPINGS.put("o", "italic");
-        this.COLORS_MAPPINGS.put("r", "reset");
+    static {
+        COLORS_MAPPINGS.put("0", "black");
+        COLORS_MAPPINGS.put("1", "dark_blue");
+        COLORS_MAPPINGS.put("2", "dark_green");
+        COLORS_MAPPINGS.put("3", "dark_aqua");
+        COLORS_MAPPINGS.put("4", "dark_red");
+        COLORS_MAPPINGS.put("5", "dark_purple");
+        COLORS_MAPPINGS.put("6", "gold");
+        COLORS_MAPPINGS.put("7", "gray");
+        COLORS_MAPPINGS.put("8", "dark_gray");
+        COLORS_MAPPINGS.put("9", "blue");
+        COLORS_MAPPINGS.put("a", "green");
+        COLORS_MAPPINGS.put("b", "aqua");
+        COLORS_MAPPINGS.put("c", "red");
+        COLORS_MAPPINGS.put("d", "light_purple");
+        COLORS_MAPPINGS.put("e", "yellow");
+        COLORS_MAPPINGS.put("f", "white");
+        COLORS_MAPPINGS.put("k", "obfuscated");
+        COLORS_MAPPINGS.put("l", "bold");
+        COLORS_MAPPINGS.put("m", "strikethrough");
+        COLORS_MAPPINGS.put("n", "underlined");
+        COLORS_MAPPINGS.put("o", "italic");
+        COLORS_MAPPINGS.put("r", "reset");
     }
 
     private String colorMiniMessage(String message) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        Pattern pattern = Pattern.compile("(?<!<)(?<!:)#([a-fA-F0-9]{6})");
-        Matcher matcher = pattern.matcher(message);
-
-        while (matcher.find()) {
-            matcher.appendReplacement(stringBuilder, "<$0>");
-        }
-        matcher.appendTail(stringBuilder);
-
-        String newMessage = stringBuilder.toString();
-
-        for (Map.Entry<String, String> entry : this.COLORS_MAPPINGS.entrySet()) {
+        // First, convert legacy color codes to MiniMessage format
+        for (Map.Entry<String, String> entry : COLORS_MAPPINGS.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            newMessage = newMessage.replace("&" + key, "<" + value + ">");
-            newMessage = newMessage.replace("§" + key, "<" + value + ">");
-            newMessage = newMessage.replace("&" + key.toUpperCase(), "<" + value + ">");
-            newMessage = newMessage.replace("§" + key.toUpperCase(), "<" + value + ">");
+            message = message.replace("&" + key, "<" + value + ">");
+            message = message.replace("§" + key, "<" + value + ">");
+            message = message.replace("&" + key.toUpperCase(), "<" + value + ">");
+            message = message.replace("§" + key.toUpperCase(), "<" + value + ">");
         }
 
-        return newMessage;
+        // Then convert hex colors that are NOT already inside MiniMessage tags
+        // We parse character by character to avoid converting hex inside existing tags
+        StringBuilder result = new StringBuilder();
+        int i = 0;
+        int length = message.length();
+
+        while (i < length) {
+            char currentChar = message.charAt(i);
+
+            // If we encounter a '<', skip the entire tag to avoid modifying it
+            if (currentChar == '<') {
+                int closeIndex = message.indexOf('>', i);
+                if (closeIndex != -1) {
+                    // Copy the entire tag as-is (including < and >)
+                    result.append(message.substring(i, closeIndex + 1));
+                    i = closeIndex + 1;
+                    continue;
+                }
+            }
+
+            // Check if we have a hex color code (#RRGGBB)
+            if (currentChar == '#' && i + 6 < length) {
+                String potentialHex = message.substring(i + 1, i + 7);
+                if (potentialHex.matches("[a-fA-F0-9]{6}")) {
+                    // Valid hex color, wrap it in MiniMessage tags
+                    result.append("<#").append(potentialHex).append(">");
+                    i += 7;
+                    continue;
+                }
+            }
+
+            // Regular character, just append it
+            result.append(currentChar);
+            i++;
+        }
+
+        return result.toString();
     }
 
     private TextDecoration.State getState(String text) {
@@ -127,7 +154,10 @@ public class PaperComponent extends ZUtils implements ItemComponent {
     @Override
     public void sendItemLore(Player player, ItemMeta itemMeta) {
         List<Component> lore = itemMeta.lore();
-        message(player, Message.COMMAND_ITEM_LORE);
+
+
+        player.sendMessage(getComponent(MessageUtils.getMessage(Message.COMMAND_ITEM_LORE)));
+
         if (lore != null) {
             for (Component component : lore) {
                 Component message = getComponent(Message.COMMAND_ITEM_LORE_LINE.getMessage());
@@ -141,5 +171,24 @@ public class PaperComponent extends ZUtils implements ItemComponent {
         sender.sendMessage(getComponent(string));
     }
 
+    @Override
+    public void sendActionBar(Player player, String message) {
+        player.sendActionBar(getComponent(message));
+    }
+
+    @Override
+    public void sendTitle(Player player, String title, String subtitle, int fadeInTime, int showTime, int fadeOutTime) {
+        var titleComponent = getComponent(title);
+        var subtitleComponent = getComponent(subtitle);
+        player.showTitle(net.kyori.adventure.title.Title.title(
+                titleComponent,
+                subtitleComponent,
+                net.kyori.adventure.title.Title.Times.times(
+                        java.time.Duration.ofMillis(fadeInTime),
+                        java.time.Duration.ofMillis(showTime),
+                        java.time.Duration.ofMillis(fadeOutTime)
+                )
+        ));
+    }
 
 }

@@ -1,7 +1,17 @@
 package fr.maxlego08.items.api.runes;
 
 import fr.maxlego08.items.api.ItemPlugin;
-import fr.maxlego08.items.api.runes.configurations.*;
+import fr.maxlego08.items.api.runes.configurations.EmptyConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneAttributeConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneEnchantApplicatorConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneFarmingHoeConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneHammerConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneMoneyBoostConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneSellingConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneVeinMiningConfiguration;
+import fr.maxlego08.items.api.runes.configurations.RuneXPBoostConfiguration;
+import fr.maxlego08.items.api.runes.configurations.SlotChangeConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.lang.reflect.InvocationTargetException;
@@ -44,6 +54,8 @@ public enum RuneTypes implements RuneType {
     },
     SELL_STICK("SellStick", RuneSellingConfiguration.class),
     SLOT_CHANGE("SlotChange", SlotChangeConfiguration.class),
+    INFINITE_BUCKET("InfiniteBucket", EmptyConfiguration.class),
+    EMPTY("Empty", EmptyConfiguration.class),
     ;
 
     private final RuneActivator activator;

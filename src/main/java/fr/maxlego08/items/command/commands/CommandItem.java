@@ -1,11 +1,11 @@
 package fr.maxlego08.items.command.commands;
 
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.items.command.VCommand;
 import fr.maxlego08.items.command.commands.edit.CommandItemEdit;
 import fr.maxlego08.items.zcore.enums.Permission;
 import fr.maxlego08.items.zcore.utils.commands.CommandType;
-import fr.maxlego08.items.api.utils.Plugins;
 
 public class CommandItem extends VCommand {
 

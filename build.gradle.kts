@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.invoke
-
 plugins {
     `java-library`
     id("com.gradleup.shadow") version "9.0.0-beta11"
@@ -7,7 +5,9 @@ plugins {
 }
 
 group = "fr.maxlego08.items"
-version = "1.0.0.0"
+version = "1.0.0"
+
+apply("gradle/copy-build.gradle")
 
 extra.set("targetFolder", file("target/"))
 extra.set("apiFolder", file("target-api/"))
@@ -41,8 +41,6 @@ allprojects {
     }
 
     tasks.shadowJar {
-
-
         archiveBaseName.set("zItems")
         archiveAppendix.set(if (project.path == ":") "" else project.name)
         archiveClassifier.set("")
@@ -50,6 +48,7 @@ allprojects {
 
     tasks.compileJava {
         options.encoding = "UTF-8"
+        options.release = 21
     }
 
     tasks.javadoc {
@@ -59,13 +58,13 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
-        compileOnly("com.mojang:authlib:1.5.26")
+        compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
         compileOnly("me.clip:placeholderapi:2.11.6")
 
-        compileOnly(files("libs/zMenu-1.1.0.1.jar"))
-        compileOnly(files("libs/API-1.0.2.6-all.jar"))
-        implementation("com.github.Traqueur-dev:RecipesAPI:1.4.4")
+        compileOnly("fr.maxlego08.menu:zmenu-api:1.1.0.4")
+        compileOnly("fr.maxlego08.essentials:zessentials-api:1.0.2.7")
+        compileOnly(files(rootProject.files("libs/zMenu-1.1.0.4.jar")))
+        implementation("com.github.Traqueur-dev:RecipesAPI:3.0.0")
         implementation("com.jeff-media:armor-equip-event:1.0.3")
     }
 }
@@ -75,9 +74,11 @@ repositories {
 }
 
 dependencies {
-    api(projects.api)
-    api(projects.hooks)
+    api(project(":API"))
 
+    rootProject.subprojects.filter { it.path.startsWith(":Hooks:") }.forEach { subproject ->
+        api(project(subproject.path))
+    }
 }
 
 tasks {
@@ -98,7 +99,7 @@ tasks {
     }
 
     compileJava {
-        options.release = 21
+        // Configuration already set in allprojects block
     }
 
     processResources {

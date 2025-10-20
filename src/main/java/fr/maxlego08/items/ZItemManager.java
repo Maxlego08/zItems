@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class ZItemManager extends ZUtils implements ItemManager {
@@ -36,7 +37,6 @@ public class ZItemManager extends ZUtils implements ItemManager {
         File folder = new File(plugin.getDataFolder(), "items");
         if (!folder.exists()) {
             if (folder.mkdirs()) {
-                // this.plugin.saveResource("items/example.yml", false);
                 this.plugin.saveResource("items/armor-trim.yml", false);
                 this.plugin.saveResource("items/custom_seed.yml", false);
                 this.plugin.saveResource("items/empty_item.yml", false);
@@ -64,7 +64,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
         try (Stream<Path> stream = Files.walk(folder.toPath())) {
             stream.skip(1).map(Path::toFile).filter(File::isFile).filter(e -> e.getName().endsWith(".yml")).forEach(this::loadItem);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to load items from folder: " + folder.getPath(), exception);
         }
 
 
@@ -92,8 +92,7 @@ public class ZItemManager extends ZUtils implements ItemManager {
             plugin.info("Loaded item " + file.getPath());
 
         } catch (Exception exception) {
-            plugin.getLogger().severe("Impossible to load the item " + file.getPath());
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to load item from file: " + file.getPath(), exception);
         }
     }
 

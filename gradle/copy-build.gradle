@@ -1,0 +1,52 @@
+buildscript {
+    dependencies {
+        classpath 'org.yaml:snakeyaml:2.2'
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+import org.yaml.snakeyaml.Yaml
+
+def localYamlFile = file("destinations.yml")
+def copyTargets = []
+
+if (localYamlFile.exists()) {
+    def yaml = new Yaml()
+    def data = yaml.load(localYamlFile.newInputStream())
+    copyTargets = data["copy-dest"] ?: []
+}
+
+tasks.register("copyJarToLocalDirs") {
+    dependsOn tasks.named("shadowJar")
+
+    doLast {
+        def sourceDir = rootProject.hasProperty('targetFolder') ?
+                rootProject.targetFolder :
+                "${project.buildDir}/libs"
+
+        println "📦 Copying files from: $sourceDir"
+
+        copyTargets.each { targetPath ->
+            def target = file(targetPath)
+            target.mkdirs()
+
+            copy {
+                from sourceDir
+                into target
+                include '**/*'
+            }
+
+            println "  → $targetPath"
+        }
+
+        if (copyTargets.isEmpty()) {
+            println "⚠️  No copy destinations found in destinations.yml"
+        }
+    }
+}
+
+tasks.named("build") {
+    finalizedBy("copyJarToLocalDirs")
+}

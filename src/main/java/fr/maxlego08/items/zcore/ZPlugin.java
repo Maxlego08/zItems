@@ -3,17 +3,14 @@ package fr.maxlego08.items.zcore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.maxlego08.items.ItemsPlugin;
+import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.items.command.CommandManager;
 import fr.maxlego08.items.command.VCommand;
-import fr.maxlego08.items.exceptions.ListenerNullException;
-import fr.maxlego08.items.listener.AdapterListener;
-import fr.maxlego08.items.listener.ListenerAdapter;
 import fr.maxlego08.items.placeholder.LocalPlaceholder;
 import fr.maxlego08.items.placeholder.Placeholder;
 import fr.maxlego08.items.zcore.logger.Logger;
 import fr.maxlego08.items.zcore.utils.gson.LocationAdapter;
 import fr.maxlego08.items.zcore.utils.gson.PotionEffectAdapter;
-import fr.maxlego08.items.api.utils.Plugins;
 import fr.maxlego08.items.zcore.utils.storage.NoReloadable;
 import fr.maxlego08.items.zcore.utils.storage.Persist;
 import fr.maxlego08.items.zcore.utils.storage.Savable;
@@ -37,7 +34,6 @@ public abstract class ZPlugin extends JavaPlugin {
     public static final ExecutorService service = Executors.newFixedThreadPool(5);
     private final Logger log = new Logger(this.getDescription().getFullName());
     private final List<Savable> savers = new ArrayList<>();
-    private final List<ListenerAdapter> listenerAdapters = new ArrayList<>();
     protected CommandManager commandManager;
     private Gson gson;
     private Persist persist;
@@ -59,9 +55,6 @@ public abstract class ZPlugin extends JavaPlugin {
         this.persist = new Persist(this);
 
         this.commandManager = new CommandManager((ItemsPlugin) this);
-
-        /* Add Listener */
-        this.addListener(new AdapterListener((ItemsPlugin) this));
     }
 
     protected void postEnable() {
@@ -80,6 +73,23 @@ public abstract class ZPlugin extends JavaPlugin {
     }
 
     protected void postDisable() {
+        // Shutdown the executor service to prevent thread leaks
+        if (!service.isShutdown()) {
+            this.log.log("Shutting down executor service...", Logger.LogType.INFO);
+            service.shutdown();
+            try {
+                // Wait for tasks to complete for up to 5 seconds
+                if (!service.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                    this.log.log("Executor service did not terminate in time, forcing shutdown...", Logger.LogType.WARNING);
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                this.log.log("Executor service shutdown interrupted", Logger.LogType.ERROR);
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+
         this.log.log("=== DISABLE DONE <&>7(<&>6" + Math.abs(enableTime - System.currentTimeMillis()) + "ms<&>7) <&>e===");
 
     }
@@ -101,17 +111,6 @@ public abstract class ZPlugin extends JavaPlugin {
     public void addListener(Listener listener) {
         if (listener instanceof Savable) this.addSave((Savable) listener);
         Bukkit.getPluginManager().registerEvents(listener, this);
-    }
-
-    /**
-     * Add a listener from ListenerAdapter
-     *
-     * @param adapter
-     */
-    public void addListener(ListenerAdapter adapter) {
-        if (adapter == null) throw new ListenerNullException("Warning, your listener is null");
-        if (adapter instanceof Savable) this.addSave((Savable) adapter);
-        this.listenerAdapters.add(adapter);
     }
 
     /**
@@ -165,13 +164,6 @@ public abstract class ZPlugin extends JavaPlugin {
             return null;
         }
         return provider.getProvider() != null ? provider.getProvider() : null;
-    }
-
-    /**
-     * @return listenerAdapters
-     */
-    public List<ListenerAdapter> getListenerAdapters() {
-        return listenerAdapters;
     }
 
     /**

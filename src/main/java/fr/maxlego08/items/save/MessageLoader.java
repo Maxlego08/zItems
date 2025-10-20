@@ -3,9 +3,9 @@ package fr.maxlego08.items.save;
 import fr.maxlego08.items.zcore.enums.Message;
 import fr.maxlego08.items.zcore.enums.MessageType;
 import fr.maxlego08.items.zcore.logger.Logger;
+import fr.maxlego08.items.zcore.utils.ZUtils;
 import fr.maxlego08.items.zcore.utils.storage.Persist;
 import fr.maxlego08.items.zcore.utils.storage.Savable;
-import fr.maxlego08.items.zcore.utils.yaml.YamlUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,14 +15,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 
 /**
  * The MessageLoader class extends YamlUtils and implements Savable to manage message configurations.
  * This class is responsible for loading and saving custom messages to a YAML files for a Bukkit plugin.
  */
-public class MessageLoader extends YamlUtils implements Savable {
+public class MessageLoader extends ZUtils implements Savable {
 
+    private final JavaPlugin plugin;
     private final List<Message> loadedMessages = new ArrayList<>();
 
     /**
@@ -31,7 +33,7 @@ public class MessageLoader extends YamlUtils implements Savable {
      * @param plugin The JavaPlugin instance associated with this loader.
      */
     public MessageLoader(JavaPlugin plugin) {
-        super(plugin);
+        this.plugin = plugin;
     }
 
     /**
@@ -49,11 +51,11 @@ public class MessageLoader extends YamlUtils implements Savable {
             try {
                 file.createNewFile();
             } catch (IOException exception) {
-                exception.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Failed to create messages.yml file", exception);
             }
         }
 
-        YamlConfiguration configuration = getConfig(file);
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
         for (Message message : Message.values()) {
 
             if (!message.isUse()) continue;
@@ -93,7 +95,7 @@ public class MessageLoader extends YamlUtils implements Savable {
         try {
             configuration.save(file);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to save messages.yml file", exception);
         }
 
         loadMessages(configuration);
@@ -113,7 +115,7 @@ public class MessageLoader extends YamlUtils implements Savable {
             return;
         }
 
-        YamlConfiguration configuration = getConfig(file);
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
         this.save(null);
 
         loadMessages(configuration);
@@ -180,8 +182,8 @@ public class MessageLoader extends YamlUtils implements Savable {
                         int showTime = configuration.getInt(key + ".showTime");
                         int fadeOutTime = configuration.getInt(key + ".fadeOutTime");
                         Map<String, Object> titles = new HashMap<>();
-                        titles.put("title", color(title));
-                        titles.put("subtitle", color(subtitle));
+                        titles.put("title",title);
+                        titles.put("subtitle", subtitle);
                         titles.put("start", fadeInTime);
                         titles.put("time", showTime);
                         titles.put("end", fadeOutTime);

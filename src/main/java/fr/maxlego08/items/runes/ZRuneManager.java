@@ -6,15 +6,11 @@ import fr.maxlego08.items.api.ItemType;
 import fr.maxlego08.items.api.recipes.ZItemIngredient;
 import fr.maxlego08.items.api.runes.Rune;
 import fr.maxlego08.items.api.runes.RuneManager;
-import fr.maxlego08.items.api.runes.RunePipeline;
+import fr.maxlego08.items.runes.RunePipeline;
 import fr.maxlego08.items.api.runes.RuneType;
 import fr.maxlego08.items.api.runes.applicators.Applicator;
 import fr.maxlego08.items.api.runes.configurations.RuneConfiguration;
-import fr.maxlego08.items.api.runes.exceptions.ItemContainsAlreadyRuneException;
-import fr.maxlego08.items.api.runes.exceptions.NoMetaException;
-import fr.maxlego08.items.api.runes.exceptions.RuneAppliedException;
-import fr.maxlego08.items.api.runes.exceptions.RuneException;
-import fr.maxlego08.items.api.runes.exceptions.RuneNotAllowedException;
+import fr.maxlego08.items.api.runes.exceptions.*;
 import fr.maxlego08.items.api.runes.handlers.ItemApplicationHandler;
 import fr.maxlego08.items.api.utils.TagRegistry;
 import fr.maxlego08.items.zcore.enums.Message;
@@ -41,16 +37,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -100,7 +90,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         try (Stream<Path> stream = Files.walk(folder.toPath())) {
             stream.skip(1).map(Path::toFile).filter(File::isFile).filter(e -> e.getName().endsWith(".yml")).forEach(this::loadRune);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to load runes from folder: " + folder.getPath(), exception);
         }
     }
 
@@ -135,8 +125,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             plugin.info("Loaded rune " + file.getPath());
 
         } catch (Exception exception) {
-            logger.severe("Unable to load the rune " + file.getPath());
-            exception.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to load rune from file: " + file.getPath(), exception);
         }
     }
 
@@ -239,7 +228,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                 AtomicInteger line = new AtomicInteger();
                 AtomicBoolean removeParent = new AtomicBoolean(false);
                 this.getRune(rune.getParent()).ifPresent(parent -> {
-                    String displayRune = color(getMessage(Message.RUNE_LINE, "%rune%", parent.getDisplayName()));
+                    String displayRune = getMessage(Message.RUNE_LINE, "%rune%", parent.getDisplayName());
                     line.set(lore.indexOf(displayRune));
                     if (line.get() != -1) {
                         lore.remove(line.get());
@@ -247,12 +236,12 @@ public class ZRuneManager extends ZUtils implements RuneManager {
                     }
                 });
                 if (removeParent.get()) {
-                    lore.set(line.get(), color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                    lore.set(line.get(), getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName()));
                 } else {
                     if (nbRunesView != -1 && runes.size() == nbRunesView) {
-                        lore.add(color(getMessage(Message.RUNE_MORE)));
+                        lore.add(getMessage(Message.RUNE_MORE));
                     } else {
-                        lore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+                        lore.add(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName()));
                     }
                 }
 
@@ -260,7 +249,7 @@ public class ZRuneManager extends ZUtils implements RuneManager {
             }
         }
 
-        itemMeta.setLore(lore);
+        this.plugin.getItemComponent().setLore(itemMeta, lore);
 
         runes.add(rune);
         persistentDataContainer.set(this.namespacedKey, PersistentDataType.LIST.listTypeFrom(this.runeDataType), runes);
@@ -326,10 +315,9 @@ public class ZRuneManager extends ZUtils implements RuneManager {
 
     private List<String> generateRuneLore(Rune rune) {
         List<String> runeLore = Message.RUNE_LORE.getMessages();
-        List<String> formattedLore = new ArrayList<>();
 
-        runeLore.forEach(line -> formattedLore.add(color(line)));
-        formattedLore.add(color(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName())));
+        List<String> formattedLore = new ArrayList<>(runeLore);
+        formattedLore.add(getMessage(Message.RUNE_LINE, "%rune%", rune.getDisplayName()));
 
         return formattedLore;
     }
@@ -376,11 +364,6 @@ public class ZRuneManager extends ZUtils implements RuneManager {
         int nbExtra = ingredients.size() - nbInputs - 1;
         for (Material material : materials) {
             ItemStack result = new ItemStack(material);
-            /*try {
-                this.plugin.getRuneManager().applyRune(result, rune);
-            } catch (RuneException exception) {
-                exception.printStackTrace();
-            }*/
             List<Ingredient> ingredientsInner = new ArrayList<>(ingredients);
             ingredientsInner.add(new MaterialIngredient(material));
             ItemRecipe recipe = new ItemRecipe("rune_" + rune.getName() + "_" + material.name().toLowerCase() + "_applicator", "", "", null, result, 1, ingredientsInner.toArray(Ingredient[]::new), null, 0, 0);

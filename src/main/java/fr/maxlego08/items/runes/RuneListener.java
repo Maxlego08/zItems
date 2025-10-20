@@ -4,7 +4,7 @@ import com.jeff_media.armorequipevent.ArmorEquipEvent;
 import fr.maxlego08.items.ItemsPlugin;
 import fr.maxlego08.items.api.events.CustomBlockBreakEvent;
 import fr.maxlego08.items.api.runes.RuneManager;
-import fr.maxlego08.items.api.runes.RunePipeline;
+import fr.maxlego08.items.runes.RunePipeline;
 import fr.maxlego08.items.api.runes.handlers.InventorySlotChangeHandler;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.entity.Player;
@@ -13,8 +13,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MainHand;
 
 import java.util.ArrayList;
 
@@ -117,5 +124,35 @@ public class RuneListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
         this.runeManager.onPlayerEvent(event);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        if (event.isCancelled()) return;
+
+        var player = event.getPlayer();
+        var itemStack = event.getHand() == EquipmentSlot.HAND
+                ? event.getPlayer().getInventory().getItemInMainHand()
+                : event.getPlayer().getInventory().getItemInOffHand();
+        var optional = this.runeManager.getRunes(itemStack);
+        if (optional.isEmpty()) return;
+
+        var runes = new ArrayList<>(optional.get());
+        RunePipeline pipeline = new RunePipeline(runes);
+        pipeline.pipeline(plugin, event);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBucketFill(PlayerBucketFillEvent event) {
+        if (event.isCancelled()) return;
+        var itemStack = event.getHand() == EquipmentSlot.HAND
+                ? event.getPlayer().getInventory().getItemInMainHand()
+                : event.getPlayer().getInventory().getItemInOffHand();
+        var optional = this.runeManager.getRunes(itemStack);
+        if (optional.isEmpty()) return;
+
+        var runes = new ArrayList<>(optional.get());
+        RunePipeline pipeline = new RunePipeline(runes);
+        pipeline.pipeline(plugin, event);
     }
 }
