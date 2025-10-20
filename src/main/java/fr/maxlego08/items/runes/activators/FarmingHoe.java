@@ -129,10 +129,13 @@ public class FarmingHoe implements BreakHandler<RuneFarmingHoeConfiguration>, In
      * @param block The block to check.
      * @return True if the block can become soil, false otherwise.
      */
-    private boolean canBecomeSoil(Block block) {
+    private boolean canBecomeSoil(Block block, RuneFarmingHoeConfiguration runeFarmingHoeConfiguration) {
         if (block == null) return false;
 
         Material type = block.getType();
+        if (runeFarmingHoeConfiguration.blacklistSoils().contains(type)) {
+            return false;
+        }
         return type == Material.DIRT || type == Material.GRASS_BLOCK || type == Material.PODZOL || type == Material.MYCELIUM;
     }
 
@@ -237,7 +240,7 @@ public class FarmingHoe implements BreakHandler<RuneFarmingHoeConfiguration>, In
         var block = event.getClickedBlock();
         if (block == null) return;
 
-        if (!canBecomeSoil(block)) {
+        if (!canBecomeSoil(block, runeFarmingHoeConfiguration)) {
             if (runeFarmingHoeConfiguration.plantSeeds()) {
                 plantSeeds(block, runeFarmingHoeConfiguration, world, event, player);
             }
@@ -253,7 +256,7 @@ public class FarmingHoe implements BreakHandler<RuneFarmingHoeConfiguration>, In
             for (int z = -range; z <= range; z++) {
 
                 var soilBlock = world.getBlockAt(block.getX() + x, block.getY(), block.getZ() + z);
-                if (canBecomeSoil(soilBlock)) {
+                if (canBecomeSoil(soilBlock, runeFarmingHoeConfiguration)) {
                     needToRemoveDamage = true;
                     soilBlock.setType(Material.FARMLAND);
                 }

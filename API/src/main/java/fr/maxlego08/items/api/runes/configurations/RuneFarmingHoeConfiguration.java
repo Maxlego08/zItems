@@ -16,6 +16,7 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
     private final boolean harvest;
     private final boolean plantSeeds;
     private final List<Material> blacklistMaterials;
+    private final List<Material> blacklistSoils;
     private final List<Material> allowedCrops;
     private final int damage;
     private final int harvestDamage;
@@ -38,6 +39,7 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
         List<Material> blacklistMaterials = stringListToMaterialList(configuration.getStringList("drop-blacklist"));
         List<Material> allowedCrops = stringListToMaterialList(configuration.getStringList("allowed-crops"));
         List<Material> allowedPlantSeeds = stringListToMaterialList(configuration.getStringList("allowed-plant-seeds"));
+        List<Material> blacklistSoils = stringListToMaterialList(configuration.getStringList("blacklist-soils"));
 
         if (size % 2 == 0) {
             size = 3;
@@ -64,6 +66,7 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
         this.plantSeeds = plantSeeds;
         this.harvestDamage = harvestDamage;
         this.allowedPlantSeeds = allowedPlantSeeds;
+        this.blacklistSoils = blacklistSoils;
         this.eventBlockBreakEvent = this.loadEventBlockBreakEvent("enable-block-break-event");
     }
 
@@ -115,6 +118,10 @@ public class RuneFarmingHoeConfiguration extends RuneConfiguration {
 
     public int harvestDamage() {
         return harvestDamage;
+    }
+
+    public List<Material> blacklistSoils() {
+        return blacklistSoils;
     }
 
     public List<Material> allowedPlantSeeds() {
