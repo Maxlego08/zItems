@@ -13,6 +13,7 @@ public class SuperiorSkyBlock2Hook implements BlockAccess {
         if (superiorPlayer == null) {
             return false;
         }
-        return SuperiorSkyblockAPI.getIslandAt(location).hasPermission(superiorPlayer, IslandPrivilege.getByName("BREAK"));
+        var island = SuperiorSkyblockAPI.getIslandAt(location);
+        return island == null || island.hasPermission(superiorPlayer, IslandPrivilege.getByName("BREAK"));
     }
 }
