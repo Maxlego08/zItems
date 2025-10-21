@@ -7,7 +7,6 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 target-api/
-target/
 destinations.yml
 
 ### IntelliJ IDEA ###
