@@ -1,14 +1,14 @@
-# Cobblestone Compressé x2
-# Crafté avec 9 Cobblestone Compressé x1
+# Compressed Cobblestone x2
+# Crafted with 9 Compressed Cobblestone x1
 id: "cobblestone_compressed_x2"
 material: COBBLESTONE
-display-name: "<gradient:#4F4F4F:#8F8F8F><bold>⬛⬛ Cobblestone Compressé x2</bold></gradient>"
+display-name: "<gradient:#4F4F4F:#8F8F8F><bold>⬛⬛ Compressed Cobblestone x2</bold></gradient>"
 lore:
-  - "<gray>Une cobblestone extrêmement compressée"
-  - "<gray>Contient 81 cobblestones (9x9)"
+  - "<gray>An extremely compressed cobblestone"
+  - "<gray>Contains 81 cobblestones (9x9)"
   - ""
-  - "<gold>💎 Peut être transformé en diamants!"
-  - "<yellow>⚠ Très précieux"
+  - "<gold>💎 Can be transformed into diamonds!"
+  - "<yellow>⚠ Very valuable"
 custom-model-data: 2002
 hide-tooltip: false
 max-stack-size: 64

@@ -1,14 +1,14 @@
 # Diamond Pack
-# Crafté avec 1 Cobblestone Compressé x2
-# Donne 64 diamants
+# Crafted with 1 Compressed Cobblestone x2
+# Gives 64 diamonds
 id: "diamond_pack"
 material: DIAMOND
-display-name: "<gradient:#00FFFF:#0080FF><bold>💎 Pack de Diamants</bold></gradient>"
+display-name: "<gradient:#00FFFF:#0080FF><bold>💎 Diamond Pack</bold></gradient>"
 lore:
-  - "<aqua>Contient 64 diamants précieux"
-  - "<gray>Obtenu via compression extrême"
+  - "<aqua>Contains 64 precious diamonds"
+  - "<gray>Obtained via extreme compression"
   - ""
-  - "<gold>✨ Résultat de la compression ultime"
+  - "<gold>✨ Result of ultimate compression"
 custom-model-data: 3001
 hide-tooltip: false
 max-stack-size: 64

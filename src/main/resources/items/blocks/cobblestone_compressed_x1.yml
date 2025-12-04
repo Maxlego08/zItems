@@ -1,13 +1,13 @@
-# Cobblestone Compressé x1
-# Crafté avec 9 cobblestones normales
+# Compressed Cobblestone x1
+# Crafted with 9 normal cobblestones
 id: "cobblestone_compressed_x1"
 material: COBBLESTONE
-display-name: "<gradient:#7F7F7F:#A0A0A0><bold>⬛ Cobblestone Compressé x1</bold></gradient>"
+display-name: "<gradient:#7F7F7F:#A0A0A0><bold>⬛ Compressed Cobblestone x1</bold></gradient>"
 lore:
-  - "<gray>Une cobblestone ultra-compressée"
-  - "<gray>Contient 9 cobblestones"
+  - "<gray>An ultra-compressed cobblestone"
+  - "<gray>Contains 9 cobblestones"
   - ""
-  - "<yellow>⚡ Peut être compressé davantage"
+  - "<yellow>⚡ Can be compressed further"
 custom-model-data: 2001
 hide-tooltip: false
 max-stack-size: 64
