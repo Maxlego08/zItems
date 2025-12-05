@@ -45,8 +45,8 @@ public class AnvilEffectFusionListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onAnvilPrepare(PrepareAnvilEvent event) {
         AnvilInventory inventory = event.getInventory();
-        ItemStack firstItem = inventory.getFirstItem();
-        ItemStack secondItem = inventory.getSecondItem();
+        ItemStack firstItem = inventory.getItem(0);
+        ItemStack secondItem = inventory.getItem(1);
 
         // If we don't have two items, do nothing
         if (firstItem == null || secondItem == null || firstItem.getType().isAir() || secondItem.getType().isAir()) {

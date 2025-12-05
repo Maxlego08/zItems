@@ -3,6 +3,7 @@ package fr.traqueur.items.items.metadata;
 import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoMetadata;
 import fr.traqueur.items.api.items.ItemMetadata;
+import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.structura.annotations.Options;
 import fr.traqueur.structura.annotations.defaults.DefaultBool;
 import fr.traqueur.structura.annotations.defaults.DefaultDouble;
@@ -12,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +46,6 @@ import java.util.List;
  * Discriminator key: "tool"
  */
 @AutoMetadata("tool")
-@AutoMetadata.PaperMetadata
 public record ToolMetadata(
         @Options(optional = true) @DefaultInt(1) int damagePerBlock,
         @Options(optional = true) @DefaultDouble(1.0) double defaultMiningSpeed,
@@ -55,7 +56,7 @@ public record ToolMetadata(
     @Override
     public void apply(ItemStack itemStack, @Nullable Player player) {
         try {
-            boolean applied = itemStack.editMeta(meta -> {
+            boolean applied = ItemUtil.editMeta(itemStack, ItemMeta.class, meta -> {
                 // Get the current tool component or create a new one
                 ToolComponent toolComponent = meta.getTool();
 

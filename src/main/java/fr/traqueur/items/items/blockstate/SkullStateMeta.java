@@ -1,6 +1,7 @@
 package fr.traqueur.items.items.blockstate;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.annotations.AutoBlockStateMeta;
 import fr.traqueur.items.api.items.BlockStateMeta;
 import fr.traqueur.structura.annotations.Options;
@@ -38,7 +39,7 @@ public record SkullStateMeta(
 
     @Override
     public void apply(Player __, Skull skull) {
-        if (texture != null && !texture.isEmpty()) {
+        if (texture != null && !texture.isEmpty() && PlatformType.isPaper()) {
             // Set custom texture via player profile
             PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
             profile.getProperties().add(new com.destroystokyo.paper.profile.ProfileProperty(

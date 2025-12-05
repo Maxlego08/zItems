@@ -37,7 +37,9 @@ public class MeltMining implements EffectHandler.SingleEventEffectHandler<EmptyS
 
                 FurnaceRecipe recipe = optionalRecipe.get();
                 totalExperience += recipe.getExperience();
-                context.addDrop(recipe.getResult().asQuantity(blockDrop.getAmount()));
+                ItemStack result = recipe.getResult();
+                result.setAmount(blockDrop.getAmount());
+                context.addDrop(result);
             }
             this.spawnFlameParticles(world, location);
         }

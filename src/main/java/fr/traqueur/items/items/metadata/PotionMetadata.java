@@ -3,6 +3,7 @@ package fr.traqueur.items.items.metadata;
 import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoMetadata;
 import fr.traqueur.items.api.items.ItemMetadata;
+import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.items.settings.models.PotionEffectWrapper;
 import fr.traqueur.structura.annotations.Options;
 import org.bukkit.Color;
@@ -32,7 +33,7 @@ public record PotionMetadata(
 
     @Override
     public void apply(ItemStack itemStack, @Nullable Player player) {
-        boolean applied = itemStack.editMeta(PotionMeta.class, meta -> {
+        boolean applied = ItemUtil.editMeta(itemStack, PotionMeta.class, meta -> {
             if (color != null) {
                 meta.setColor(color);
             }

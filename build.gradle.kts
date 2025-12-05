@@ -47,7 +47,6 @@ allprojects {
 
     dependencies {
         compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
-
         /* Depends */
         compileOnly("me.clip:placeholderapi:2.11.6")
         compileOnly("fr.maxlego08.menu:zmenu-api:1.1.0.4")
@@ -55,10 +54,11 @@ allprojects {
 
         /* Adventure for Spigot compatibility */
         compileOnly("net.kyori:adventure-platform-bukkit:4.3.4")
+        compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
 
         /* Libraries */
         implementation("com.github.Traqueur-dev:RecipesAPI:3.1.1")
-        implementation("com.github.Traqueur-dev:Structura:feat~optimize-SNAPSHOT")
+        implementation("fr.traqueur:structura:1.6.0")
         implementation("com.github.Traqueur-dev.CommandsAPI:platform-spigot:4.2.3")
         compileOnly("org.reflections:reflections:0.10.2")
 

@@ -26,17 +26,8 @@ import java.util.Optional;
  * - Drops correct custom item when tracked blocks are broken
  * - Manages chunk load/unload for persistence
  */
-public class BlockTrackerListener implements Listener {
-
-    private final BlockTracker tracker;
-    private final ItemsManager itemsManager;
-    private final EffectsManager effectsManager;
-
-    public BlockTrackerListener(BlockTracker tracker, ItemsManager itemsManager, EffectsManager effectsManager) {
-        this.tracker = tracker;
-        this.itemsManager = itemsManager;
-        this.effectsManager = effectsManager;
-    }
+public record BlockTrackerListener(BlockTracker tracker, ItemsManager itemsManager,
+                                   EffectsManager effectsManager) implements Listener {
 
     /**
      * Tracks blocks placed from custom items.

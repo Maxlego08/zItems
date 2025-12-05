@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @AutoMetadata("armor-stand")
+@AutoMetadata.PaperMetadata
 public record ArmorStandMetadata(
         @Options(optional = true) @DefaultBool(false) boolean invisible,
         @Options(optional = true) @DefaultBool(false) boolean small,

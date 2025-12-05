@@ -8,13 +8,7 @@ import fr.traqueur.recipes.api.hook.Hook;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class RecipesHook implements Hook {
-
-    private final ItemsPlugin plugin;
-
-    public RecipesHook(ItemsPlugin plugin) {
-        this.plugin = plugin;
-    }
+public record RecipesHook(ItemsPlugin plugin) implements Hook {
 
     @Override
     public String getPluginName() {

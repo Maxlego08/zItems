@@ -41,18 +41,16 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li>Extensible via custom extractors</li>
  * </ul>
  */
-public class ZEventsListener implements Listener {
+public record ZEventsListener(EffectsDispatcher dispatcher) implements Listener {
 
     private static final ConcurrentHashMap<Class<? extends Event>, Method> HANDLER_LISTS_CACHE = new ConcurrentHashMap<>();
-    private final EffectsDispatcher dispatcher;
 
     /**
      * Creates a new dynamic events listener.
      *
      * @param dispatcher the dispatcher to send events to
      */
-    public ZEventsListener(EffectsDispatcher dispatcher) {
-        this.dispatcher = dispatcher;
+    public ZEventsListener {
     }
 
     /**
@@ -194,8 +192,8 @@ public class ZEventsListener implements Listener {
      */
     @SuppressWarnings("unchecked")
     private <E extends Event> void handleEvent(E event) {
-        if(event instanceof Cancellable cancellable) {
-            if(cancellable.isCancelled()) {
+        if (event instanceof Cancellable cancellable) {
+            if (cancellable.isCancelled()) {
                 return;
             }
         }

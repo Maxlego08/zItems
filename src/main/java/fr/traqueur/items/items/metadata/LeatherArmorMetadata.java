@@ -3,6 +3,7 @@ package fr.traqueur.items.items.metadata;
 import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoMetadata;
 import fr.traqueur.items.api.items.ItemMetadata;
+import fr.traqueur.items.api.utils.ItemUtil;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ public record LeatherArmorMetadata(
 
     @Override
     public void apply(ItemStack itemStack, @Nullable Player player) {
-        boolean applied = itemStack.editMeta(LeatherArmorMeta.class, meta -> {
+        boolean applied = ItemUtil.editMeta(itemStack, LeatherArmorMeta.class, meta -> {
             meta.setColor(color);
         });
         if (!applied) {

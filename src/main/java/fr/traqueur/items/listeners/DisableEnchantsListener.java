@@ -67,8 +67,8 @@ public class DisableEnchantsListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onAnvil(PrepareAnvilEvent event) {
         AnvilInventory anvilInventory = event.getInventory();
-        ItemStack firstItem = anvilInventory.getFirstItem();
-        ItemStack secondItem = anvilInventory.getSecondItem();
+        ItemStack firstItem = anvilInventory.getItem(0);
+        ItemStack secondItem = anvilInventory.getItem(1);
 
         if (firstItem == null || secondItem == null) {
             return;

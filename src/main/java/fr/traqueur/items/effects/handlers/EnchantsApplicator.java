@@ -4,6 +4,7 @@ import fr.traqueur.items.api.annotations.AutoEffect;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.EffectHandler;
 import fr.traqueur.items.effects.settings.EnchantsSettings;
+import org.bukkit.inventory.meta.ItemMeta;
 
 @AutoEffect(value = "ENCHANTS_APPLICATOR")
 public class EnchantsApplicator implements EffectHandler.NoEventEffectHandler<EnchantsSettings> {
@@ -28,7 +29,8 @@ public class EnchantsApplicator implements EffectHandler.NoEventEffectHandler<En
             return;
         }
 
-        context.itemSource().editMeta(meta -> {
+        ItemMeta meta = context.itemSource().getItemMeta();
+        if (meta != null) {
             for (EnchantsSettings.EnchantSetting enchantment : settings.enchantments()) {
                 int evolution = enchantment.computeEvolutionValue();
                 int level = meta.getEnchants().getOrDefault(enchantment.wrapper().enchantment(), 0);
@@ -39,7 +41,8 @@ public class EnchantsApplicator implements EffectHandler.NoEventEffectHandler<En
                     meta.addEnchant(enchantment.wrapper().enchantment(), level + evolution, true);
                 }
             }
-        });
+            context.itemSource().setItemMeta(meta);
+        }
     }
 
     @Override

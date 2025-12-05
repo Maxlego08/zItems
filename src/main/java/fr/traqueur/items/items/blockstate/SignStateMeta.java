@@ -1,11 +1,13 @@
 package fr.traqueur.items.items.blockstate;
 
+import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.annotations.AutoBlockStateMeta;
 import fr.traqueur.items.api.items.BlockStateMeta;
 import fr.traqueur.structura.annotations.Options;
 import fr.traqueur.structura.annotations.defaults.DefaultBool;
 import fr.traqueur.structura.api.Loadable;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -24,7 +26,7 @@ public record SignStateMeta(
         @Options(optional = true) SignSideConfig front,
         @Options(optional = true) SignSideConfig back
 ) implements BlockStateMeta<Sign> {
-
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
     @Override
     public void apply(Player player, Sign sign) {
         sign.setWaxed(waxed);
@@ -51,7 +53,11 @@ public record SignStateMeta(
             for (int i = 0; i < Math.min(config.lines().size(), 4); i++) {
                 Component line = config.lines().get(i);
                 if (line != null) {
-                    signSide.line(i, line);
+                    if(PlatformType.isPaper()) {
+                        signSide.line(i, line);
+                    } else {
+                        signSide.setLine(i, LEGACY_SERIALIZER.serialize(line));
+                    }
                 }
             }
         }

@@ -2,7 +2,6 @@ package fr.traqueur.items.api.utils;
 
 import fr.maxlego08.menu.api.dupe.DupeManager;
 import fr.traqueur.items.api.PlatformType;
-import fr.traqueur.items.api.placeholders.PlaceholderParser;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -14,10 +13,11 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 /**
  * Utility class for creating and modifying ItemStacks with Paper/Spigot compatibility.
@@ -46,12 +46,14 @@ public class ItemUtil {
             return null;
         }
         ItemStack clone = itemStack.clone();
-
-        clone.editPersistentDataContainer(container -> {
-            if (container.has(DUPE_KEY)) {
-                container.remove(DUPE_KEY);
+        ItemMeta meta = clone.getItemMeta();
+        if (meta != null) {
+            PersistentDataContainer  persistentDataContainer = meta.getPersistentDataContainer();
+            if (persistentDataContainer.has(DUPE_KEY)) {
+                persistentDataContainer.remove(DUPE_KEY);
             }
-        });
+            clone.setItemMeta(meta);
+        }
 
         return clone;
     }
@@ -173,7 +175,7 @@ public class ItemUtil {
      * @return The created ItemStack
      */
     public static ItemStack createItem(Material material, int amount, Component displayName, List<Component> lore, Component itemName) {
-        ItemStack itemStack = ItemStack.of(material, amount);
+        ItemStack itemStack = new ItemStack(material, amount);
 
         if (displayName != null) {
             setDisplayName(itemStack, displayName);
@@ -234,8 +236,8 @@ public class ItemUtil {
             return;
         }
 
-        PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(player, item, damage, damage);
-        damageEvent.callEvent();
+        PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(player, item, damage);
+        Bukkit.getPluginManager().callEvent(damageEvent);
         if (damageEvent.isCancelled()) {
             return;
         }
@@ -255,4 +257,19 @@ public class ItemUtil {
             }
         }
     }
+
+    public static <T extends ItemMeta> boolean editMeta(ItemStack item, Class<T> metaClass, Consumer<T> consumer) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return false;
+        }
+        if (metaClass.isInstance(meta)) {
+            T metaItem = metaClass.cast(meta);
+            consumer.accept(metaItem);
+            item.setItemMeta(metaItem);
+            return true;
+        }
+        return false;
+    }
+
 }

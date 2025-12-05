@@ -1,17 +1,22 @@
 package fr.traqueur.items.utils;
 
-import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.ItemsPlugin;
+import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.settings.models.AttributeMergeStrategy;
 import fr.traqueur.items.api.settings.models.AttributeWrapper;
+import fr.traqueur.items.api.utils.ItemUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -93,7 +98,7 @@ public final class AttributeUtil {
      * @param strategy the merge strategy to use
      */
     public static void applyAttributesLegacy(ItemStack itemStack, List<AttributeWrapper> attributes, ItemsPlugin plugin, AttributeMergeStrategy strategy) {
-        itemStack.editMeta(meta -> {
+        ItemUtil.editMeta(itemStack, ItemMeta.class, meta -> {
             // Get existing modifiers
             List<AttributeEntry> existingEntries = new ArrayList<>();
             if (meta.hasAttributeModifiers()) {

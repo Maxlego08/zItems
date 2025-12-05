@@ -4,6 +4,7 @@ import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoMetadata;
 import fr.traqueur.items.api.items.BlockDataMeta;
 import fr.traqueur.items.api.items.ItemMetadata;
+import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.structura.annotations.Options;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.BlockData;
@@ -37,7 +38,7 @@ public record BlockDataMetadata(
         }
 
         // Apply BlockData to ItemStack using Spigot's standard API
-        boolean apply = itemStack.editMeta(org.bukkit.inventory.meta.BlockDataMeta.class, meta -> {
+        boolean apply = ItemUtil.editMeta(itemStack, org.bukkit.inventory.meta.BlockDataMeta.class, meta -> {
             meta.setBlockData(blockData);
         });
 

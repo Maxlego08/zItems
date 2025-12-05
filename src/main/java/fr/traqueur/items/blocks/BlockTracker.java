@@ -5,6 +5,7 @@ import com.google.common.collect.Table;
 import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.blocks.TrackedBlock;
 import fr.traqueur.items.serialization.Keys;
+import fr.traqueur.items.utils.ChunkUtil;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -51,7 +52,7 @@ public class BlockTracker {
      */
     private record WorldChunkKey(UUID worldUid, long chunkKey) {
         WorldChunkKey(Chunk chunk) {
-            this(chunk.getWorld().getUID(), chunk.getChunkKey());
+            this(chunk.getWorld().getUID(), ChunkUtil.getChunkKey(chunk));
         }
     }
 
@@ -157,7 +158,7 @@ public class BlockTracker {
             }
 
             Logger.debug("Loaded {} tracked blocks from chunk {} in world {}",
-                trackedBlocks.size(), chunk.getChunkKey(), chunk.getWorld().getName());
+                trackedBlocks.size(), ChunkUtil.getChunkKey(chunk), chunk.getWorld().getName());
         }
     }
 
@@ -183,7 +184,7 @@ public class BlockTracker {
             Keys.TRACKED_BLOCKS.set(pdc, trackedBlocks);
 
             Logger.debug("Saved {} tracked blocks for chunk {} in world {}",
-                trackedBlocks.size(), chunk.getChunkKey(), chunk.getWorld().getName());
+                trackedBlocks.size(), ChunkUtil.getChunkKey(chunk), chunk.getWorld().getName());
 
             // Remove from cache after saving
             cache.row(worldChunkKey).clear();

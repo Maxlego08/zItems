@@ -1,8 +1,7 @@
 package fr.traqueur.items.items;
 
-import com.mojang.brigadier.Message;
-import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.ItemsPlugin;
+import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.events.ItemBuildEvent;
 import fr.traqueur.items.api.items.Item;
@@ -10,10 +9,10 @@ import fr.traqueur.items.api.managers.EffectsManager;
 import fr.traqueur.items.api.placeholders.PlaceholderParser;
 import fr.traqueur.items.api.settings.ItemSettings;
 import fr.traqueur.items.api.settings.models.EnchantmentWrapper;
+import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.items.api.utils.MessageUtil;
 import fr.traqueur.items.serialization.Keys;
 import fr.traqueur.items.utils.AttributeUtil;
-import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.structura.annotations.Options;
 import fr.traqueur.structura.api.Loadable;
 import net.kyori.adventure.text.Component;
@@ -21,14 +20,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record ZItem(String id, @Options(inline = true) ItemSettings settings) implements Item, Loadable {
 
@@ -57,8 +57,8 @@ public record ZItem(String id, @Options(inline = true) ItemSettings settings) im
 
         AttributeUtil.applyAttributes(itemStack, settings.attributes(), plugin, settings.attributeMergeStrategy());
 
-        // Apply additional settings via editMeta
-        itemStack.editMeta(meta -> {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta != null) {
             // Apply enchantments
             if (settings.enchantments() != null) {
                 for (EnchantmentWrapper enchantment : settings.enchantments()) {
@@ -106,15 +106,19 @@ public record ZItem(String id, @Options(inline = true) ItemSettings settings) im
             if (settings.damageTypeResistance() != null) {
                 meta.setDamageResistant(settings.damageTypeResistance());
             }
+            itemStack.setItemMeta(meta);
+        }
 
-        });
 
         if (settings.effects() != null && !settings.effects().isEmpty()) {
+            meta = itemStack.getItemMeta();
             // Apply effects directly to PDC without updating lore
             // (lore was already generated above with generateBaseEffectLore)
-            itemStack.editPersistentDataContainer(container -> {
+            if (meta != null) {
+                PersistentDataContainer container = meta.getPersistentDataContainer();
                 Keys.EFFECTS.set(container, new ArrayList<>(settings.effects()));
-            });
+                itemStack.setItemMeta(meta);
+            }
 
             // Apply NoEventEffects (attributes, etc.) for each effect
             for (Effect effect : settings.effects()) {
@@ -128,10 +132,12 @@ public record ZItem(String id, @Options(inline = true) ItemSettings settings) im
                 metadata.apply(itemStack, player);
             }
         }
-
-        itemStack.editPersistentDataContainer(container -> {
+        meta = itemStack.getItemMeta();
+        if (meta != null) {
+            PersistentDataContainer container = meta.getPersistentDataContainer();
             Keys.ITEM_ID.set(container, id);
-        });
+            itemStack.setItemMeta(meta);
+        }
 
         ItemBuildEvent event = new ItemBuildEvent(player, this, itemStack);
         plugin.getServer().getPluginManager().callEvent(event);

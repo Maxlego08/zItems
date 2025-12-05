@@ -15,22 +15,23 @@ import fr.traqueur.items.api.registries.HandlersRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.items.api.settings.ItemSettings;
 import fr.traqueur.items.api.settings.Settings;
+import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.items.api.utils.MessageUtil;
 import fr.traqueur.items.serialization.Keys;
 import fr.traqueur.items.settings.PluginSettings;
-import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.recipes.api.RecipeType;
 import fr.traqueur.recipes.impl.domains.ItemRecipe;
 import fr.traqueur.recipes.impl.domains.ingredients.StrictItemStackIngredient;
 import fr.traqueur.recipes.impl.domains.recipes.RecipeBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -145,11 +146,15 @@ public class ZEffectsManager implements EffectsManager {
             return compatibilityResult;
         }
 
-        item.editPersistentDataContainer(container -> {
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            PersistentDataContainer container = meta.getPersistentDataContainer();
             List<Effect> effects = new ArrayList<>(Keys.EFFECTS.get(container, new ArrayList<>()));
             effects.add(effect);
             Keys.EFFECTS.set(container, effects);
-        });
+            item.setItemMeta(meta);
+        }
+
         this.getPlugin().getDispatcher().applyNoEventEffect(player, item, effect);
 
         // Update item lore to show the new effect (only if requested)
@@ -521,9 +526,12 @@ public class ZEffectsManager implements EffectsManager {
         ItemStack item = representation.item().build(player);
 
         // Store the effect ID in PDC to mark it as an effect representation
-        item.editPersistentDataContainer(container -> {
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            PersistentDataContainer container = meta.getPersistentDataContainer();
             Keys.EFFECT_REPRESENTATION.set(container, effect.id());
-        });
+            item.setItemMeta(meta);
+        }
 
         return item;
     }

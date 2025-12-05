@@ -45,8 +45,8 @@ public class ItemRestrictionsListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onGrindstone(PrepareGrindstoneEvent event) {
-        ItemStack upperItem = event.getInventory().getUpperItem();
-        ItemStack lowerItem = event.getInventory().getLowerItem();
+        ItemStack upperItem = event.getInventory().getItem(0);
+        ItemStack lowerItem = event.getInventory().getItem(1);
 
         ItemsManager itemsManager = plugin.getManager(ItemsManager.class);
         if (itemsManager == null) {
@@ -90,8 +90,8 @@ public class ItemRestrictionsListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onAnvil(PrepareAnvilEvent event) {
-        ItemStack firstItem = event.getInventory().getFirstItem();
-        ItemStack secondItem = event.getInventory().getSecondItem();
+        ItemStack firstItem = event.getInventory().getItem(0);
+        ItemStack secondItem = event.getInventory().getItem(1);
 
         // If we don't have two items, do nothing
         if (firstItem == null || secondItem == null || firstItem.getType().isAir() || secondItem.getType().isAir()) {

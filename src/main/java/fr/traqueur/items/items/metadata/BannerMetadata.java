@@ -3,11 +3,8 @@ package fr.traqueur.items.items.metadata;
 import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoMetadata;
 import fr.traqueur.items.api.items.ItemMetadata;
+import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.items.settings.models.PatternWrapper;
-import fr.traqueur.structura.api.Loadable;
-import org.bukkit.DyeColor;
-import org.bukkit.block.banner.Pattern;
-import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -20,7 +17,7 @@ public record BannerMetadata(List<PatternWrapper> patterns) implements ItemMetad
 
     @Override
     public void apply(ItemStack itemStack, @Nullable Player player) {
-        boolean applied = itemStack.editMeta(BannerMeta.class, meta -> {
+        boolean applied = ItemUtil.editMeta(itemStack, BannerMeta.class, meta -> {
             meta.setPatterns(patterns.stream().map(PatternWrapper::toPattern).toList());
         });
         if (!applied) {

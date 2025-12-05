@@ -4,20 +4,22 @@ import fr.maxlego08.menu.api.ButtonManager;
 import fr.maxlego08.menu.api.InventoryManager;
 import fr.maxlego08.menu.api.loader.NoneLoader;
 import fr.traqueur.commands.spigot.CommandManager;
-import fr.traqueur.items.blocks.ZItemsProvider;
-import fr.traqueur.items.buttons.ItemsListButton;
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.Logger;
+import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.effects.EffectsDispatcher;
 import fr.traqueur.items.api.items.Item;
 import fr.traqueur.items.api.managers.EffectsManager;
 import fr.traqueur.items.api.managers.ItemsManager;
 import fr.traqueur.items.api.registries.*;
-import fr.traqueur.items.api.settings.models.AttributeMergeStrategy;
 import fr.traqueur.items.api.settings.Settings;
+import fr.traqueur.items.api.settings.models.AttributeMergeStrategy;
+import fr.traqueur.items.api.utils.MessageUtil;
 import fr.traqueur.items.blocks.BlockTracker;
 import fr.traqueur.items.blocks.BlockTrackerListener;
+import fr.traqueur.items.blocks.ZItemsProvider;
+import fr.traqueur.items.buttons.ItemsListButton;
 import fr.traqueur.items.buttons.applicator.ApplicatorButton;
 import fr.traqueur.items.buttons.applicator.ApplicatorOutputButton;
 import fr.traqueur.items.commands.CommandsMessageHandler;
@@ -38,7 +40,6 @@ import fr.traqueur.items.serialization.ZTrackedBlockDataType;
 import fr.traqueur.items.settings.PluginSettings;
 import fr.traqueur.items.settings.readers.*;
 import fr.traqueur.items.shop.ShopProviders;
-import fr.traqueur.items.api.utils.MessageUtil;
 import fr.traqueur.recipes.api.RecipesAPI;
 import fr.traqueur.recipes.api.hook.Hook;
 import fr.traqueur.structura.api.Structura;
@@ -53,7 +54,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.potion.PotionEffectType;
@@ -61,8 +61,6 @@ import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.List;
-import java.util.Optional;
 
 public class ZItems extends ItemsPlugin {
 
@@ -70,6 +68,8 @@ public class ZItems extends ItemsPlugin {
     private static final String MESSAGES_FILE = "messages.yml";
     public static final String ITEMS_FOLDER = "items";
     public static final String EFFECTS_FOLDER = "effects";
+
+    private org.slf4j.Logger logger;
 
     private RecipesAPI recipesManager;
     private EffectsDispatcher dispatcher;
@@ -81,11 +81,13 @@ public class ZItems extends ItemsPlugin {
 
         long enableTime = System.currentTimeMillis();
 
+        logger = org.slf4j.LoggerFactory.getLogger("zItems");
+
         this.saveDefaultConfig();
         this.injectReaders();
 
         PluginSettings settings = this.createSettings(CONFIG_FILE, PluginSettings.class);
-        Logger.init(this.getSLF4JLogger(), settings.debug());
+        Logger.init(logger, settings.debug());
 
         Logger.info("<yellow>=== ENABLE START ===");
         Logger.info("<gray>Plugin Version V<red>{}", this.getDescription().getVersion());
@@ -122,8 +124,13 @@ public class ZItems extends ItemsPlugin {
         Logger.info("<green>Event dispatching system initialized successfully!");
 
         // Register legacy rune migration listener (zItemsOld backward compatibility)
-        this.getServer().getPluginManager().registerEvents(new LegacyMigrationListener(), this);
-        Logger.info("<gold>Legacy rune migration system enabled - zItemsOld items will be auto-migrated");
+        if(PlatformType.isPaper()) {
+            this.getServer().getPluginManager().registerEvents(new LegacyMigrationListener(), this);
+            Logger.info("<gold>Legacy rune migration system enabled - zItemsOld items will be auto-migrated");
+        } else {
+            Logger.warning("Legacy rune migration system is only possible with paper spigot!");
+        }
+
 
         this.registerListeners();
 
@@ -288,9 +295,9 @@ public class ZItems extends ItemsPlugin {
         PluginSettings settings = this.createSettings(CONFIG_FILE, PluginSettings.class);
         Logger.setDebug(settings.debug());
         try {
-            Structura.loadEnum(this.getDataPath().resolve(MESSAGES_FILE), Messages.class);
+            Structura.loadEnum(this.getDataFolder().toPath().resolve(MESSAGES_FILE), Messages.class);
         } catch (StructuraException e) {
-            this.getSLF4JLogger().error("Failed to load messages configuration.", e);
+            this.logger.error("Failed to load messages configuration.", e);
         }
 
         EffectsRegistry effectsRegistry = Registry.get(EffectsRegistry.class);

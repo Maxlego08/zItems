@@ -4,6 +4,7 @@ import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoMetadata;
 import fr.traqueur.items.api.items.BlockStateMeta;
 import fr.traqueur.items.api.items.ItemMetadata;
+import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.structura.annotations.Options;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public record BlockStateMetadata(
     @Override
     public void apply(ItemStack itemStack, @Nullable Player player) {
         // Edit the BlockStateMeta of the item
-        boolean applied = itemStack.editMeta(org.bukkit.inventory.meta.BlockStateMeta.class, meta -> {
+        boolean applied = ItemUtil.editMeta(itemStack, org.bukkit.inventory.meta.BlockStateMeta.class, meta -> {
             BlockState blockState = meta.getBlockState();
 
             // Apply all settings to the BlockState
