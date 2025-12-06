@@ -1,22 +1,22 @@
-# Eternal Campfire - Feu de camp éternel qui ne produit pas de fumée
+# Eternal Campfire - Eternal campfire that produces no smoke
 id: "eternal_campfire"
 material: CAMPFIRE
-display-name: "<gradient:#FF4500:#FFD700><bold>🔥 Feu de Camp Éternel</bold></gradient>"
+display-name: "<gradient:#FF4500:#FFD700><bold>🔥 Eternal Campfire</bold></gradient>"
 lore:
-  - "<gray>Un feu qui brûle sans fin, sans fumée"
+  - "<gray>A fire that burns endlessly, without smoke"
   - ""
-  - "<light_purple>🔥 Propriétés:"
-  - "  <gold>• Toujours allumé"
-  - "  <aqua>• Aucune fumée"
-  - "  <pink>• Cuisines 4x plus vite"
+  - "<light_purple>🔥 Properties:"
+  - "  <gold>• Always lit"
+  - "  <aqua>• No smoke"
+  - "  <pink>• Cooks 4x faster"
   - ""
-  - "<gold>✨ Parfait pour les camps de base!"
+  - "<gold>✨ Perfect for base camps!"
   - ""
-  - "<dark_gray>Ne nécessite aucun combustible"
+  - "<dark_gray>Requires no fuel"
 custom-model-data: 3004
 metadata:
   block-data:
     settings:
       campfire:
-        lit: true           # Toujours allumé
-        signal-fire: false  # Pas de fumée
+        lit: true           # Always lit
+        signal-fire: false  # No smoke

@@ -1,19 +1,19 @@
-# Ancient End Portal Frame - Portail de l'End avec œil pré-inséré
+# Ancient End Portal Frame - End portal with pre-inserted eye
 id: "ancient_portal_frame"
 material: END_PORTAL_FRAME
-display-name: "<gradient:#00FF00:#008B8B><bold>👁 Cadre de Portail Ancien</bold></gradient>"
+display-name: "<gradient:#00FF00:#008B8B><bold>👁 Ancient Portal Frame</bold></gradient>"
 lore:
-  - "<gray>Un morceau ancien du portail de l'End"
+  - "<gray>An ancient piece of the End portal"
   - ""
-  - "<light_purple>👁 État:"
-  - "  <green>• Œil d'Ender déjà inséré"
-  - "  <aqua>• Activé et prêt"
-  - "  <gold>• Énergie dimensionnelle stable"
+  - "<light_purple>👁 Status:"
+  - "  <green>• Eye of Ender already inserted"
+  - "  <aqua>• Activated and ready"
+  - "  <gold>• Stable dimensional energy"
   - ""
-  - "<gold>🌟 Trouvé dans les ruines anciennes"
+  - "<gold>🌟 Found in ancient ruins"
   - ""
-  - "<dark_gray>Collection: Artefacts de l'End"
-  - "<dark_purple>Légendaire"
+  - "<dark_gray>Collection: End Artifacts"
+  - "<dark_purple>Legendary"
 custom-model-data: 3007
 metadata:
   block-data:

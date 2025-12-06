@@ -1,20 +1,20 @@
-# Sea Pickle Colony - Colonie complète de cornichons de mer
+# Sea Pickle Colony - Complete sea pickle colony
 id: "sea_pickle_colony"
 material: SEA_PICKLE
-display-name: "<gradient:#2E8B57:#90EE90><bold>🥒 Colonie de Cornichons Marins</bold></gradient>"
+display-name: "<gradient:#2E8B57:#90EE90><bold>🥒 Sea Pickle Colony</bold></gradient>"
 lore:
-  - "<gray>Une colonie florissante de pickles lumineux"
+  - "<gray>A thriving colony of glowing pickles"
   - ""
   - "<light_purple>🥒 Composition:"
-  - "  <green>• 4 cornichons (colonie complète)"
-  - "  <yellow>• Lumière sous-marine maximale"
-  - "  <aqua>• Écosystème stable"
+  - "  <green>• 4 pickles (complete colony)"
+  - "  <yellow>• Maximum underwater light"
+  - "  <aqua>• Stable ecosystem"
   - ""
-  - "<gold>🌊 Récolté dans les récifs coralliens"
+  - "<gold>🌊 Harvested from coral reefs"
   - ""
-  - "<yellow>Émet une lumière verte apaisante"
-  - "<aqua>Fonctionne uniquement sous l'eau"
-  - "<dark_gray>Niveau de lumière: 15 (max)"
+  - "<yellow>Emits a soothing green light"
+  - "<aqua>Only works underwater"
+  - "<dark_gray>Light level: 15 (max)"
 custom-model-data: 3014
 metadata:
   block-data:

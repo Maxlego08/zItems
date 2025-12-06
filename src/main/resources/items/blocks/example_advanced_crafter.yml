@@ -1,19 +1,19 @@
-# Advanced Auto-Crafter - Crafter automatique amélioré
+# Advanced Auto-Crafter - Enhanced automatic crafter
 id: "advanced_autocrafter"
 material: CRAFTER
-display-name: "<gradient:#4169E1:#1E90FF><bold>⚙ Auto-Crafter Avancé</bold></gradient>"
+display-name: "<gradient:#4169E1:#1E90FF><bold>⚙ Advanced Auto-Crafter</bold></gradient>"
 lore:
-  - "<gray>Un crafter automatique de haute technologie"
+  - "<gray>A high-tech automatic crafter"
   - ""
-  - "<light_purple>⚙ Fonctionnalités:"
-  - "  <aqua>• Déclenchement immédiat"
-  - "  <gold>• Circuit intégré activé"
-  - "  <green>• Craft ultra-rapide"
+  - "<light_purple>⚙ Features:"
+  - "  <aqua>• Instant triggering"
+  - "  <gold>• Integrated circuit enabled"
+  - "  <green>• Ultra-fast crafting"
   - ""
-  - "<gold>🔧 Technologie: Redstone Quantique"
+  - "<gold>🔧 Technology: Quantum Redstone"
   - ""
-  - "<yellow>Compatible avec tous les systèmes de redstone"
-  - "<dark_gray>Vitesse: 10x plus rapide"
+  - "<yellow>Compatible with all redstone systems"
+  - "<dark_gray>Speed: 10x faster"
 custom-model-data: 3010
 metadata:
   block-data:

@@ -1,19 +1,19 @@
-# Glowing Berry Vines - Lianes avec baies lumineuses
+# Glowing Berry Vines - Vines with glowing berries
 id: "glowing_berry_vines"
 material: CAVE_VINES
-display-name: "<gradient:#FF6B35:#FFA500><bold>🫐 Lianes Lumineuses Chargées</bold></gradient>"
+display-name: "<gradient:#FF6B35:#FFA500><bold>🫐 Charged Glowing Vines</bold></gradient>"
 lore:
-  - "<gray>Des lianes de caverne pleines de baies"
+  - "<gray>Cave vines full of berries"
   - ""
-  - "<light_purple>🫐 Propriétés:"
-  - "  <gold>• Baies mûres et prêtes"
-  - "  <yellow>• Émet une douce lumière"
-  - "  <green>• Harvest instantané"
+  - "<light_purple>🫐 Properties:"
+  - "  <gold>• Ripe and ready berries"
+  - "  <yellow>• Emits soft light"
+  - "  <green>• Instant harvest"
   - ""
-  - "<gold>✨ Parfaites pour décorer les caves!"
+  - "<gold>✨ Perfect for decorating caves!"
   - ""
-  - "<yellow>Clic droit pour récolter les baies"
-  - "<dark_gray>Se régénère lentement"
+  - "<yellow>Right-click to harvest berries"
+  - "<dark_gray>Regenerates slowly"
 custom-model-data: 3008
 metadata:
   block-data:

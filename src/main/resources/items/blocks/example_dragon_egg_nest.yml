@@ -1,19 +1,19 @@
-# Dragon Egg Nest - Nid d'œufs de tortue prêt à éclore
+# Dragon Egg Nest - Turtle egg nest ready to hatch
 id: "dragon_egg_nest"
 material: TURTLE_EGG
-display-name: "<gradient:#90EE90:#228B22><bold>🥚 Nid d'Œufs Enchantés</bold></gradient>"
+display-name: "<gradient:#90EE90:#228B22><bold>🥚 Enchanted Egg Nest</bold></gradient>"
 lore:
-  - "<gray>Un nid contenant de précieux œufs"
+  - "<gray>A nest containing precious eggs"
   - ""
   - "<light_purple>🥚 Configuration:"
-  - "  <green>• 4 œufs empilés"
-  - "  <yellow>• Prêts à éclore"
-  - "  <aqua>• Protection magique"
+  - "  <green>• 4 stacked eggs"
+  - "  <yellow>• Ready to hatch"
+  - "  <aqua>• Magical protection"
   - ""
-  - "<gold>🐢 Créatures à naître: Tortues Marines"
+  - "<gold>🐢 Creatures to be born: Sea Turtles"
   - ""
-  - "<yellow>Place-les près de l'eau pour l'éclosion"
-  - "<dark_gray>Temps d'éclosion réduit de 50%"
+  - "<yellow>Place near water for hatching"
+  - "<dark_gray>Hatching time reduced by 50%"
 custom-model-data: 3009
 metadata:
   block-data:
