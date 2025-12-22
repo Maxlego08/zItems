@@ -2,7 +2,7 @@ name: Build Action
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, feat/modernize ]
   pull_request:
     types: [ opened, synchronize, reopened ]
   workflow_dispatch:
