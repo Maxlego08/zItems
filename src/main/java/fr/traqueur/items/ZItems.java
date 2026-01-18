@@ -77,6 +77,11 @@ public class ZItems extends ItemsPlugin {
     private ButtonManager buttonManager;
 
     @Override
+    public void onLoad() {
+        this.registerRegistries();
+    }
+
+    @Override
     public void onEnable() {
 
         long enableTime = System.currentTimeMillis();
@@ -112,8 +117,6 @@ public class ZItems extends ItemsPlugin {
             return;
         }
         Logger.info("Shop provider <green>{} <reset>has been found.", ShopProviders.FOUND_PROVIDER.pluginName());
-
-        this.registerRegistries();
 
         this.populateRegistries();
 
