@@ -5,6 +5,7 @@ import fr.traqueur.items.api.registries.ItemsRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.items.serialization.Keys;
 import fr.traqueur.recipes.api.domains.Ingredient;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -32,6 +33,12 @@ public class ZItemIngredient extends Ingredient {
         if (this.item == null) {
             this.item = Registry.get(ItemsRegistry.class).getById(id);
         }
-        return new RecipeChoice.MaterialChoice(this.item.settings().baseItem().material());
+        Material material = this.item.settings().baseItem().material();
+        if (material == null) {
+            // Item uses copy-from (e.g. ItemsAdder), resolve the actual ItemStack
+            ItemStack built = this.item.settings().baseItem().build(null);
+            material = built.getType();
+        }
+        return new RecipeChoice.MaterialChoice(material);
     }
 }
