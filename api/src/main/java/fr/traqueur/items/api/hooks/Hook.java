@@ -56,6 +56,16 @@ package fr.traqueur.items.api.hooks;
 public interface Hook {
 
     /**
+     * Called during the host plugin's {@code onLoad()} phase, before {@code onEnable()}.
+     *
+     * <p>Use this for early initialization that must happen before any plugin is enabled,
+     * such as bootstrapping libraries (e.g. PacketEvents) that require {@code onLoad}-time setup.</p>
+     *
+     * <p>The default implementation is a no-op; override only when early init is needed.</p>
+     */
+    default void onLoad() {}
+
+    /**
      * Called when the hook is enabled during plugin initialization.
      *
      * <p>This method is invoked after the hook has been registered in {@link fr.traqueur.items.api.registries.HooksRegistry}.
@@ -77,5 +87,13 @@ public interface Hook {
      * @see fr.traqueur.items.api.registries.HooksRegistry#enableAll()
      */
     void onEnable();
+
+    /**
+     * Called when the host plugin is disabled.
+     *
+     * <p>Use this to clean up any resources allocated in {@link #onLoad()} or {@link #onEnable()}.
+     * The default implementation is a no-op.</p>
+     */
+    default void onDisable() {}
 
 }

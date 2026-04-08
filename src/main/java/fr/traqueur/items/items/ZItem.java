@@ -3,6 +3,7 @@ package fr.traqueur.items.items;
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.effects.Effect;
+import fr.traqueur.items.api.items.DurabilityMode;
 import fr.traqueur.items.api.events.ItemBuildEvent;
 import fr.traqueur.items.api.items.Item;
 import fr.traqueur.items.api.managers.EffectsManager;
@@ -66,11 +67,24 @@ public record ZItem(String id, @Options(inline = true) ItemSettings settings) im
                 }
             }
 
-            if (meta instanceof Damageable damageable) {
-                if (settings.maxDamage() > 0) {
+            DurabilityMode mode = settings.durabilityMode() != null
+                    ? settings.durabilityMode() : DurabilityMode.VANILLA;
+
+            if (mode == DurabilityMode.CUSTOM) {
+                // MC unbreakable → no durability bar shown
+                meta.setUnbreakable(true);
+                int maxDur = settings.maxDamage() > 0 ? settings.maxDamage() : 100;
+                PersistentDataContainer modePdc = meta.getPersistentDataContainer();
+                Keys.CUSTOM_DURABILITY.set(modePdc, maxDur);
+                Keys.CUSTOM_MAX_DURABILITY.set(modePdc, maxDur);
+                Keys.DURABILITY_MODE.set(modePdc, DurabilityMode.CUSTOM.name());
+            } else {
+                if (meta instanceof Damageable damageable && settings.maxDamage() > 0) {
                     damageable.setMaxDamage(settings.maxDamage());
                     damageable.setDamage(0);
                 }
+                meta.setUnbreakable(settings.unbreakable());
+                Keys.DURABILITY_MODE.set(meta.getPersistentDataContainer(), DurabilityMode.VANILLA.name());
             }
 
             if (settings.customModelData() > 0) {
@@ -81,8 +95,6 @@ public record ZItem(String id, @Options(inline = true) ItemSettings settings) im
                     meta.setCustomModelData(settings.customModelData());
                 }
             }
-
-            meta.setUnbreakable(settings.unbreakable());
 
             meta.setHideTooltip(settings.hideTooltip());
 

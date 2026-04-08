@@ -19,10 +19,12 @@ public class ZHooksRegistry implements HooksRegistry {
 
     private final Map<String, Hook> hooks;
     private final Set<String> scannedPackages;
+    private final Set<String> enabledHooks;
 
     public ZHooksRegistry() {
         this.hooks = new HashMap<>();
         this.scannedPackages = new HashSet<>();
+        this.enabledHooks = new HashSet<>();
     }
 
     @Override
@@ -48,6 +50,18 @@ public class ZHooksRegistry implements HooksRegistry {
     }
 
     @Override
+    public void loadAll() {
+        for (Map.Entry<String, Hook> entry : this.hooks.entrySet()) {
+            String hookName = entry.getKey();
+            if (Bukkit.getPluginManager().getPlugin(hookName) == null) {
+                continue;
+            }
+            entry.getValue().onLoad();
+            Logger.debug("Called onLoad for hook: {}", hookName);
+        }
+    }
+
+    @Override
     public void enableAll() {
         for (Map.Entry<String, Hook> stringHookEntry : this.hooks.entrySet()) {
             String hookName = stringHookEntry.getKey();
@@ -57,8 +71,21 @@ public class ZHooksRegistry implements HooksRegistry {
                 continue;
             }
             hook.onEnable();
+            enabledHooks.add(hookName);
             Logger.debug("Enabled hook: " + hookName);
         }
+    }
+
+    @Override
+    public void disableAll() {
+        for (String hookName : enabledHooks) {
+            Hook hook = this.hooks.get(hookName);
+            if (hook != null) {
+                hook.onDisable();
+                Logger.debug("Called onDisable for hook: {}", hookName);
+            }
+        }
+        enabledHooks.clear();
     }
 
     @Override

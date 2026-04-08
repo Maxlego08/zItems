@@ -4,9 +4,11 @@ import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoEffect;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.EffectHandler;
+import fr.traqueur.items.api.ItemsPlugin;
+import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.effects.settings.FarmingHoeSettings;
 import fr.traqueur.items.utils.EventUtil;
-import fr.traqueur.items.api.utils.ItemUtil;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -104,7 +106,7 @@ public class FarmingHoe implements EffectHandler.MultiEventEffectHandler<Farming
 
         // Appliquer les dégâts si nécessaire
         if (damaged && settings.harvestDamage() > 0) {
-            ItemUtil.applyDamageToItem(context.itemSource(), settings.harvestDamage(), player);
+            JavaPlugin.getPlugin(ItemsPlugin.class).getManager(DurabilityManager.class).applyDamage(context.itemSource(), settings.harvestDamage(), player);
         }
     }
 
@@ -219,7 +221,7 @@ public class FarmingHoe implements EffectHandler.MultiEventEffectHandler<Farming
         }
 
         if (damaged && settings.tillDamage() > 0) {
-            ItemUtil.applyDamageToItem(tool, settings.tillDamage(), player);
+            JavaPlugin.getPlugin(ItemsPlugin.class).getManager(DurabilityManager.class).applyDamage(tool, settings.tillDamage(), player);
         }
     }
 

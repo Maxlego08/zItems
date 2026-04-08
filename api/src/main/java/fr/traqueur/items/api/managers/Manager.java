@@ -59,7 +59,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @see ItemsManager
  * @see org.bukkit.plugin.ServicesManager
  */
-public sealed interface Manager permits EffectsManager, ItemsManager {
+public sealed interface Manager permits EffectsManager, ItemsManager, DurabilityManager {
 
     /**
      * Retrieves the main {@link ItemsPlugin} instance.

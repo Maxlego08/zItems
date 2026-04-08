@@ -30,6 +30,21 @@ public class CommandsMessageHandler implements MessageHandler {
         return serialize(Messages.REQUIREMENT_NOT_MET.get());
     }
 
+    @Override
+    public String getCommandDisabledMessage() {
+        return serialize(Messages.COMMAND_DISABLED.get());
+    }
+
+    @Override
+    public String getArgumentTooLongMessage() {
+        return serialize(Messages.ARGUMENT_TOO_LONG.get());
+    }
+
+    @Override
+    public String getInvalidFormatMessage() {
+        return serialize(Messages.INVALID_FORMAT.get());
+    }
+
     private String serialize(String message) {
         return SERIALIZER.serialize(MINI_MESSAGE.deserialize(message));
     }

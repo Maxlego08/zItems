@@ -28,6 +28,7 @@ allprojects {
         }
         maven(url = "https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven(url = "https://jitpack.io")
+        maven(url = "https://repo.codemc.io/repository/maven-releases/")
     }
 
     tasks.shadowJar {
@@ -58,8 +59,8 @@ allprojects {
 
         /* Libraries */
         implementation("com.github.Traqueur-dev:RecipesAPI:3.1.1")
-        implementation("fr.traqueur:structura:1.6.1")
-        implementation("com.github.Traqueur-dev.CommandsAPI:platform-spigot:4.2.3")
+        implementation("fr.traqueur:structura:1.7.0")
+        implementation("fr.traqueur.commands:platform-spigot:5.1.0")
         compileOnly("org.reflections:reflections:0.10.2")
 
     }

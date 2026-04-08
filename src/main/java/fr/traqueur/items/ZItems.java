@@ -10,8 +10,11 @@ import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.effects.EffectsDispatcher;
 import fr.traqueur.items.api.items.Item;
+import fr.traqueur.items.api.items.DurabilityMode;
+import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.managers.EffectsManager;
 import fr.traqueur.items.api.managers.ItemsManager;
+import fr.traqueur.items.items.ZDurabilityManager;
 import fr.traqueur.items.api.registries.*;
 import fr.traqueur.items.api.settings.Settings;
 import fr.traqueur.items.api.settings.models.AttributeMergeStrategy;
@@ -79,6 +82,14 @@ public class ZItems extends ItemsPlugin {
     private ButtonManager buttonManager;
 
     @Override
+    public void onLoad() {
+        Logger.init(logger, false);
+        Registry.register(HooksRegistry.class, new ZHooksRegistry());
+        Registry.get(HooksRegistry.class).scanPackage(this, "fr.traqueur.items");
+        Registry.get(HooksRegistry.class).loadAll();
+    }
+
+    @Override
     public void onEnable() {
 
         long enableTime = System.currentTimeMillis();
@@ -132,6 +143,7 @@ public class ZItems extends ItemsPlugin {
 
         EffectsManager effectsManager = this.registerManager(EffectsManager.class, new ZEffectsManager());
         ItemsManager itemsManager = this.registerManager(ItemsManager.class, new ZItemsManager());
+        this.registerManager(DurabilityManager.class, new ZDurabilityManager());
 
         this.getServer().getPluginManager().registerEvents(new BlockTrackerListener(BlockTracker.get(), itemsManager, effectsManager), this);
 
@@ -161,7 +173,6 @@ public class ZItems extends ItemsPlugin {
     }
 
     private void populateRegistries() {
-        Registry.get(HooksRegistry.class).scanPackage(this, "fr.traqueur.items");
         Registry.get(HandlersRegistry.class).scanPackage(this, "fr.traqueur.items");
         Registry.get(ExtractorsRegistry.class).scanPackage(this, "fr.traqueur.items");
         Registry.get(HooksRegistry.class).enableAll();
@@ -177,8 +188,6 @@ public class ZItems extends ItemsPlugin {
         Registry.register(CustomBlockProviderRegistry.class, new ZCustomBlockProviderRegistry());
         // Register item provider registry
         Registry.register(ItemProviderRegistry.class, new ZItemProviderRegistry());
-        // Register and scan hooks
-        Registry.register(HooksRegistry.class, new ZHooksRegistry());
         // Register and scan effect handlers
         Registry.register(HandlersRegistry.class, new ZHandlersRegistry(this));
         // Register and load effects from files
@@ -271,7 +280,6 @@ public class ZItems extends ItemsPlugin {
         CustomReaderRegistry.getInstance().register(Sound.class, new SoundReader());
         CustomReaderRegistry.getInstance().register(PatternType.class, new PatternTypeReader());
         CustomReaderRegistry.getInstance().register(new TypeToken<>() {}, new DamageTypeReader());
-
         DefaultValueRegistry.getInstance().register(AttributeMergeStrategy.class, AttributeMergeStrategy.DefaultStrategy.class, AttributeMergeStrategy.DefaultStrategy::value);
     }
 
@@ -280,6 +288,11 @@ public class ZItems extends ItemsPlugin {
         long disableTime = System.currentTimeMillis();
         Logger.info("<yellow>=== DISABLE START ===");
         Logger.info("<gray>Plugin Version V<red>{}", this.getDescription().getVersion());
+
+        HooksRegistry hooksRegistry = Registry.get(HooksRegistry.class);
+        if (hooksRegistry != null) {
+            hooksRegistry.disableAll();
+        }
 
         BlockTracker.get().clearCache();
 

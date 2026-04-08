@@ -15,6 +15,9 @@ public enum Messages implements Loadable {
     ONLY_IN_GAME("<red>This command can only be executed in-game."),
     ARG_NOT_RECOGNIZED("<red>Argument not recognized."),
     REQUIREMENT_NOT_MET("<red>You do not meet the requirements to perform this command."),
+    COMMAND_DISABLED("<red>This command is currently disabled."),
+    ARGUMENT_TOO_LONG("<red>Too many arguments provided."),
+    INVALID_FORMAT("<red>Invalid command format."),
 
     EFFECT_APPLIED("<green>Effect <yellow><effect></yellow> applied successfully."),
     EFFECT_ALREADY_PRESENT("<red>Effect <yellow><effect></yellow> is already present on this item."),

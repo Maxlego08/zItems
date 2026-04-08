@@ -28,12 +28,12 @@ public class GiveEffectCommand extends Command<@NotNull ItemsPlugin> {
         super(plugin, "effect.give");
         this.setDescription("Give an effect item to a player");
         this.setPermission("items.command.effect.give");
-        this.addArgs("player", Player.class);
-        this.addArgs("effect", Effect.class, (sender, lastArgs) -> {
+        this.addArg("player", Player.class);
+        this.addArg("effect", Effect.class, (sender, lastArgs) -> {
             EffectsRegistry effectsRegistry = Registry.get(EffectsRegistry.class);
             return effectsRegistry.getAll().stream().filter(effect -> effect.representation() != null).map(Effect::id).toList();
         });
-        this.addOptionalArgs("amount", Integer.class, (sender, lastArgs) -> List.of("1", "16", "64"));
+        this.addOptionalArg("amount", Integer.class, (sender, lastArgs) -> List.of("1", "16", "64"));
     }
 
     @Override

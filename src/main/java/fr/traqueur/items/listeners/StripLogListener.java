@@ -1,11 +1,13 @@
 package fr.traqueur.items.listeners;
 
 import fr.traqueur.items.api.blocks.CustomBlockProvider;
+import fr.traqueur.items.api.ItemsPlugin;
+import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.registries.CustomBlockProviderRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.items.api.settings.Settings;
-import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.items.settings.PluginSettings;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
@@ -42,7 +44,7 @@ public class StripLogListener implements Listener {
                     if (!blockId.equals(strip.from())) return;
                     customBlockProvider.placeCustomBlock(strip.to(), block);
                     if (settings.stripLogs().damage() > 0) {
-                        ItemUtil.applyDamageToItem(itemStack, settings.stripLogs().damage(), event.getPlayer());
+                        JavaPlugin.getPlugin(ItemsPlugin.class).getManager(DurabilityManager.class).applyDamage(itemStack, settings.stripLogs().damage(), event.getPlayer());
                     }
                 });
             }
@@ -52,7 +54,7 @@ public class StripLogListener implements Listener {
                 if (toMaterial != null) {
                     block.setType(toMaterial);
                     if (settings.stripLogs().damage() > 0) {
-                        ItemUtil.applyDamageToItem(itemStack, settings.stripLogs().damage(), event.getPlayer());
+                        JavaPlugin.getPlugin(ItemsPlugin.class).getManager(DurabilityManager.class).applyDamage(itemStack, settings.stripLogs().damage(), event.getPlayer());
                     }
                 }
             }

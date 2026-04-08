@@ -1,6 +1,7 @@
 package fr.traqueur.items.api.settings;
 
 import fr.traqueur.items.api.effects.Effect;
+import fr.traqueur.items.api.items.DurabilityMode;
 import fr.traqueur.items.api.items.ItemMetadata;
 import fr.traqueur.items.api.settings.models.*;
 import fr.traqueur.structura.annotations.Options;
@@ -83,6 +84,9 @@ public record ItemSettings(
         @Options(optional = true)
         @DefaultBool(false)
         boolean unbreakable,
+
+        @Options(optional = true)
+        DurabilityMode durabilityMode,
 
         @Options(optional = true)
         @DefaultBool(false)

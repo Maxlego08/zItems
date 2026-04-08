@@ -26,7 +26,7 @@ public class GiveItemCommand extends Command<@NotNull ItemsPlugin> {
         this.setDescription("Give a custom item to a player");
         this.setPermission("items.command.item.give");
         this.addArgs("player", Player.class, "item", Item.class);
-        this.addOptionalArgs("amount", Integer.class, (sender, lastArgs) -> List.of("1", "16", "64"));
+        this.addOptionalArg("amount", Integer.class, (sender, lastArgs) -> List.of("1", "16", "64"));
     }
 
     @Override

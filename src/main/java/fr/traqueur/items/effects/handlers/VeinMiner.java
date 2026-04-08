@@ -4,11 +4,13 @@ import fr.traqueur.items.api.annotations.AutoEffect;
 import fr.traqueur.items.api.annotations.IncompatibleWith;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.EffectHandler;
+import fr.traqueur.items.api.ItemsPlugin;
+import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.registries.CustomBlockProviderRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.items.effects.settings.VeinMinerSettings;
 import fr.traqueur.items.utils.EventUtil;
-import fr.traqueur.items.api.utils.ItemUtil;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -77,7 +79,7 @@ public class VeinMiner implements EffectHandler.SingleEventEffectHandler<VeinMin
         // Apply damage based on actually broken blocks
         int damage = settings.damage() == -1 ? actuallyBrokenBlocks : settings.damage();
         if (damage > 0) {
-            ItemUtil.applyDamageToItem(context.itemSource(), damage, player);
+            JavaPlugin.getPlugin(ItemsPlugin.class).getManager(DurabilityManager.class).applyDamage(context.itemSource(), damage, player);
         }
     }
 

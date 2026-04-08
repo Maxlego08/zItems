@@ -5,9 +5,10 @@ import fr.traqueur.items.api.annotations.AutoEffect;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.EffectHandler;
 import fr.traqueur.items.api.interactions.InteractionAction;
+import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.shop.ShopProvider;
 import fr.traqueur.items.effects.settings.SellStickSettings;
-import fr.traqueur.items.api.utils.ItemUtil;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
@@ -60,7 +61,7 @@ public record SellStick(
         container.getInventory().setContents(itemStacks.toArray(ItemStack[]::new));
 
         if (settings.damage()) {
-            ItemUtil.applyDamageToItem(event.getItem(), 1, player);
+            JavaPlugin.getPlugin(ItemsPlugin.class).getManager(DurabilityManager.class).applyDamage(event.getItem(), 1, player);
         }
     }
 

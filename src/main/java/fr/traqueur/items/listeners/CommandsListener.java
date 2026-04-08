@@ -2,13 +2,15 @@ package fr.traqueur.items.listeners;
 
 import fr.traqueur.items.api.interactions.InteractionAction;
 import fr.traqueur.items.api.items.Item;
+import fr.traqueur.items.api.ItemsPlugin;
+import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.registries.ItemsRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.items.items.metadata.CommandsMetadata;
 import fr.traqueur.items.items.metadata.CommandsMetadata.ItemCommand;
 import fr.traqueur.items.serialization.Keys;
-import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.items.api.utils.MessageUtil;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -122,7 +124,7 @@ public class CommandsListener implements Listener {
         }
 
         switch (command.damage().type()) {
-            case DURABILITY -> ItemUtil.applyDamageToItem(itemStack, command.damage().quantity(), player);
+            case DURABILITY -> JavaPlugin.getPlugin(ItemsPlugin.class).getManager(DurabilityManager.class).applyDamage(itemStack, command.damage().quantity(), player);
             case AMOUNT -> {
                 int newAmount = itemStack.getAmount() - command.damage().quantity();
                 if (newAmount <= 0) {

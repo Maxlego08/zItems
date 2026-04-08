@@ -71,7 +71,19 @@ public interface HooksRegistry extends Registry<String, Hook> {
      *
      * @see Hook#onEnable()
      */
+    /**
+     * Calls {@link Hook#onLoad()} on all registered hooks whose target plugin is present.
+     * Should be invoked from the host plugin's {@code onLoad()} after {@link #scanPackage}.
+     */
+    void loadAll();
+
     void enableAll();
+
+    /**
+     * Calls {@link Hook#onDisable()} on all hooks that were successfully enabled.
+     * Should be invoked from the host plugin's {@code onDisable()}.
+     */
+    void disableAll();
 
     /**
      * Scans a package for classes annotated with {@link fr.traqueur.items.api.annotations.AutoHook @AutoHook}

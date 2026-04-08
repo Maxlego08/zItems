@@ -35,6 +35,11 @@ public class Keys {
     // Chunk-level tracked blocks list
     public static final DataKey<List<TrackedBlock>> TRACKED_BLOCKS = new DataKey<>(PersistentDataType.LIST.listTypeFrom(TrackedBlockDataType.INSTANCE));
 
+    // Durability system
+    public static final DataKey<String> DURABILITY_MODE = new DataKey<>(PersistentDataType.STRING);
+    public static final DataKey<Integer> CUSTOM_DURABILITY = new DataKey<>(PersistentDataType.INTEGER);
+    public static final DataKey<Integer> CUSTOM_MAX_DURABILITY = new DataKey<>(PersistentDataType.INTEGER);
+
     private static ItemsPlugin PLUGIN;
 
     private Keys() {
