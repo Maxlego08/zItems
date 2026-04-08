@@ -69,6 +69,7 @@ public record ZItem(String id, @Options(inline = true) ItemSettings settings) im
             if (meta instanceof Damageable damageable) {
                 if (settings.maxDamage() > 0) {
                     damageable.setMaxDamage(settings.maxDamage());
+                    damageable.setDamage(0);
                 }
             }
 
