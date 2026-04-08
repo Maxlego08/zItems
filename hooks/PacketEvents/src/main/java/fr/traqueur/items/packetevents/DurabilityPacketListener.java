@@ -1,5 +1,6 @@
 package fr.traqueur.items.packetevents;
 
+import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerAbstract;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
@@ -15,12 +16,14 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems;
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.items.DurabilityMode;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,44 +50,72 @@ public class DurabilityPacketListener extends PacketListenerAbstract {
     public void onPacketSend(PacketSendEvent event) {
         if (event.getPacketType() == PacketType.Play.Server.SET_SLOT) {
             WrapperPlayServerSetSlot wrapper = new WrapperPlayServerSetSlot(event);
-            if (resolveItem(wrapper.getItem())) event.markForReEncode(true);
+            ItemStack resolved = resolveItem(wrapper.getItem());
+            if (resolved != null) {
+                wrapper.setItem(resolved);
+                event.markForReEncode(true);
+            }
 
         } else if (event.getPacketType() == PacketType.Play.Server.SET_CURSOR_ITEM) {
             // Since 1.21.2, the cursor (mouse-held) item uses its own packet — not SET_SLOT windowId=-1
             WrapperPlayServerSetCursorItem wrapper = new WrapperPlayServerSetCursorItem(event);
-            if (resolveItem(wrapper.getStack())) event.markForReEncode(true);
+            ItemStack resolved = resolveItem(wrapper.getStack());
+            if (resolved != null) {
+                wrapper.setStack(resolved);
+                event.markForReEncode(true);
+            }
 
         } else if (event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS) {
             WrapperPlayServerWindowItems wrapper = new WrapperPlayServerWindowItems(event);
+            List<ItemStack> items = wrapper.getItems();
+            List<ItemStack> newItems = new ArrayList<>(items.size());
             boolean changed = false;
-            for (ItemStack item : wrapper.getItems()) {
-                if (resolveItem(item)) changed = true;
+            for (ItemStack item : items) {
+                ItemStack resolved = resolveItem(item);
+                if (resolved != null) {
+                    newItems.add(resolved);
+                    changed = true;
+                } else {
+                    newItems.add(item);
+                }
             }
-            if (wrapper.getCarriedItem().map(this::resolveItem).orElse(false)) changed = true;
-            if (changed) event.markForReEncode(true);
+            Optional<ItemStack> carried = wrapper.getCarriedItem();
+            ItemStack resolvedCarried = carried.isPresent() ? resolveItem(carried.get()) : null;
+            if (resolvedCarried != null) changed = true;
+
+            if (changed) {
+                // Cancel the original packet to avoid markForReEncode writing back to NMS items,
+                // then send a fresh packet built from our resolved copies.
+                event.setCancelled(true);
+                ItemStack finalCarried = resolvedCarried != null ? resolvedCarried : carried.orElse(null);
+                WrapperPlayServerWindowItems newWrapper = new WrapperPlayServerWindowItems(
+                        wrapper.getWindowId(), wrapper.getStateId(), newItems, finalCarried
+                );
+                PacketEvents.getAPI().getPlayerManager().sendPacket(event.getPlayer(), newWrapper);
+            }
         }
     }
 
     /**
      * Reads PDC directly from the packet item's {@code minecraft:custom_data} NBT component
-     * (no SpigotConversionUtil, no Bukkit API, no timing issues) and resolves durability
-     * placeholders in lore in-place.
+     * and resolves durability placeholders in a copy of the item's lore, leaving the
+     * server-side NMS item untouched.
      *
-     * @return {@code true} if the item's lore was modified
+     * @return a new independent {@link ItemStack} with resolved lore, or {@code null} if unchanged
      */
-    private boolean resolveItem(ItemStack item) {
-        if (item == null || item.isEmpty()) return false;
+    private ItemStack resolveItem(ItemStack item) {
+        if (item == null || item.isEmpty()) return null;
 
         // Read custom_data component (where Paper stores PDC / PublicBukkitValues)
         NBTCompound customData = (NBTCompound) item.getComponents().getPatches()
                 .getOrDefault(ComponentTypes.CUSTOM_DATA, Optional.empty()).orElse(null);
-        if (customData == null) return false;
+        if (customData == null) return null;
 
         NBTCompound pbv = customData.getCompoundTagOrNull("PublicBukkitValues");
-        if (pbv == null) return false;
+        if (pbv == null) return null;
 
         String modeStr = pbv.getStringTagValueOrNull(durabilityModeKey);
-        if (modeStr == null) return false;
+        if (modeStr == null) return null;
 
         int current;
         int max;
@@ -93,29 +124,33 @@ public class DurabilityPacketListener extends PacketListenerAbstract {
             Map<String, NBT> tags = pbv.getTags();
             NBT currentNbt = tags.get(customDurabilityKey);
             NBT maxNbt = tags.get(customMaxDurabilityKey);
-            if (!(currentNbt instanceof NBTInt currentInt) || !(maxNbt instanceof NBTInt maxInt)) return false;
+            if (!(currentNbt instanceof NBTInt currentInt) || !(maxNbt instanceof NBTInt maxInt)) return null;
             current = currentInt.getAsInt();
             max = maxInt.getAsInt();
         } else {
             // VANILLA: damage components are reliable in the packet
             int damage = item.getComponentOr(ComponentTypes.DAMAGE, 0);
             int maxDamage = item.getComponentOr(ComponentTypes.MAX_DAMAGE, 0);
-            if (maxDamage <= 0) return false;
+            if (maxDamage <= 0) return null;
             max = maxDamage;
             current = maxDamage - damage;
         }
 
         ItemLore lore = item.getComponentOr(ComponentTypes.LORE, ItemLore.EMPTY);
         List<Component> lines = lore.getLines();
-        if (lines.isEmpty()) return false;
-        if (lines.stream().noneMatch(this::containsPlaceholder)) return false;
+        if (lines.isEmpty()) return null;
+        if (lines.stream().noneMatch(this::containsPlaceholder)) return null;
 
         List<Component> resolvedLines = lines.stream()
                 .map(line -> replacePlaceholders(line, current, max))
                 .toList();
 
-        item.setComponent(ComponentTypes.LORE, new ItemLore(resolvedLines));
-        return true;
+        // Create an independent copy via Bukkit clone so that setComponent only touches the
+        // packet copy, leaving the server-side NMS inventory item and its lore intact.
+        org.bukkit.inventory.ItemStack cloned = SpigotConversionUtil.toBukkitItemStack(item).clone();
+        ItemStack copy = SpigotConversionUtil.fromBukkitItemStack(cloned);
+        copy.setComponent(ComponentTypes.LORE, new ItemLore(resolvedLines));
+        return copy;
     }
 
     private boolean containsPlaceholder(Component component) {
