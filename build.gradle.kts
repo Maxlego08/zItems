@@ -58,7 +58,7 @@ allprojects {
         compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
 
         /* Libraries */
-        implementation("com.github.Traqueur-dev:RecipesAPI:3.1.1")
+        implementation("fr.traqueur:recipesapi:3.2.0")
         implementation("fr.traqueur:structura:1.7.0")
         implementation("fr.traqueur.commands:platform-spigot:5.1.0")
         compileOnly("org.reflections:reflections:0.10.2")
