@@ -54,6 +54,7 @@ import fr.traqueur.structura.types.TypeToken;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.banner.PatternType;
@@ -280,6 +281,7 @@ public class ZItems extends ItemsPlugin {
         CustomReaderRegistry.getInstance().register(Sound.class, new SoundReader());
         CustomReaderRegistry.getInstance().register(PatternType.class, new PatternTypeReader());
         CustomReaderRegistry.getInstance().register(new TypeToken<>() {}, new DamageTypeReader());
+        CustomReaderRegistry.getInstance().register(NamespacedKey.class, new NamespacedKeyReader());
         DefaultValueRegistry.getInstance().register(AttributeMergeStrategy.class, AttributeMergeStrategy.DefaultStrategy.class, AttributeMergeStrategy.DefaultStrategy::value);
     }
 

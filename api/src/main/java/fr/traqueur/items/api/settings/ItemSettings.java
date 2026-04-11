@@ -10,6 +10,7 @@ import fr.traqueur.structura.annotations.defaults.DefaultInt;
 import fr.traqueur.structura.api.Loadable;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.damage.DamageType;
 import org.bukkit.inventory.ItemFlag;
@@ -33,6 +34,7 @@ import java.util.List;
  * @param customModelData        The custom model data value for resource pack integration.
  * @param unbreakable            Whether the item is unbreakable.
  * @param hideTooltip            Whether to hide the tooltip information.
+ * @param tooltipStyle           The NamespacedKey of the tooltip style (border/frame) to use, from a resource pack.
  * @param grindstoneEnabled      Whether the item can be repaired on a grindstone.
  * @param maxStackSize           The maximum stack size for the item.
  * @param repairCost             The cost to repair the item.
@@ -91,6 +93,9 @@ public record ItemSettings(
         @Options(optional = true)
         @DefaultBool(false)
         boolean hideTooltip,
+
+        @Options(optional = true)
+        NamespacedKey tooltipStyle,
 
         @Options(optional = true)
         @DefaultBool(false)

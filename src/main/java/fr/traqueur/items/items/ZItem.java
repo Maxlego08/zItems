@@ -98,6 +98,10 @@ public record ZItem(String id, @Options(inline = true) ItemSettings settings) im
 
             meta.setHideTooltip(settings.hideTooltip());
 
+            if (settings.tooltipStyle() != null) {
+                meta.setTooltipStyle(settings.tooltipStyle());
+            }
+
             if (settings.maxStackSize() > 0) {
                 meta.setMaxStackSize(settings.maxStackSize());
             }
