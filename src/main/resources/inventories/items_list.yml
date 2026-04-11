@@ -41,7 +41,7 @@ items:
       lore:
         - ""
         - "&f➥ &7Click to go back to &cparent folder"
-    type: BACK
+    type: ZITEMS_BACK
     slot: 46
 
   previous:

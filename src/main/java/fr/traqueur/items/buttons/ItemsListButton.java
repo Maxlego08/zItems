@@ -14,23 +14,33 @@ import fr.traqueur.items.api.registries.EffectsRegistry;
 import fr.traqueur.items.api.registries.ItemsRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 /**
  * Displays folders, items, and effects (with representation and folders) in one unified inventory.
+ *
+ * <p>Navigation state is tracked entirely via player metadata — no dependency on zMenu's internal
+ * inventory history. The custom {@link ZItemsBackButton} pops from the navigation stack to go back.</p>
+ *
+ * <p>IMPORTANT: reopen() MUST use openInventoryWithOldInventories (Inventory object overload) and NOT
+ * the String-name overload. The String overload calls player.closeInventory() first, which fires
+ * onInventoryClose() and wipes all navigation metadata before the new inventory opens.</p>
  */
 public class ItemsListButton extends PaginateButton {
 
-    private static final String METADATA_KEY_FOLDER = "zitems-current-folder";
-    private static final String METADATA_KEY_EFFECTS_MODE = "zitems-showing-effects";
-    private static final String METADATA_KEY_EFFECTS_FOLDER = "zitems-current-effects-folder";
+    static final String METADATA_KEY_FOLDER = "zitems-current-folder";
+    static final String METADATA_KEY_EFFECTS_MODE = "zitems-showing-effects";
+    static final String METADATA_KEY_EFFECTS_FOLDER = "zitems-current-effects-folder";
+    private static final String METADATA_KEY_NAV_STACK = "zitems-nav-stack";
 
     private final ItemsPlugin plugin;
 
@@ -59,7 +69,6 @@ public class ItemsListButton extends PaginateButton {
 
         paginate(elements, inventory, (slot, element) -> {
             if (element.isFolder()) {
-                // Render folder
                 Placeholders placeholders = new Placeholders();
                 placeholders.register("name", element.folder().displayName());
                 placeholders.register("material", element.folder().displayMaterial().name());
@@ -67,14 +76,13 @@ public class ItemsListButton extends PaginateButton {
 
                 inventory.addItem(slot, getItemStack().build(player, false, placeholders))
                         .setClick(event -> {
+                            pushCurrentState(player, plugin);
                             Folder<Effect> effectFolder = Registry.get(EffectsRegistry.class).getRootFolder();
                             if (effectFolder.name().equalsIgnoreCase(element.folder().name())) {
-                                // Enter effects mode (root)
                                 player.setMetadata(METADATA_KEY_EFFECTS_MODE, new FixedMetadataValue(plugin, true));
                                 player.removeMetadata(METADATA_KEY_FOLDER, plugin);
                                 player.removeMetadata(METADATA_KEY_EFFECTS_FOLDER, plugin);
                             } else {
-                                // Enter item folder mode
                                 player.setMetadata(METADATA_KEY_FOLDER,
                                         new FixedMetadataValue(plugin, element.folder()));
                                 player.removeMetadata(METADATA_KEY_EFFECTS_MODE, plugin);
@@ -82,7 +90,6 @@ public class ItemsListButton extends PaginateButton {
                             reopen(player);
                         });
             } else {
-                // Render item
                 try {
                     ItemStack itemStack = element.item().build(player, 1);
                     inventory.addItem(slot, itemStack).setClick(event -> {
@@ -102,7 +109,7 @@ public class ItemsListButton extends PaginateButton {
         });
     }
 
-    /* -------------------- Effects rendering (with folders, no back) -------------------- */
+    /* -------------------- Effects rendering -------------------- */
 
     private void renderEffects(Player player, InventoryEngine inventory) {
         List<Element<Effect>> elements = getEffectElements(player);
@@ -110,7 +117,6 @@ public class ItemsListButton extends PaginateButton {
 
         paginate(elements, inventory, (slot, element) -> {
             if (element.isFolder()) {
-                // Folder
                 Folder<Effect> folder = element.folder();
                 Placeholders placeholders = new Placeholders();
                 placeholders.register("name", folder.displayName());
@@ -119,12 +125,11 @@ public class ItemsListButton extends PaginateButton {
 
                 inventory.addItem(slot, getItemStack().build(player, false, placeholders))
                         .setClick(event -> {
-                            // Navigate into subfolder
+                            pushCurrentState(player, plugin);
                             player.setMetadata(METADATA_KEY_EFFECTS_FOLDER, new FixedMetadataValue(plugin, folder));
                             reopen(player);
                         });
             } else {
-                // Effect item with representation
                 Effect effect = element.item();
                 if (effect.representation() == null) return;
 
@@ -150,9 +155,68 @@ public class ItemsListButton extends PaginateButton {
 
     @Override
     public void onInventoryClose(Player player, InventoryEngine inventory) {
+        // Intentionally empty.
+        // onInventoryClose fires on ALL inventory transitions (page changes, folder navigation,
+        // true close). Wiping metadata here would break pagination and folder state.
+        // Metadata is cleaned in GuiCommand before a fresh GUI open instead.
+    }
+
+    /* -------------------- Navigation stack (package-visible for ZItemsBackButton) -------------------- */
+
+    @SuppressWarnings("unchecked")
+    static Deque<NavState> getNavStack(Player player) {
+        if (!player.hasMetadata(METADATA_KEY_NAV_STACK)) return new ArrayDeque<>();
+        Object value = player.getMetadata(METADATA_KEY_NAV_STACK).getFirst().value();
+        return value instanceof Deque<?> ? (Deque<NavState>) value : new ArrayDeque<>();
+    }
+
+    static void pushCurrentState(Player player, Plugin plugin) {
+        boolean effectsMode = player.hasMetadata(METADATA_KEY_EFFECTS_MODE);
+        Folder<Item> itemsFolder = null;
+        Folder<Effect> effectsFolder = null;
+
+        if (player.hasMetadata(METADATA_KEY_FOLDER)) {
+            Object v = player.getMetadata(METADATA_KEY_FOLDER).getFirst().value();
+            if (v instanceof Folder<?> f) {
+                //noinspection unchecked
+                itemsFolder = (Folder<Item>) f;
+            }
+        }
+        if (player.hasMetadata(METADATA_KEY_EFFECTS_FOLDER)) {
+            Object v = player.getMetadata(METADATA_KEY_EFFECTS_FOLDER).getFirst().value();
+            if (v instanceof Folder<?> f) {
+                //noinspection unchecked
+                effectsFolder = (Folder<Effect>) f;
+            }
+        }
+
+        Deque<NavState> stack = getNavStack(player);
+        stack.push(new NavState(effectsMode, itemsFolder, effectsFolder));
+        player.setMetadata(METADATA_KEY_NAV_STACK, new FixedMetadataValue(plugin, stack));
+    }
+
+    static boolean popAndRestoreState(Player player, Plugin plugin) {
+        Deque<NavState> stack = getNavStack(player);
+        if (stack.isEmpty()) return false;
+
+        NavState state = stack.pop();
+        player.setMetadata(METADATA_KEY_NAV_STACK, new FixedMetadataValue(plugin, stack));
+
         player.removeMetadata(METADATA_KEY_FOLDER, plugin);
         player.removeMetadata(METADATA_KEY_EFFECTS_MODE, plugin);
         player.removeMetadata(METADATA_KEY_EFFECTS_FOLDER, plugin);
+
+        if (state.effectsMode()) {
+            player.setMetadata(METADATA_KEY_EFFECTS_MODE, new FixedMetadataValue(plugin, true));
+        }
+        if (state.itemsFolder() != null) {
+            player.setMetadata(METADATA_KEY_FOLDER, new FixedMetadataValue(plugin, state.itemsFolder()));
+        }
+        if (state.effectsFolder() != null) {
+            player.setMetadata(METADATA_KEY_EFFECTS_FOLDER, new FixedMetadataValue(plugin, state.effectsFolder()));
+        }
+
+        return true;
     }
 
     /* -------------------- Helpers -------------------- */
@@ -177,18 +241,15 @@ public class ItemsListButton extends PaginateButton {
             }
         }
 
-        // Add special “effects” pseudo-folder in root
         if ("root".equalsIgnoreCase(currentFolder.name())) {
             Folder<Effect> effectFolder = Registry.get(EffectsRegistry.class).getRootFolder();
             elements.add(new Element<>(new Folder<>(effectFolder.name(), effectFolder.displayName(), effectFolder.displayMaterial(), effectFolder.displayModelId(), List.of(), List.of())));
         }
 
-        // Add sub-folders
         if (currentFolder.subFolders() != null) {
             currentFolder.subFolders().forEach(folder -> elements.add(new Element<>(folder)));
         }
 
-        // Add items
         if (currentFolder.elements() != null) {
             currentFolder.elements().forEach(item -> elements.add(new Element<>(item)));
         }
@@ -215,12 +276,10 @@ public class ItemsListButton extends PaginateButton {
             }
         }
 
-        // Add subfolders
         if (current.subFolders() != null) {
             current.subFolders().forEach(folder -> elements.add(new Element<>(folder)));
         }
 
-        // Add effects with representation
         if (current.elements() != null) {
             current.elements().stream()
                     .filter(e -> e.representation() != null)
@@ -230,7 +289,14 @@ public class ItemsListButton extends PaginateButton {
         return elements;
     }
 
-    private void reopen(Player player) {
+    /**
+     * Reopens the items_list inventory at page 1.
+     *
+     * <p>Uses openInventoryWithOldInventories (Inventory object overload) intentionally.
+     * The String-name overload calls player.closeInventory() first, which would fire
+     * onInventoryClose() and erase all navigation metadata before the new inventory opens.</p>
+     */
+    void reopen(Player player) {
         var invManager = plugin.getInventoryManager();
         invManager.getInventory(plugin, "items_list").ifPresentOrElse(
                 inv -> invManager.openInventoryWithOldInventories(player, inv, 1),
@@ -238,9 +304,12 @@ public class ItemsListButton extends PaginateButton {
         );
     }
 
-    /**
-     * Represents either an item, a folder, or an effect.
-     */
+    /* -------------------- Inner types -------------------- */
+
+    public record NavState(boolean effectsMode,
+                           @Nullable Folder<Item> itemsFolder,
+                           @Nullable Folder<Effect> effectsFolder) {}
+
     public static class Element<T> {
         private final T item;
         private final Folder<T> folder;

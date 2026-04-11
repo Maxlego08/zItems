@@ -23,6 +23,7 @@ import fr.traqueur.items.blocks.BlockTracker;
 import fr.traqueur.items.blocks.BlockTrackerListener;
 import fr.traqueur.items.blocks.ZItemsProvider;
 import fr.traqueur.items.buttons.ItemsListButton;
+import fr.traqueur.items.buttons.ZItemsBackButton;
 import fr.traqueur.items.buttons.applicator.ApplicatorButton;
 import fr.traqueur.items.buttons.applicator.ApplicatorOutputButton;
 import fr.traqueur.items.commands.CommandsMessageHandler;
@@ -236,6 +237,7 @@ public class ZItems extends ItemsPlugin {
         // Register custom buttons
         buttonManager.unregisters(this);
         buttonManager.register(new NoneLoader(this, ItemsListButton.class, "ZITEMS_ITEMS_LIST"));
+        buttonManager.register(new NoneLoader(this, ZItemsBackButton.class, "ZITEMS_BACK"));
         buttonManager.register(new NoneLoader(this, ApplicatorButton.Input.class, "ZITEMS_EFFECT_APPLICATOR_INPUTS"));
         buttonManager.register(new NoneLoader(this, ApplicatorButton.BaseInput.class, "ZITEMS_EFFECT_APPLICATOR_BASE_INPUT"));
         buttonManager.register(new NoneLoader(this, ApplicatorButton.EffectInput.class, "ZITEMS_EFFECT_APPLICATOR_EFFECT_INPUT"));

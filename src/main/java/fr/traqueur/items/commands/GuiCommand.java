@@ -27,7 +27,11 @@ public class GuiCommand extends Command<@NotNull ItemsPlugin> {
     public void execute(CommandSender sender, Arguments arguments) {
         Player player = (Player) sender;
         ItemsPlugin plugin = this.getPlugin();
-        // Open the items GUI
+        // Reset navigation state so the GUI always opens at root
+        player.removeMetadata("zitems-current-folder", plugin);
+        player.removeMetadata("zitems-showing-effects", plugin);
+        player.removeMetadata("zitems-current-effects-folder", plugin);
+        player.removeMetadata("zitems-nav-stack", plugin);
         plugin.getInventoryManager().openInventory(player, "items_list");
     }
 }
