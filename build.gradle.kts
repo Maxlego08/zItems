@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("com.gradleup.shadow") version "9.0.0-beta11"
     id("re.alwyn974.groupez.repository") version "1.0.0"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 apply("gradle/copy-build.gradle")
@@ -104,5 +105,10 @@ tasks {
         filesMatching("plugin.yml") {
             expand("version" to project.version)
         }
+    }
+
+    runServer {
+        minecraftVersion("1.21.4")
+        pluginJars(shadowJar.get().archiveFile)
     }
 }

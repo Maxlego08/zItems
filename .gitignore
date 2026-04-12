@@ -9,6 +9,7 @@ destinations.yml
 .idea/
 .claude/
 CLAUDE.md
+run/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

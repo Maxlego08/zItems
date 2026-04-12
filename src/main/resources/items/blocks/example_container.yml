@@ -30,5 +30,7 @@ metadata:
             material: EMERALD
             amount: 32
           4:
-             item-id: "cobblestone_compressed_x2"
+             copy-from:
+               plugin-name: "zItems"
+               item-id: "cobblestone_compressed_x2"
              amount: 1

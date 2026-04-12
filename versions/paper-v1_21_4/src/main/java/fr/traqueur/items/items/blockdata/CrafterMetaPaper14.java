@@ -2,24 +2,23 @@ package fr.traqueur.items.items.blockdata;
 
 import fr.traqueur.items.api.annotations.AutoBlockDataMeta;
 import fr.traqueur.items.api.annotations.PaperOnly;
-import fr.traqueur.items.api.annotations.SinceVersion;
+import fr.traqueur.items.api.annotations.UntilVersion;
 import fr.traqueur.items.api.items.BlockDataMeta;
 import fr.traqueur.structura.annotations.Options;
-import org.bukkit.block.Orientation;
 import org.bukkit.block.data.type.Crafter;
 
 /**
- * Paper implementation of crafter BlockData metadata.
- * Uses the Paper-specific {@link Orientation} API for setting the crafter's orientation.
- * Compiled against paper-api:1.21.5+ in the versions/paper-v1_21_5 module.
+ * Paper implementation of crafter BlockData metadata for Paper &lt;= 1.21.4.
+ * Uses the Bukkit-nested {@link Crafter.Orientation} enum, which is available on Paper 1.21.4
+ * but was superseded by the top-level {@code org.bukkit.block.Orientation} in Paper 1.21.5+.
  */
 @AutoBlockDataMeta("crafter")
 @PaperOnly
-@SinceVersion("1.21.5")
-public record CrafterMetaPaper(
+@UntilVersion("1.21.4")
+public record CrafterMetaPaper14(
         boolean crafting,
         boolean triggered,
-        @Options(optional = true) Orientation orientation
+        @Options(optional = true) Crafter.Orientation orientation
 ) implements BlockDataMeta<Crafter> {
 
     @Override
@@ -27,7 +26,7 @@ public record CrafterMetaPaper(
         blockData.setCrafting(crafting);
         blockData.setTriggered(triggered);
         if (orientation != null) {
-           blockData.setOrientation(orientation);
+            blockData.setOrientation(orientation);
         }
     }
 }
