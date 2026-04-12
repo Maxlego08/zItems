@@ -74,8 +74,8 @@ public class ItemRestrictionsListener implements Listener {
 
         // Cancel if items have different IDs or if grindstone is not enabled for either
         if (!upperCustomItem.id().equals(lowerCustomItem.id())
-                || !upperCustomItem.settings().grindstoneEnabled()
-                || !lowerCustomItem.settings().grindstoneEnabled()) {
+                || !upperCustomItem.grindstoneEnabled()
+                || !lowerCustomItem.grindstoneEnabled()) {
             event.setResult(null);
             Logger.debug("Blocking grindstone for items {} and {}: incompatible or disabled",
                     upperCustomItem.id(), lowerCustomItem.id());
@@ -105,7 +105,7 @@ public class ItemRestrictionsListener implements Listener {
 
         // Check first item
         Optional<Item> firstCustomItem = itemsManager.getCustomItem(firstItem);
-        if (firstCustomItem.isPresent() && !firstCustomItem.get().settings().anvilEnabled()) {
+        if (firstCustomItem.isPresent() && !firstCustomItem.get().anvilEnabled()) {
             event.setResult(null);
             Logger.debug("Blocking anvil usage for item {}: anvil is disabled", firstCustomItem.get().id());
             return;
@@ -113,7 +113,7 @@ public class ItemRestrictionsListener implements Listener {
 
         // Check second item
         Optional<Item> secondCustomItem = itemsManager.getCustomItem(secondItem);
-        if (secondCustomItem.isPresent() && !secondCustomItem.get().settings().anvilEnabled()) {
+        if (secondCustomItem.isPresent() && !secondCustomItem.get().anvilEnabled()) {
             event.setResult(null);
             Logger.debug("Blocking anvil usage for item {}: anvil is disabled", secondCustomItem.get().id());
         }
@@ -138,7 +138,7 @@ public class ItemRestrictionsListener implements Listener {
         }
 
         Optional<Item> customItem = itemsManager.getCustomItem(item);
-        if (customItem.isPresent() && !customItem.get().settings().enchantingTableEnabled()) {
+        if (customItem.isPresent() && !customItem.get().enchantingTableEnabled()) {
             event.setCancelled(true);
             Logger.debug("Blocking enchanting table usage for item {}: enchanting table is disabled",
                     customItem.get().id());

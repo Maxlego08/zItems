@@ -1,8 +1,8 @@
 package fr.traqueur.items.registries;
 
-import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.Logger;
+import fr.traqueur.items.VersionFilter;
 import fr.traqueur.items.api.annotations.AutoEffect;
 import fr.traqueur.items.api.effects.EffectHandler;
 import fr.traqueur.items.api.effects.EffectSettings;
@@ -142,23 +142,13 @@ public class ZHandlersRegistry implements HandlersRegistry {
             return false;
         }
 
+        if (!VersionFilter.passes(clazz, clazz.getSimpleName())) {
+            return false;
+        }
+
         try {
             AutoEffect meta = clazz.getAnnotation(AutoEffect.class);
             String effectId = meta.value();
-
-            // Check platform-specific annotations
-            boolean paperOnly = clazz.isAnnotationPresent(AutoEffect.PaperEffect.class);
-            boolean spigotOnly = clazz.isAnnotationPresent(AutoEffect.SpigotEffect.class);
-
-            if (spigotOnly && PlatformType.isPaper()) {
-                Logger.debug("Skipping registration of EffectHandler <aqua>{}<reset> as it is Spigot-only.", clazz.getSimpleName());
-                return false;
-            }
-
-            if (paperOnly && !PlatformType.isPaper()) {
-                Logger.debug("Skipping registration of EffectHandler <aqua>{}<reset> as it is Paper-only.", clazz.getSimpleName());
-                return false;
-            }
 
             if (this.handlers.containsKey(effectId)) {
                 Logger.warning("Effect ID <yellow>{}<reset> is already registered. Skipping class {}.",
@@ -176,6 +166,9 @@ public class ZHandlersRegistry implements HandlersRegistry {
 
             return true;
 
+        } catch (LinkageError e) {
+            Logger.warning("Skipping EffectHandler <yellow>{}<reset> — missing API on this server: {}", clazz.getSimpleName(), e.getMessage());
+            return false;
         } catch (Exception e) {
             Logger.severe("Failed to instantiate effect handler: {}", e, clazz.getName());
             return false;

@@ -1,8 +1,10 @@
 package fr.traqueur.items.items.blockstate;
 
+import fr.traqueur.items.api.services.BlockComponentService;
 import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.annotations.AutoBlockStateMeta;
 import fr.traqueur.items.api.items.BlockStateMeta;
+import fr.traqueur.items.paper.PaperBlockComponentService;
 import fr.traqueur.structura.annotations.Options;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -20,6 +22,8 @@ public record CommandBlockStateMeta(
 ) implements BlockStateMeta<CommandBlock> {
 
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
+    private static final BlockComponentService BLOCK_COMPONENT_SERVICE =
+            PlatformType.isPaper() ? new PaperBlockComponentService() : null;
 
     @Override
     public void apply(Player player, CommandBlock commandBlock) {
@@ -28,8 +32,8 @@ public record CommandBlockStateMeta(
         }
 
         if (name != null) {
-            if (PlatformType.isPaper()) {
-                commandBlock.name(name);
+            if (BLOCK_COMPONENT_SERVICE != null) {
+                BLOCK_COMPONENT_SERVICE.setName(commandBlock, name);
             } else {
                 commandBlock.setName(LEGACY_SERIALIZER.serialize(name));
             }

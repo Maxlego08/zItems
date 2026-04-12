@@ -6,11 +6,10 @@ import fr.maxlego08.menu.api.loader.NoneLoader;
 import fr.traqueur.commands.spigot.CommandManager;
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.Logger;
-import fr.traqueur.items.api.PlatformType;
+import fr.traqueur.items.api.annotations.AutoListener;
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.effects.EffectsDispatcher;
 import fr.traqueur.items.api.items.Item;
-import fr.traqueur.items.api.items.DurabilityMode;
 import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.managers.EffectsManager;
 import fr.traqueur.items.api.managers.ItemsManager;
@@ -38,6 +37,9 @@ import fr.traqueur.items.inventories.ApplicatorMenu;
 import fr.traqueur.items.items.ZItemsManager;
 import fr.traqueur.items.listeners.*;
 import fr.traqueur.items.providers.ZItemsItemProvider;
+import fr.traqueur.items.utils.ReflectionsCache;
+import org.bukkit.event.Listener;
+import org.reflections.Reflections;
 import fr.traqueur.items.registries.*;
 import fr.traqueur.items.serialization.Keys;
 import fr.traqueur.items.serialization.ZEffectDataType;
@@ -68,6 +70,8 @@ import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 
 public class ZItems extends ItemsPlugin {
 
@@ -133,14 +137,7 @@ public class ZItems extends ItemsPlugin {
         ZEventsListener eventsListener = new ZEventsListener(this.dispatcher);
         Logger.info("<green>Event dispatching system initialized successfully!");
 
-        // Register legacy rune migration listener (zItemsOld backward compatibility)
-        if(PlatformType.isPaper()) {
-            this.getServer().getPluginManager().registerEvents(new LegacyMigrationListener(), this);
-            Logger.info("<gold>Legacy rune migration system enabled - zItemsOld items will be auto-migrated");
-        } else {
-            Logger.warning("Legacy rune migration system is only possible with paper spigot!");
-        }
-
+        this.registerAutoListeners();
         this.registerListeners();
 
         EffectsManager effectsManager = this.registerManager(EffectsManager.class, new ZEffectsManager());
@@ -163,6 +160,27 @@ public class ZItems extends ItemsPlugin {
         });
 
         Logger.info("<yellow>=== ENABLE DONE <gray>(<gold>" + Math.abs(enableTime - System.currentTimeMillis()) + "ms<gray>) <yellow>===");
+    }
+
+    private void registerAutoListeners() {
+        Reflections reflections = ReflectionsCache.getInstance().getOrCreate(this, "fr.traqueur.items");
+        Set<Class<?>> candidates = reflections.getTypesAnnotatedWith(AutoListener.class);
+        int count = 0;
+        for (Class<?> clazz : candidates) {
+            if (!Listener.class.isAssignableFrom(clazz)) continue;
+            if (!VersionFilter.passes(clazz, clazz.getSimpleName())) continue;
+            try {
+                Listener listener = (Listener) clazz.getDeclaredConstructor().newInstance();
+                this.getServer().getPluginManager().registerEvents(listener, this);
+                count++;
+                Logger.debug("Registered auto-listener: {}", clazz.getSimpleName());
+            } catch (LinkageError e) {
+                Logger.warning("Skipping auto-listener <yellow>{}<reset> — missing API: {}", clazz.getSimpleName(), e.getMessage());
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                Logger.warning("Failed to instantiate auto-listener {}: {}", clazz.getSimpleName(), e.getMessage());
+            }
+        }
+        Logger.info("Registered <green>{}<reset> auto-listener(s).", count);
     }
 
     private void registerListeners() {

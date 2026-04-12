@@ -1,20 +1,22 @@
 package fr.traqueur.items.api.registries;
 
-import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.items.Item;
+import fr.traqueur.items.api.models.Folder;
 
 /**
  * Registry for managing Item instances.
  */
-public abstract class ItemsRegistry extends FileBasedRegistry<String, Item> {
+public interface ItemsRegistry extends Registry<String, Item> {
 
     /**
-     * Constructs an ItemsRegistry with the given plugin.
-     *
-     * @param plugin    The ItemsPlugin instance
-     * @param directory The directory where item data files are stored.
+     * Loads items from the configured folder structure.
      */
-    protected ItemsRegistry(ItemsPlugin plugin, String directory) {
-        super(plugin, directory, "Items Registry");
-    }
+    void loadFromFolder();
+
+    /**
+     * Gets the root folder of the loaded folder structure, used for GUI navigation.
+     *
+     * @return the root Folder object
+     */
+    Folder<Item> getRootFolder();
 }

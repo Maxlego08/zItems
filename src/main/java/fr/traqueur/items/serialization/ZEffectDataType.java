@@ -3,7 +3,6 @@ package fr.traqueur.items.serialization;
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.registries.EffectsRegistry;
 import fr.traqueur.items.api.registries.Registry;
-import fr.traqueur.items.api.serialization.EffectDataType;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.jetbrains.annotations.NotNull;
 

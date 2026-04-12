@@ -24,7 +24,7 @@ import fr.traqueur.structura.api.Loadable;
  * <h2>Settings Hierarchy</h2>
  * <p>Settings classes in zItems include:</p>
  * <ul>
- *   <li>{@link ItemSettings} - Custom item definitions (items/*.yml)</li>
+ *   <li>{@code ItemSettings} - Custom item definitions (items/*.yml)</li>
  *   <li>{@link RecipeWrapper} - Recipe configurations</li>
  *   <li>{@link fr.traqueur.items.api.effects.EffectSettings} - Effect handler configurations (effects/*.yml)</li>
  * </ul>
@@ -103,7 +103,6 @@ import fr.traqueur.structura.api.Loadable;
  * initialization and reload operations.</p>
  *
  * @see Loadable
- * @see ItemSettings
  * @see RecipeWrapper
  * @see fr.traqueur.items.api.effects.EffectSettings
  */

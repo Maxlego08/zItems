@@ -32,8 +32,8 @@ public class ZItemsManager implements ItemsManager {
         }
         Collection<Item> items = Registry.get(ItemsRegistry.class).getAll();
         for (Item item : items) {
-            if (item.settings().recipe() != null) {
-                ItemRecipe itemRecipe = item.settings().recipe().build(this.getPlugin().getName(), item);
+            if (item.recipe() != null) {
+                ItemRecipe itemRecipe = item.recipe().build(this.getPlugin().getName(), item);
                 this.recipes.add(itemRecipe);
                 recipesAPI.addRecipe(itemRecipe);
             }

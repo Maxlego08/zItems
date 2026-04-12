@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "re.alwyn974.groupez.repository")
 
     group = "fr.traqueur"
-    version = "1.0.0"
+    version = "1.0.0-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -25,6 +25,10 @@ allprojects {
         maven {
             name = "papermc"
             url = uri("https://repo.papermc.io/repository/maven-public/")
+        }
+        maven {
+            name = "spigotmc"
+            url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         }
         maven(url = "https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven(url = "https://jitpack.io")
@@ -47,7 +51,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+        compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
         /* Depends */
         compileOnly("me.clip:placeholderapi:2.11.6")
         compileOnly("fr.maxlego08.menu:zmenu-api:1.1.0.4")
@@ -56,6 +60,7 @@ allprojects {
         /* Adventure for Spigot compatibility */
         compileOnly("net.kyori:adventure-platform-bukkit:4.3.4")
         compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
+        compileOnly("net.kyori:adventure-text-serializer-plain:4.18.0")
 
         /* Libraries */
         implementation("fr.traqueur:recipesapi:3.2.0")
@@ -72,6 +77,9 @@ dependencies {
     implementation(project(":common"))
 
     rootProject.subprojects.filter { it.path.startsWith(":hooks:") }.forEach { subproject ->
+        implementation(project(subproject.path))
+    }
+    rootProject.subprojects.filter { it.path.startsWith(":versions:") }.forEach { subproject ->
         implementation(project(subproject.path))
     }
 }

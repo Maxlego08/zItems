@@ -21,7 +21,7 @@ import java.util.Optional;
 
 /**
  * Lightweight configuration for creating ItemStacks.
- * This is different from ItemSettings which is for complete custom items.
+ * This is different from {@code ItemSettings} which is for complete custom items.
  *
  * <p>This allows two modes:
  * <ul>

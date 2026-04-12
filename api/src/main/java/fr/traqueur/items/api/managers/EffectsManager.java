@@ -2,7 +2,7 @@ package fr.traqueur.items.api.managers;
 
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.effects.EffectApplicationResult;
-import fr.traqueur.items.api.settings.ItemSettings;
+import fr.traqueur.items.api.items.Item;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -120,14 +120,14 @@ public non-sealed interface EffectsManager extends Manager {
      *
      * @param player the player context (can be null)
      * @param baseEffects the list of base effects
-     * @param itemSettings the item settings (can be null for vanilla items)
+     * @param item the custom item (can be null for vanilla items)
      * @return the list of lore components representing the base effects
      */
-    List<Component> generateBaseEffectLore(Player player, List<Effect> baseEffects, ItemSettings itemSettings);
+    List<Component> generateBaseEffectLore(Player player, List<Effect> baseEffects, Item item);
 
     /**
      * Updates the item's lore to display the given effects.
-     * Handles both custom items (with ItemSettings) and vanilla items.
+     * Handles both custom items (with their configuration) and vanilla items.
      *
      * @param player the player context (can be null)
      * @param item the item to update

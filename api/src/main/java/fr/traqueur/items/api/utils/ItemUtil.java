@@ -1,6 +1,7 @@
 package fr.traqueur.items.api.utils;
 
 import fr.maxlego08.menu.api.dupe.DupeManager;
+import fr.traqueur.items.api.services.ItemComponentService;
 import fr.traqueur.items.api.PlatformType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -16,7 +17,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 
 /**
@@ -27,6 +30,16 @@ public class ItemUtil {
 
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
     private static final NamespacedKey DUPE_KEY = new NamespacedKey(Bukkit.getServer().getPluginManager().getPlugin("zMenu"), DupeManager.KEY);
+
+    private static final ItemComponentService COMPONENT_SERVICE;
+    static {
+        Iterator<ItemComponentService> it = ServiceLoader.load(ItemComponentService.class).iterator();
+        ItemComponentService found = it.hasNext() ? it.next() : null;
+        // Guard: only use Paper implementation when actually running on Paper.
+        // Without this, the service would be non-null in the fat JAR on Spigot too,
+        // and Paper-only methods (e.g. meta.displayName(Component)) would throw NoSuchMethodError.
+        COMPONENT_SERVICE = PlatformType.isPaper() ? found : null;
+    }
 
     /*
      * Private constructor to prevent instantiation
@@ -77,12 +90,9 @@ public class ItemUtil {
 
         Component processedDisplayName = displayName.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
 
-
-        if (PlatformType.isPaper()) {
-            // Use Paper's native Adventure API
-            meta.displayName(processedDisplayName);
+        if (COMPONENT_SERVICE != null) {
+            COMPONENT_SERVICE.setDisplayName(meta, processedDisplayName);
         } else {
-            // Convert Component to legacy format for Spigot
             String legacy = LEGACY_SERIALIZER.serialize(processedDisplayName);
             meta.setDisplayName(legacy);
         }
@@ -114,15 +124,12 @@ public class ItemUtil {
             processedLore.add(line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
         }
 
-        if (PlatformType.isPaper()) {
-            // Use Paper's native Adventure API
-            meta.lore(processedLore);
+        if (COMPONENT_SERVICE != null) {
+            COMPONENT_SERVICE.setLore(meta, processedLore);
         } else {
-            // Convert Components to legacy format for Spigot
             List<String> legacyLore = new ArrayList<>();
             for (Component line : processedLore) {
-                String legacy = LEGACY_SERIALIZER.serialize(line);
-                legacyLore.add(legacy);
+                legacyLore.add(LEGACY_SERIALIZER.serialize(line));
             }
             meta.setLore(legacyLore);
         }
@@ -147,11 +154,9 @@ public class ItemUtil {
             return null;
         }
 
-        if (PlatformType.isPaper()) {
-            // Use Paper's native Adventure API
-            return meta.lore();
+        if (COMPONENT_SERVICE != null) {
+            return COMPONENT_SERVICE.getLore(meta);
         } else {
-            // Convert from legacy format for Spigot
             List<String> lore = meta.getLore();
             if (lore == null) {
                 return null;
@@ -211,12 +216,9 @@ public class ItemUtil {
 
         Component processedItemName = itemName.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
 
-
-        if (PlatformType.isPaper()) {
-            // Use Paper's native Adventure API
-            meta.itemName(processedItemName);
+        if (COMPONENT_SERVICE != null) {
+            COMPONENT_SERVICE.setItemName(meta, processedItemName);
         } else {
-            // Convert Component to legacy format for Spigot
             String legacy = LEGACY_SERIALIZER.serialize(processedItemName);
             meta.setItemName(legacy);
         }

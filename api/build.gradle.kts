@@ -2,6 +2,10 @@ plugins {
     id("re.alwyn974.groupez.publish") version "1.0.0"
 }
 
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
+}
+
 rootProject.extra.properties["sha"]?.let { sha ->
     version = sha
 }

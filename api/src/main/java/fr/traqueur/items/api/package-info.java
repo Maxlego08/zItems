@@ -21,7 +21,6 @@
  *   <li>{@link fr.traqueur.items.api.hooks} - Third-party plugin integration system</li>
  *   <li>{@link fr.traqueur.items.api.settings} - YAML configuration classes</li>
  *   <li>{@link fr.traqueur.items.api.events} - Custom Bukkit events</li>
- *   <li>{@link fr.traqueur.items.api.serialization} - PDC data type serializers</li>
  *   <li>{@link fr.traqueur.items.api.annotations} - Annotation-driven component discovery</li>
  * </ul>
  *

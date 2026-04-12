@@ -13,7 +13,6 @@ import fr.traqueur.items.api.placeholders.PlaceholderParser;
 import fr.traqueur.items.api.registries.EffectsRegistry;
 import fr.traqueur.items.api.registries.HandlersRegistry;
 import fr.traqueur.items.api.registries.Registry;
-import fr.traqueur.items.api.settings.ItemSettings;
 import fr.traqueur.items.api.settings.Settings;
 import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.items.api.utils.MessageUtil;
@@ -123,15 +122,15 @@ public class ZEffectsManager implements EffectsManager {
                 Item customItemInstance = customItem.get();
 
                 // Check if additional effects are allowed
-                if (!customItemInstance.settings().allowAdditionalEffects()) {
+                if (!customItemInstance.allowAdditionalEffects()) {
                     Logger.debug("Cannot apply effect {} to item {}: additional effects are not allowed",
                             effect.type(), customItemInstance.id());
                     return EffectApplicationResult.NOT_ALLOWED;
                 }
 
                 // Check if this specific effect is disabled for this item
-                if (customItemInstance.settings().disabledEffects() != null &&
-                        customItemInstance.settings().disabledEffects().contains(effect.id())) {
+                if (customItemInstance.disabledEffects() != null &&
+                        customItemInstance.disabledEffects().contains(effect.id())) {
                     Logger.debug("Cannot apply effect {} to item {}: this effect is disabled for this item",
                             effect.id(), customItemInstance.id());
                     return EffectApplicationResult.DISABLED;
@@ -283,8 +282,8 @@ public class ZEffectsManager implements EffectsManager {
      */
     private void updateItemLoreForCustomItem(Player player, ItemStack item, Item customItem, List<Effect> allEffects) {
         // Separate base effects and additional effects
-        List<Effect> baseEffects = customItem.settings().effects() != null
-                ? customItem.settings().effects()
+        List<Effect> baseEffects = customItem.effects() != null
+                ? customItem.effects()
                 : List.of();
 
         List<String> baseEffectIds = baseEffects.stream()
@@ -300,13 +299,13 @@ public class ZEffectsManager implements EffectsManager {
                 player,
                 baseEffects,
                 additionalEffects,
-                customItem.settings()
+                customItem
         );
 
         // Combine base lore with effect lore
         List<Component> combinedLore = new ArrayList<>();
-        if (customItem.settings().baseItem().lore() != null) {
-            combinedLore.addAll(customItem.settings().baseItem().lore().stream().map(str -> MessageUtil.parseMessage(PlaceholderParser.parsePlaceholders(player, str))).toList());
+        if (customItem.lore() != null) {
+            combinedLore.addAll(customItem.lore().stream().map(str -> MessageUtil.parseMessage(PlaceholderParser.parsePlaceholders(player, str))).toList());
         }
         combinedLore.addAll(effectLoreLines);
 
@@ -380,18 +379,18 @@ public class ZEffectsManager implements EffectsManager {
      *
      * @param baseEffects base effects (defined in item config)
      * @param additionalEffects additional effects (applied after item creation)
-     * @param itemSettings the item's settings
+     * @param item the custom item
      * @return list of lore components to add to the item
      */
     private List<Component> generateEffectLore(
             Player player,
             List<Effect> baseEffects,
             List<Effect> additionalEffects,
-            ItemSettings itemSettings
+            Item item
     ) {
         // Determine how many effects to display
-        int nbEffectsView = itemSettings.nbEffectsView();
-       
+        int nbEffectsView = item.nbEffectsView();
+
         if (nbEffectsView == -1) {
             // Use global default if not specified per-item
             PluginSettings pluginSettings = Settings.get(PluginSettings.class);
@@ -401,11 +400,11 @@ public class ZEffectsManager implements EffectsManager {
         // Collect visible effects based on settings
         List<Effect> visibleEffects = new ArrayList<>();
 
-        if (itemSettings.baseEffectsVisible() && baseEffects != null) {
+        if (item.baseEffectsVisible() && baseEffects != null) {
             visibleEffects.addAll(baseEffects);
         }
 
-        if (itemSettings.additionalEffectsVisible() && additionalEffects != null) {
+        if (item.additionalEffectsVisible() && additionalEffects != null) {
             visibleEffects.addAll(additionalEffects);
         }
 
@@ -425,8 +424,8 @@ public class ZEffectsManager implements EffectsManager {
      * @return list of lore components to add to the item
      */
     @Override
-    public List<Component> generateBaseEffectLore(Player player, List<Effect> baseEffects, ItemSettings itemSettings) {
-        return generateEffectLore(player, baseEffects, List.of(), itemSettings);
+    public List<Component> generateBaseEffectLore(Player player, List<Effect> baseEffects, Item item) {
+        return generateEffectLore(player, baseEffects, List.of(), item);
     }
 
     /**

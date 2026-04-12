@@ -1,9 +1,9 @@
 package fr.traqueur.items.registries;
 
-import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.ZItems;
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.Logger;
+import fr.traqueur.items.VersionFilter;
 import fr.traqueur.items.api.annotations.AutoBlockDataMeta;
 import fr.traqueur.items.api.annotations.AutoBlockStateMeta;
 import fr.traqueur.items.api.annotations.AutoMetadata;
@@ -26,27 +26,38 @@ import org.reflections.Reflections;
 import java.nio.file.Path;
 import java.util.*;
 
-public class ZItemsRegistry extends ItemsRegistry {
+public class ZItemsRegistry extends FileBasedRegistry<String, Item> implements ItemsRegistry {
 
     public ZItemsRegistry(ItemsPlugin plugin) {
-        super(plugin, ZItems.ITEMS_FOLDER);
+        super(plugin, ZItems.ITEMS_FOLDER, "Items Registry");
         Reflections reflections = ReflectionsCache.getInstance().getOrCreate(plugin, "fr.traqueur.items");
 
         PolymorphicRegistry.create(BlockDataMeta.class, registry -> {
             Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(AutoBlockDataMeta.class);
             int count = 0;
+            Set<String> registeredKeys = new HashSet<>();
             for (Class<?> clazz : annotatedClasses) {
                 if (!BlockDataMeta.class.isAssignableFrom(clazz)) {
-                    Logger.warning("Class <yellow>{}<reset> is annotated with @BlockDataMetaMeta but does not implement BlockDataMeta. Skipping.",
+                    Logger.warning("Class <yellow>{}<reset> is annotated with @AutoBlockDataMeta but does not implement BlockDataMeta. Skipping.",
                             clazz.getSimpleName());
                     continue;
                 }
-                AutoBlockDataMeta meta = clazz.getAnnotation(AutoBlockDataMeta.class);
-
-                //noinspection unchecked
-                registry.register(meta.value(), (Class<? extends BlockDataMeta<?>>) clazz);
-                count++;
-                Logger.debug("Registered BlockDataMeta type <aqua>{}<reset> with id <gold>{}<reset>.", clazz.getSimpleName(), meta.value());
+                if (!VersionFilter.passes(clazz, clazz.getSimpleName())) continue;
+                try {
+                    AutoBlockDataMeta meta = clazz.getAnnotation(AutoBlockDataMeta.class);
+                    if (registeredKeys.contains(meta.value())) {
+                        Logger.warning("BlockDataMeta key '<yellow>{}<reset>' already registered — skipping <yellow>{}<reset>. Check your version/platform annotations.",
+                                meta.value(), clazz.getSimpleName());
+                        continue;
+                    }
+                    //noinspection unchecked
+                    registry.register(meta.value(), (Class<? extends BlockDataMeta<?>>) clazz);
+                    registeredKeys.add(meta.value());
+                    count++;
+                    Logger.debug("Registered BlockDataMeta type <aqua>{}<reset> with id <gold>{}<reset>.", clazz.getSimpleName(), meta.value());
+                } catch (LinkageError e) {
+                    Logger.warning("Skipping BlockDataMeta <yellow>{}<reset> — missing API on this server: {}", clazz.getSimpleName(), e.getMessage());
+                }
             }
             Logger.info("Registered <gold>{}<reset> BlockDataMeta type(s).", count);
         });
@@ -54,18 +65,29 @@ public class ZItemsRegistry extends ItemsRegistry {
         PolymorphicRegistry.create(BlockStateMeta.class, registry -> {
             Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(AutoBlockStateMeta.class);
             int count = 0;
+            Set<String> registeredKeys = new HashSet<>();
             for (Class<?> clazz : annotatedClasses) {
                 if (!BlockStateMeta.class.isAssignableFrom(clazz)) {
                     Logger.warning("Class <yellow>{}<reset> is annotated with @AutoBlockStateMeta but does not implement BlockStateMeta. Skipping.",
                             clazz.getSimpleName());
                     continue;
                 }
-                AutoBlockStateMeta meta = clazz.getAnnotation(AutoBlockStateMeta.class);
-
-                //noinspection unchecked
-                registry.register(meta.value(), (Class<? extends BlockStateMeta<?>>) clazz);
-                count++;
-                Logger.debug("Registered BlockStateMeta type <aqua>{}<reset> with id <gold>{}<reset>.", clazz.getSimpleName(), meta.value());
+                if (!VersionFilter.passes(clazz, clazz.getSimpleName())) continue;
+                try {
+                    AutoBlockStateMeta meta = clazz.getAnnotation(AutoBlockStateMeta.class);
+                    if (registeredKeys.contains(meta.value())) {
+                        Logger.warning("BlockStateMeta key '<yellow>{}<reset>' already registered — skipping <yellow>{}<reset>. Check your version/platform annotations.",
+                                meta.value(), clazz.getSimpleName());
+                        continue;
+                    }
+                    //noinspection unchecked
+                    registry.register(meta.value(), (Class<? extends BlockStateMeta<?>>) clazz);
+                    registeredKeys.add(meta.value());
+                    count++;
+                    Logger.debug("Registered BlockStateMeta type <aqua>{}<reset> with id <gold>{}<reset>.", clazz.getSimpleName(), meta.value());
+                } catch (LinkageError e) {
+                    Logger.warning("Skipping BlockStateMeta <yellow>{}<reset> — missing API on this server: {}", clazz.getSimpleName(), e.getMessage());
+                }
             }
             Logger.info("Registered <gold>{}<reset> BlockStateMeta type(s).", count);
         });
@@ -73,30 +95,29 @@ public class ZItemsRegistry extends ItemsRegistry {
         PolymorphicRegistry.create(ItemMetadata.class, registry -> {
             Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(AutoMetadata.class);
             int count = 0;
+            Set<String> registeredKeys = new HashSet<>();
             for (Class<?> clazz : annotatedClasses) {
                 if (!ItemMetadata.class.isAssignableFrom(clazz)) {
-                    Logger.warning("Class <yellow>{}<reset> is annotated with @MetadataMeta but does not implement ItemMetadata. Skipping.",
+                    Logger.warning("Class <yellow>{}<reset> is annotated with @AutoMetadata but does not implement ItemMetadata. Skipping.",
                             clazz.getSimpleName());
                     continue;
                 }
-                AutoMetadata meta = clazz.getAnnotation(AutoMetadata.class);
-
-                boolean paperOnly = clazz.isAnnotationPresent(AutoMetadata.PaperMetadata.class);
-                boolean spigotOnly = clazz.isAnnotationPresent(AutoMetadata.SpigotMetadata.class);
-                if (spigotOnly && PlatformType.isPaper()) {
-                    Logger.debug("Skipping registration of ItemMetadata type <aqua>{}<reset> as it is Spigot-only.", clazz.getSimpleName());
-                    continue;
+                if (!VersionFilter.passes(clazz, clazz.getSimpleName())) continue;
+                try {
+                    AutoMetadata meta = clazz.getAnnotation(AutoMetadata.class);
+                    if (registeredKeys.contains(meta.value())) {
+                        Logger.warning("ItemMetadata key '<yellow>{}<reset>' already registered — skipping <yellow>{}<reset>. Check your version/platform annotations.",
+                                meta.value(), clazz.getSimpleName());
+                        continue;
+                    }
+                    //noinspection unchecked
+                    registry.register(meta.value(), (Class<? extends ItemMetadata>) clazz);
+                    registeredKeys.add(meta.value());
+                    count++;
+                    Logger.debug("Registered ItemMetadata type <aqua>{}<reset> with id <gold>{}<reset>.", clazz.getSimpleName(), meta.value());
+                } catch (LinkageError e) {
+                    Logger.warning("Skipping ItemMetadata <yellow>{}<reset> — missing API on this server: {}", clazz.getSimpleName(), e.getMessage());
                 }
-
-                if (paperOnly && !PlatformType.isPaper()) {
-                    Logger.debug("Skipping registration of ItemMetadata type <aqua>{}<reset> as it is Paper-only.", clazz.getSimpleName());
-                    continue;
-                }
-
-                //noinspection unchecked
-                registry.register(meta.value(), (Class<? extends ItemMetadata>) clazz);
-                count++;
-                Logger.debug("Registered ItemMetadata type <aqua>{}<reset> with id <gold>{}<reset>.", clazz.getSimpleName(), meta.value());
             }
             Logger.info("Registered <gold>{}<reset> ItemMetadata type(s).", count);
         });
@@ -132,7 +153,7 @@ public class ZItemsRegistry extends ItemsRegistry {
      * @return true if all effects are compatible, false otherwise
      */
     private boolean validateEffectsCompatibility(Item item, Path file) {
-        List<Effect> effects = item.settings().effects();
+        List<Effect> effects = item.effects();
         if (effects == null || effects.isEmpty()) {
             return true; // No effects to validate
         }

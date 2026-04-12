@@ -2,6 +2,7 @@ package fr.traqueur.items.registries;
 
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.Logger;
+import fr.traqueur.items.VersionFilter;
 import fr.traqueur.items.api.annotations.AutoExtractor;
 import fr.traqueur.items.api.effects.ItemSourceExtractor;
 import fr.traqueur.items.api.registries.ExtractorsRegistry;
@@ -104,6 +105,10 @@ public class ZExtractorsRegistry implements ExtractorsRegistry {
             return false;
         }
 
+        if (!VersionFilter.passes(clazz, clazz.getSimpleName())) {
+            return false;
+        }
+
         try {
             AutoExtractor meta = clazz.getAnnotation(AutoExtractor.class);
             Class<? extends Event> eventType = meta.value();
@@ -121,6 +126,9 @@ public class ZExtractorsRegistry implements ExtractorsRegistry {
 
             return true;
 
+        } catch (LinkageError e) {
+            Logger.warning("Skipping ItemSourceExtractor <yellow>{}<reset> — missing API on this server: {}", clazz.getSimpleName(), e.getMessage());
+            return false;
         } catch (Exception e) {
             Logger.severe("Failed to instantiate ItemSourceExtractor: {}", e, clazz.getName());
             return false;

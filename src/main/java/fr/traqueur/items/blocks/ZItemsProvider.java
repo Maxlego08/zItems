@@ -36,7 +36,7 @@ public class ZItemsProvider implements CustomBlockProvider {
             throw new RuntimeException("Item not found");
         }
         BlockTracker.get().trackBlock(block, itemId);
-        Material material = item.settings().baseItem().material();
+        Material material = item.material();
         block.setType(material);
     }
 

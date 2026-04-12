@@ -1,6 +1,5 @@
 package fr.traqueur.items.api.utils;
 
-import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.placeholders.PlaceholderParser;
 import net.kyori.adventure.audience.Audience;
@@ -67,15 +66,9 @@ public class MessageUtil {
      * @param plugin The plugin instance
      */
     public static void initialize(Plugin plugin) {
-        PlatformType platformType = PlatformType.detect();
         MINI_MESSAGE = MiniMessage.miniMessage();
-
-        if (platformType == PlatformType.SPIGOT) {
-            bukkitAudiences = BukkitAudiences.create(plugin);
-            Logger.info("<yellow>Detected Spigot server - Using Adventure Platform wrapper");
-        } else {
-            Logger.info("<yellow>Detected Paper server - Using native Adventure API");
-        }
+        bukkitAudiences = BukkitAudiences.create(plugin);
+        Logger.info("<yellow>MessageUtil initialized with Adventure Platform");
     }
 
     /**
@@ -100,28 +93,12 @@ public class MessageUtil {
     public static void sendMessage(CommandSender sender, String message, TagResolver... placeholders) {
         String parsedString = sender instanceof Player player ? PlaceholderParser.parsePlaceholders(player, message) : message;
         Component parsedComponent = parseMessage(parsedString, placeholders);
-        if (PlatformType.isPaper()) {
-            sender.sendMessage(parsedComponent);
-        } else {
-            Audience audience = bukkitAudiences.sender(sender);
-            audience.sendMessage(parsedComponent);
-        }
+        Audience audience = bukkitAudiences.sender(sender);
+        audience.sendMessage(parsedComponent);
     }
 
     /**
      * Parses a message with MiniMessage tags, legacy color codes, and custom placeholders.
-     * Converts legacy codes to MiniMessage format first, then parses with placeholder resolution.
-     * <p>
-     * Example usage:
-     * <pre>{@code
-     * import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-     *
-     * Component message = MessageUtil.parseMessage(
-     *     "<green>Player <player> earned <amount> coins!",
-     *     Placeholder.parsed("player", playerName),
-     *     Placeholder.parsed("amount", String.valueOf(coins))
-     * );
-     * }</pre>
      *
      * @param message      The message to parse
      * @param placeholders The TagResolvers for placeholder replacement

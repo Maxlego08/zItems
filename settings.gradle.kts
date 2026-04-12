@@ -18,3 +18,10 @@ file("hooks").listFiles()?.forEach { file ->
         include(":hooks:${file.name}")
     }
 }
+
+file("versions").listFiles()?.forEach { file ->
+    if (file.isDirectory && !file.name.equals("build")) {
+        println("Include versions:${file.name}")
+        include(":versions:${file.name}")
+    }
+}

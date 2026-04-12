@@ -81,7 +81,7 @@ public class DisableEnchantsListener implements Listener {
         }
 
         itemsManager.getCustomItem(firstItem).ifPresent(customItem -> {
-            List<DisabledEnchantment> disabledEnchantments = customItem.settings().disabledEnchantments();
+            List<DisabledEnchantment> disabledEnchantments = customItem.disabledEnchantments();
             if (disabledEnchantments == null || disabledEnchantments.isEmpty()) {
                 return;
             }
@@ -164,7 +164,7 @@ public class DisableEnchantsListener implements Listener {
         }
 
         itemsManager.getCustomItem(itemStack).ifPresent(customItem -> {
-            List<DisabledEnchantment> disabledEnchantments = customItem.settings().disabledEnchantments();
+            List<DisabledEnchantment> disabledEnchantments = customItem.disabledEnchantments();
             if (disabledEnchantments == null || disabledEnchantments.isEmpty()) {
                 return;
             }
@@ -209,7 +209,7 @@ public class DisableEnchantsListener implements Listener {
         }
 
         itemsManager.getCustomItem(itemStack).ifPresent(customItem -> {
-            List<DisabledEnchantment> disabledEnchantments = customItem.settings().disabledEnchantments();
+            List<DisabledEnchantment> disabledEnchantments = customItem.disabledEnchantments();
             if (disabledEnchantments == null || disabledEnchantments.isEmpty()) {
                 return;
             }

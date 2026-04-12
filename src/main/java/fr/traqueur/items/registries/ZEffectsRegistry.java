@@ -19,10 +19,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZEffectsRegistry extends EffectsRegistry {
+public class ZEffectsRegistry extends FileBasedRegistry<String, Effect> implements EffectsRegistry {
 
     public ZEffectsRegistry(ItemsPlugin plugin) {
-        super(plugin, ZItems.EFFECTS_FOLDER);
+        super(plugin, ZItems.EFFECTS_FOLDER, "Effects Registry");
     }
 
 

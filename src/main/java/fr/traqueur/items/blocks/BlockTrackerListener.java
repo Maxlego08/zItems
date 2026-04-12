@@ -42,7 +42,7 @@ public record BlockTrackerListener(BlockTracker tracker, ItemsManager itemsManag
             Item item = customItem.get();
 
             // Only track the block if the item is configured as trackable
-            if (item.settings().trackable()) {
+            if (item.trackable()) {
                 Block placedBlock = event.getBlockPlaced();
                 tracker.trackBlock(placedBlock, item.id());
             }

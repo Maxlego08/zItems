@@ -60,7 +60,6 @@ import java.util.Optional;
  *
  * @see Item
  * @see fr.traqueur.items.api.registries.ItemsRegistry
- * @see fr.traqueur.items.api.settings.ItemSettings
  */
 public non-sealed interface ItemsManager extends Manager {
 

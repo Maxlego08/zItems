@@ -33,10 +33,10 @@ public class ZItemIngredient extends Ingredient {
         if (this.item == null) {
             this.item = Registry.get(ItemsRegistry.class).getById(id);
         }
-        Material material = this.item.settings().baseItem().material();
+        Material material = this.item.material();
         if (material == null) {
             // Item uses copy-from (e.g. ItemsAdder), resolve the actual ItemStack
-            ItemStack built = this.item.settings().baseItem().build(null);
+            ItemStack built = this.item.build(null, 1);
             material = built.getType();
         }
         return new RecipeChoice.MaterialChoice(material);

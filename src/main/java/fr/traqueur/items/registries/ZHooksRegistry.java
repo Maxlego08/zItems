@@ -1,8 +1,7 @@
 package fr.traqueur.items.registries;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.MutableClassToInstanceMap;
 import fr.traqueur.items.api.Logger;
+import fr.traqueur.items.VersionFilter;
 import fr.traqueur.items.api.annotations.AutoHook;
 import fr.traqueur.items.api.hooks.Hook;
 import fr.traqueur.items.api.registries.HooksRegistry;
@@ -121,17 +120,20 @@ public class ZHooksRegistry implements HooksRegistry {
                     continue;
                 }
 
-                AutoHook annotation = clazz.getAnnotation(AutoHook.class);
-                String pluginName = annotation.value();
-
-                if (pluginName == null || pluginName.trim().isEmpty()) {
-                    Logger.warning("Hook <yellow>{}<reset> has empty plugin name. Skipping.",
-                            clazz.getSimpleName());
+                if (!VersionFilter.passes(clazz, clazz.getSimpleName())) {
                     continue;
                 }
 
                 try {
-                    // Try to instantiate the hook
+                    AutoHook annotation = clazz.getAnnotation(AutoHook.class);
+                    String pluginName = annotation.value();
+
+                    if (pluginName == null || pluginName.trim().isEmpty()) {
+                        Logger.warning("Hook <yellow>{}<reset> has empty plugin name. Skipping.",
+                                clazz.getSimpleName());
+                        continue;
+                    }
+
                     Hook hook = instantiateHook(clazz, plugin);
                     if (hook != null) {
                         this.register(pluginName, hook);
@@ -139,6 +141,8 @@ public class ZHooksRegistry implements HooksRegistry {
                         Logger.debug("Registered hook: <aqua>{}<reset> -> {}",
                                 pluginName, clazz.getSimpleName());
                     }
+                } catch (LinkageError e) {
+                    Logger.warning("Skipping hook <yellow>{}<reset> — missing API on this server: {}", clazz.getSimpleName(), e.getMessage());
                 } catch (Exception e) {
                     Logger.severe("Failed to instantiate hook {}: {}",
                             e, clazz.getSimpleName(), e.getMessage());

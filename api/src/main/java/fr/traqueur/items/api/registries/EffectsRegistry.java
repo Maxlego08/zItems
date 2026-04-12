@@ -1,20 +1,22 @@
 package fr.traqueur.items.api.registries;
 
-import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.effects.Effect;
+import fr.traqueur.items.api.models.Folder;
 
 /**
  * Registry for managing Effect instances.
  */
-public abstract class EffectsRegistry extends FileBasedRegistry<String, Effect> {
+public interface EffectsRegistry extends Registry<String, Effect> {
 
     /**
-     * Constructs an EffectsRegistry with the specified ItemsPlugin.
-     *
-     * @param directory the directory where effect data is stored
-     * @param plugin the ItemsPlugin instance
+     * Loads effects from the configured folder structure.
      */
-    protected EffectsRegistry(ItemsPlugin plugin, String directory) {
-        super(plugin, directory, "Effects Registry");
-    }
+    void loadFromFolder();
+
+    /**
+     * Gets the root folder of the loaded folder structure, used for GUI navigation.
+     *
+     * @return the root Folder object
+     */
+    Folder<Effect> getRootFolder();
 }

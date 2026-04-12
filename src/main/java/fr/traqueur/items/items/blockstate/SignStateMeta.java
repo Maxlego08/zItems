@@ -1,8 +1,10 @@
 package fr.traqueur.items.items.blockstate;
 
+import fr.traqueur.items.api.services.BlockComponentService;
 import fr.traqueur.items.api.PlatformType;
 import fr.traqueur.items.api.annotations.AutoBlockStateMeta;
 import fr.traqueur.items.api.items.BlockStateMeta;
+import fr.traqueur.items.paper.PaperBlockComponentService;
 import fr.traqueur.structura.annotations.Options;
 import fr.traqueur.structura.annotations.defaults.DefaultBool;
 import fr.traqueur.structura.api.Loadable;
@@ -27,6 +29,8 @@ public record SignStateMeta(
         @Options(optional = true) SignSideConfig back
 ) implements BlockStateMeta<Sign> {
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
+    private static final BlockComponentService BLOCK_COMPONENT_SERVICE =
+            PlatformType.isPaper() ? new PaperBlockComponentService() : null;
     @Override
     public void apply(Player player, Sign sign) {
         sign.setWaxed(waxed);
@@ -53,8 +57,8 @@ public record SignStateMeta(
             for (int i = 0; i < Math.min(config.lines().size(), 4); i++) {
                 Component line = config.lines().get(i);
                 if (line != null) {
-                    if(PlatformType.isPaper()) {
-                        signSide.line(i, line);
+                    if (BLOCK_COMPONENT_SERVICE != null) {
+                        BLOCK_COMPONENT_SERVICE.setLine(signSide, i, line);
                     } else {
                         signSide.setLine(i, LEGACY_SERIALIZER.serialize(line));
                     }

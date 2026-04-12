@@ -53,11 +53,11 @@ public class CommandsListener implements Listener {
         }
 
         // Check if the item has CommandsMetadata
-        if (item.settings().metadata() == null) {
+        if (item.metadata() == null) {
             return;
         }
 
-        CommandsMetadata commandsMetadata = item.settings().metadata().stream()
+        CommandsMetadata commandsMetadata = item.metadata().stream()
                 .filter(m -> m instanceof CommandsMetadata)
                 .map(m -> (CommandsMetadata) m)
                 .findFirst()

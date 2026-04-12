@@ -73,8 +73,8 @@
  * }</pre>
  *
  * <h2>File-Based Registries</h2>
- * <p>Some registries extend {@link fr.traqueur.items.api.registries.FileBasedRegistry}
- * which adds support for loading components from YAML files:</p>
+ * <p>Some registries support loading components from YAML files via {@code FileBasedRegistry}
+ * (available in the common module):</p>
  * <ul>
  *   <li>{@link fr.traqueur.items.api.registries.ItemsRegistry} - Loads from items/ directory</li>
  *   <li>{@link fr.traqueur.items.api.registries.EffectsRegistry} - Loads from effects/ directory</li>
@@ -85,6 +85,5 @@
  * should occur on the main server thread during plugin initialization and reload.</p>
  *
  * @see fr.traqueur.items.api.registries.Registry
- * @see fr.traqueur.items.api.registries.FileBasedRegistry
  */
 package fr.traqueur.items.api.registries;
