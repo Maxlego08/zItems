@@ -30,6 +30,7 @@ import fr.traqueur.items.commands.CommandsMessageHandler;
 import fr.traqueur.items.commands.ZItemsCommand;
 import fr.traqueur.items.commands.arguments.EffectArgument;
 import fr.traqueur.items.commands.arguments.ItemArgument;
+import fr.traqueur.items.effects.TickDispatcher;
 import fr.traqueur.items.effects.ZEffectsDispatcher;
 import fr.traqueur.items.effects.ZEffectsManager;
 import fr.traqueur.items.effects.ZEventsListener;
@@ -86,6 +87,7 @@ public class ZItems extends ItemsPlugin {
 
     private RecipesAPI recipesManager;
     private EffectsDispatcher dispatcher;
+    private TickDispatcher tickDispatcher;
     private InventoryManager inventoryManager;
     private ButtonManager buttonManager;
 
@@ -159,6 +161,9 @@ public class ZItems extends ItemsPlugin {
             eventsListener.registerDynamicListeners(this);
             itemsManager.generateRecipesFromLoadedItems();
             effectsManager.loadRecipes();
+
+            this.tickDispatcher = new TickDispatcher(this);
+            this.tickDispatcher.start();
         });
 
         Logger.info("<yellow>=== ENABLE DONE <gray>(<gold>" + Math.abs(enableTime - System.currentTimeMillis()) + "ms<gray>) <yellow>===");
@@ -325,6 +330,10 @@ public class ZItems extends ItemsPlugin {
         HooksRegistry hooksRegistry = Registry.get(HooksRegistry.class);
         if (hooksRegistry != null) {
             hooksRegistry.disableAll();
+        }
+
+        if (this.tickDispatcher != null) {
+            this.tickDispatcher.stop();
         }
 
         BlockTracker.get().clearCache();

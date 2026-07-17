@@ -1,0 +1,12 @@
+# Sneak Fire Sword Example
+# Demonstrates a SNEAKING-gated pipeline: hold this and crouch to surround yourself
+# with a ring of flame particles.
+id: "sneak_fire_sword"
+material: NETHERITE_SWORD
+display-name: "<gradient:#FF4500:#FFD700><bold>🔥 Ember Blade</bold></gradient>"
+item-name: "sneak_fire_sword"
+lore:
+  - "<gray>Crouch while holding this to summon a ring of flame"
+max-stack-size: 1
+effects:
+  - "sneak_fire_ring"
