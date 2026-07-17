@@ -169,6 +169,10 @@ Boost job experience and money rewards.
 - `JobsExperienceMultiplier` - Multiplies job XP gained
 - `JobsMoneyMultiplier` - Multiplies job money gained
 
+**Entries** (for [pipelines](pipelines.md)):
+- `JOBS_EXP_GAIN` - Matches `JobsExpGainEvent`
+- `JOBS_MONEY_GAIN` - Matches `JobsPrePaymentEvent`
+
 **Example effect**:
 ```yaml
 id: "jobs_xp_boost"
@@ -206,6 +210,10 @@ public class JobsExperienceMultiplier extends JobsHandler<JobsExpGainEvent> {
 **Handlers**:
 - `ZJobsExperienceMultiplier` - Multiplies ZJobs XP
 - `ZJobsMoneyMultiplier` - Multiplies ZJobs money
+
+**Entries** (for [pipelines](pipelines.md)):
+- `JOBS_EXP_GAIN` - Matches `JobExpGainEvent` (same entry id as the Jobs Reborn hook — only one hook is ever active)
+- `JOBS_MONEY_GAIN` - Matches `JobMoneyGainEvent`
 
 **Example effect**:
 ```yaml
