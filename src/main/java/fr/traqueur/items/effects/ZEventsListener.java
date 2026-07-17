@@ -131,6 +131,14 @@ public record ZEventsListener(EffectsDispatcher dispatcher) implements Listener 
      * @return true if registration succeeded, false otherwise
      */
     private boolean registerListenerForEvent(JavaPlugin plugin, Class<? extends Event> eventType) {
+        // Abstract/interface event types (e.g. the generic PlayerEvent fallback key used by
+        // PlayerEventExtractor) are never fired directly by Bukkit and have no handler list of
+        // their own — only reachable via hierarchical extractor resolution on a concrete event.
+        if (java.lang.reflect.Modifier.isAbstract(eventType.getModifiers())) {
+            Logger.debug("Event type {} is abstract, not a concrete listener target. Skipping.", eventType.getSimpleName());
+            return false;
+        }
+
         // Check that an extractor exists for this event type
         if (!Registry.get(ExtractorsRegistry.class).has(eventType)) {
             Logger.warning("No ItemSourceExtractor for event type: <yellow>{}<reset>. Skipping listener registration.",
