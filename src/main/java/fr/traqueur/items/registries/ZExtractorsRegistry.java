@@ -217,6 +217,11 @@ public class ZExtractorsRegistry implements ExtractorsRegistry {
     }
 
     @Override
+    public Set<Class<? extends Event>> registeredEventTypes() {
+        return Collections.unmodifiableSet(extractors.keySet());
+    }
+
+    @Override
     public void clear() {
         extractors.clear();
         cache.clear();

@@ -1,0 +1,4 @@
+# Attack Entry Example
+# Matches when a player deals damage while holding the item, gating a PIPELINE effect's steps.
+id: "attack"
+type: "ATTACK"

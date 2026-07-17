@@ -1,0 +1,18 @@
+# Pipeline Effect Example
+# Groups existing effects behind a shared trigger condition (the "entry"), with an
+# optional final action on the collected drops (the "exit").
+#
+# Here, "auto_sell_pickaxe" (AUTO_SELL) is normally a multi-event effect that would
+# fire on both BlockBreakEvent and EntityDeathEvent. Wrapped in this pipeline with
+# entry "kill", it only ever runs when the item lands a kill — never on mining.
+#
+# NOTE: any effect referenced under `steps` must already be registered when this file
+# is parsed (effects are loaded in directory order, not dependency order) — keep
+# referenced step files sorted before this one if you add your own.
+id: "sword_combat"
+type: "PIPELINE"
+display-name: "<gradient:#c0392b:#e74c3c><bold>⚔ COMBAT PIPELINE</bold></gradient>"
+entry: "kill"
+steps:
+  - "auto_sell_pickaxe"
+exit: "none"

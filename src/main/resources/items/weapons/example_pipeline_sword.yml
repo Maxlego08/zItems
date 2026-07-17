@@ -1,0 +1,12 @@
+# Pipeline Sword Example
+# Demonstrates a PIPELINE effect: the bundled "auto_sell_pickaxe" effect only runs
+# when this sword lands a kill, thanks to the "kill" entry gating it.
+id: "pipeline_sword"
+material: NETHERITE_SWORD
+display-name: "<gradient:#c0392b:#e74c3c><bold>⚔ Combat Pipeline Sword</bold></gradient>"
+item-name: "pipeline_sword"
+lore:
+  - "<gray>Automatically sells whatever it kills"
+max-stack-size: 1
+effects:
+  - "sword_combat"

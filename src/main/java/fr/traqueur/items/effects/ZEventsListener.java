@@ -92,6 +92,7 @@ public record ZEventsListener(EffectsDispatcher dispatcher) implements Listener 
      */
     private Set<Class<? extends Event>> collectEventTypes(HandlersRegistry handlersRegistry) {
         Set<Class<? extends Event>> eventTypes = new HashSet<>();
+        boolean hasAnyEventHandler = false;
 
         for (EffectHandler<?> handler : handlersRegistry.getAll()) {
             switch (handler) {
@@ -102,7 +103,17 @@ public record ZEventsListener(EffectsDispatcher dispatcher) implements Listener 
                 case EffectHandler.NoEventEffectHandler<?> __ -> {
                     // NoEventHandlers don't listen to events
                 }
+
+                case EffectHandler.AnyEventEffectHandler<?> __ -> hasAnyEventHandler = true;
             }
+        }
+
+        // AnyEventEffectHandlers (e.g. the PIPELINE effect) declare no event type of their
+        // own — their filtering happens internally. Since we can't know in advance which
+        // events they actually care about, listen to everything we're able to extract an
+        // item source from, so they're never silently skipped for lack of a registered listener.
+        if (hasAnyEventHandler) {
+            eventTypes.addAll(Registry.get(ExtractorsRegistry.class).registeredEventTypes());
         }
 
         return eventTypes;

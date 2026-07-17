@@ -1,0 +1,4 @@
+# None Exit Example
+# Leaves a pipeline's collected drops untouched.
+id: "none"
+type: "NONE"
