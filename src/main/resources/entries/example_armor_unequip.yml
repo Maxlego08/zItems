@@ -1,3 +1,0 @@
-# Only ever matches on Paper — nothing constructs PlayerArmorUnequipEvent on plain Spigot.
-id: "armor_unequip"
-type: "ARMOR_UNEQUIP"

@@ -1,0 +1,13 @@
+# Pipeline Effect Example
+# MINING replaces the old unfiltered BLOCK_BREAK entry entirely — an empty/absent
+# `materials` list already matches any block, so there's never a need for both.
+# Materials support plain vanilla names or "provider:id" custom blocks (ItemsAdder,
+# Nexo, Oraxen — same convention as IngredientWrapper's "zitems:custom_item_id").
+id: "ore_mining"
+type: "PIPELINE"
+display-name: "<gradient:#8e44ad:#3498db><bold>⛏ ORE MINING PIPELINE</bold></gradient>"
+entry:
+  type: "MINING"
+  materials: ["DIAMOND_ORE", "DEEPSLATE_DIAMOND_ORE", "itemsadder:ruby_ore"]
+steps:
+  - "xp_boost_pickaxe"

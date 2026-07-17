@@ -1,3 +1,0 @@
-# Only registered if the Jobs or zJobs plugin is installed (see JobsHook/ZJobsHook).
-id: "jobs_money_gain"
-type: "JOBS_MONEY_GAIN"

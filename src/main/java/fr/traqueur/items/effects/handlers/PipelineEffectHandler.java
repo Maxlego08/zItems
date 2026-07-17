@@ -5,13 +5,14 @@ import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.EffectHandler;
 import fr.traqueur.items.api.effects.EffectSettings;
-import fr.traqueur.items.api.effects.entries.Entry;
 import fr.traqueur.items.api.effects.entries.EntryHandler;
 import fr.traqueur.items.api.effects.entries.EntrySettings;
 import fr.traqueur.items.api.registries.EntryHandlersRegistry;
 import fr.traqueur.items.api.registries.HandlersRegistry;
 import fr.traqueur.items.api.registries.Registry;
+import fr.traqueur.items.effects.entries.PipelineEntry;
 import fr.traqueur.items.effects.settings.PipelineSettings;
+import fr.traqueur.structura.references.Reference;
 
 /**
  * Groups a set of already-existing effects ({@code steps}) behind a shared trigger
@@ -33,13 +34,14 @@ public class PipelineEffectHandler implements EffectHandler.AnyEventEffectHandle
 
     @Override
     public void handle(EffectContext context, PipelineSettings settings) {
-        Entry entry = settings.entry();
+        PipelineEntry entry = settings.entry();
         EntryHandler<?> entryHandler = Registry.get(EntryHandlersRegistry.class).getById(entry.type());
         if (entryHandler == null || !testEntry(entryHandler, context, entry.settings())) {
             return;
         }
 
-        for (Effect step : settings.steps()) {
+        for (Reference<Effect> stepRef : settings.steps()) {
+            Effect step = stepRef.element();
             EffectHandler<?> handler = Registry.get(HandlersRegistry.class).getById(step.type());
             if (handler == null || !handler.canApply(context.event())) {
                 continue;

@@ -9,7 +9,6 @@ import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoListener;
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.effects.EffectsDispatcher;
-import fr.traqueur.items.api.effects.entries.Entry;
 import fr.traqueur.items.api.items.Item;
 import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.managers.EffectsManager;
@@ -34,6 +33,8 @@ import fr.traqueur.items.effects.TickDispatcher;
 import fr.traqueur.items.effects.ZEffectsDispatcher;
 import fr.traqueur.items.effects.ZEffectsManager;
 import fr.traqueur.items.effects.ZEventsListener;
+import fr.traqueur.items.effects.settings.PipelineSettings;
+import fr.traqueur.items.entities.MythicMobsProvider;
 import fr.traqueur.items.hooks.recipes.RecipesHook;
 import fr.traqueur.items.inventories.ApplicatorMenu;
 import fr.traqueur.items.items.ZItemsManager;
@@ -53,6 +54,8 @@ import fr.traqueur.recipes.api.RecipesAPI;
 import fr.traqueur.recipes.api.hook.Hook;
 import fr.traqueur.structura.api.Structura;
 import fr.traqueur.structura.exceptions.StructuraException;
+import fr.traqueur.structura.references.Reference;
+import fr.traqueur.structura.references.ReferenceRegistry;
 import fr.traqueur.structura.registries.CustomReaderRegistry;
 import fr.traqueur.structura.registries.DefaultValueRegistry;
 import fr.traqueur.structura.types.TypeToken;
@@ -81,7 +84,6 @@ public class ZItems extends ItemsPlugin {
     private static final String MESSAGES_FILE = "messages.yml";
     public static final String ITEMS_FOLDER = "items";
     public static final String EFFECTS_FOLDER = "effects";
-    public static final String ENTRIES_FOLDER = "entries";
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger("zItems");
 
@@ -204,27 +206,47 @@ public class ZItems extends ItemsPlugin {
         Registry.get(EntryHandlersRegistry.class).scanPackage(this, "fr.traqueur.items");
         Registry.get(ExtractorsRegistry.class).scanPackage(this, "fr.traqueur.items");
         Registry.get(HooksRegistry.class).enableAll();
-        // Entries are loaded before effects: a PIPELINE effect resolves its entry
-        // by id at parse time, so the registry must already be populated.
-        Registry.get(EntriesRegistry.class).loadFromFolder();
         Registry.get(EffectsRegistry.class).loadFromFolder();
         Registry.get(ItemsRegistry.class).loadFromFolder();
         Registry.get(CustomBlockProviderRegistry.class).register(this.getName().toLowerCase(), new ZItemsProvider());
         Registry.get(ItemProviderRegistry.class).register(this.getName().toLowerCase(), new ZItemsItemProvider());
+        Registry.get(CustomEntityProviderRegistry.class).register("mythicmobs", new MythicMobsProvider());
+        validatePipelineReferences();
+    }
+
+    /**
+     * Warm-up pass: forces every PIPELINE effect's step Reference to resolve once, right
+     * after everything is loaded, so a genuinely broken step id is still a loud startup
+     * error instead of a silent failure the first time that pipeline actually dispatches.
+     */
+    private void validatePipelineReferences() {
+        for (Effect effect : Registry.get(EffectsRegistry.class).getAll()) {
+            if (!(effect.settings() instanceof PipelineSettings pipelineSettings)) {
+                continue;
+            }
+            for (Reference<Effect> step : pipelineSettings.steps()) {
+                try {
+                    step.element();
+                } catch (Exception e) {
+                    Logger.severe("Pipeline <yellow>{}<reset> references unknown step <yellow>{}<reset>: {}",
+                            e, effect.id(), step.key());
+                }
+            }
+        }
     }
 
     private void registerRegistries() {
         Registry.register(LocationAccessRegistry.class, new ZLocationAccessRegistry());
         // Register custom block provider registry
         Registry.register(CustomBlockProviderRegistry.class, new ZCustomBlockProviderRegistry());
+        // Register custom entity provider registry
+        Registry.register(CustomEntityProviderRegistry.class, new ZCustomEntityProviderRegistry());
         // Register item provider registry
         Registry.register(ItemProviderRegistry.class, new ZItemProviderRegistry());
         // Register and scan effect handlers
         Registry.register(HandlersRegistry.class, new ZHandlersRegistry(this));
         // Register and scan entry handlers (pipeline trigger conditions)
         Registry.register(EntryHandlersRegistry.class, new ZEntryHandlersRegistry(this));
-        // Register and load entries from files
-        Registry.register(EntriesRegistry.class, new ZEntriesRegistry(this));
         // Register and load effects from files
         Registry.register(EffectsRegistry.class, new ZEffectsRegistry(this));
         // Register and load items from files
@@ -308,7 +330,7 @@ public class ZItems extends ItemsPlugin {
         CustomReaderRegistry.getInstance().register(new TypeToken<>() {}, new TagReader());
         CustomReaderRegistry.getInstance().register(Component.class, new ComponentReader());
         CustomReaderRegistry.getInstance().register(Effect.class, new EffectReader());
-        CustomReaderRegistry.getInstance().register(Entry.class, new EntryReader());
+        ReferenceRegistry.getInstance().install(Effect.class, Effect::id, () -> Registry.get(EffectsRegistry.class).getAll());
         CustomReaderRegistry.getInstance().register(PotionEffectType.class, new PotionEffectTypeReader());
         CustomReaderRegistry.getInstance().register(PotionType.class, new PotionTypeReader());
         CustomReaderRegistry.getInstance().register(Color.class, new ColorReader());

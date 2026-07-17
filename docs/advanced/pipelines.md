@@ -18,6 +18,7 @@ system as every other effect. Nothing about the core effects system changes to s
   - [Equipment](#equipment)
   - [Ongoing State](#ongoing-state)
   - [Job Hooks](#job-hooks)
+- [Custom Block/Mob Matching](#custom-blockmob-matching)
 - [Writing a Custom Entry](#writing-a-custom-entry)
 - [Known Limitations](#known-limitations)
 
@@ -39,7 +40,7 @@ effects:
 ```yaml
 # With a pipeline: the same AUTO_SELL effect only ever runs on a kill
 effects:
-  - "sword_combat"   # type: PIPELINE, entry: "kill", steps: ["auto_sell_pickaxe"]
+  - "sword_combat"   # type: PIPELINE, entry: {type: KILL}, steps: ["auto_sell_pickaxe"]
 ```
 
 ## Pipeline File Structure
@@ -50,28 +51,29 @@ Pipelines live in `plugins/zItems/effects/*.yml`, same as any other effect:
 id: "sword_combat"
 type: "PIPELINE"
 display-name: "<red>⚔ Combat Pipeline</red>"
-entry: "kill"                # references an entry id, see below
+entry:
+  type: "KILL"               # declared inline — see below
+  entities: ["PIG"]          # optional, entry-type-specific settings
 steps:
   - "combat_xp_boost"        # existing effect ids, executed in this order
   - "auto_sell_pickaxe"
 ```
 
-- **`entry`** — the id of an `entries/*.yml` file (see [Entry Catalog](#entry-catalog)).
+- **`entry`** — declared *inline*, not referenced by id. An entry has no id and no
+  separate file: unlike `Effect`, it has no ecosystem of its own (no smithing table
+  application, no GUI listing, no standalone reuse), and the overwhelming majority carry
+  no settings at all — splitting it into a separate file would be pure indirection. See
+  [Entry Catalog](#entry-catalog) for the available `type`s and their settings.
 - **`steps`** — a list of *existing* effect ids, run in declaration order against the same
   `EffectContext` as the pipeline itself. There is no separate "exit" concept: whatever
-  effect you place last (e.g. `AUTO_SELL`, or nothing) is the exit.
+  effect you place last (e.g. `AUTO_SELL`, or nothing) is the exit. Each id resolves lazily
+  (`Reference<Effect>`, see [Known Limitations](#known-limitations)), so it can point to an
+  effect defined in a file loaded before *or after* this one.
 
-> **Load order matters.** Effect files are loaded in directory order, not dependency
-> order — any effect referenced under `steps` must already be registered by the time the
-> pipeline's file is parsed. Keep referenced step files sorted before the pipeline file
-> until the loader becomes two-pass.
-
-Entries are their own file type, in `plugins/zItems/entries/*.yml`:
-
-```yaml
-id: "kill"
-type: "KILL"
-```
+Unlike `steps`, effects are still their own reusable files, referenced by id — that part
+of the design didn't change: an effect used as a pipeline step is exactly the same effect
+you could apply standalone via smithing table, GUI, or command, with or without a pipeline
+around it.
 
 ## How Gating Works
 
@@ -90,11 +92,13 @@ event affinity itself. Instead:
 public class PipelineEffectHandler implements EffectHandler.AnyEventEffectHandler<PipelineSettings> {
     @Override
     public void handle(EffectContext context, PipelineSettings settings) {
-        EntryHandler<?> entryHandler = Registry.get(EntryHandlersRegistry.class).getById(settings.entry().type());
-        if (entryHandler == null || !test(entryHandler, context, settings.entry().settings())) {
+        PipelineEntry entry = settings.entry();
+        EntryHandler<?> entryHandler = Registry.get(EntryHandlersRegistry.class).getById(entry.type());
+        if (entryHandler == null || !test(entryHandler, context, entry.settings())) {
             return;
         }
-        for (Effect step : settings.steps()) {
+        for (Reference<Effect> stepRef : settings.steps()) {
+            Effect step = stepRef.element();
             EffectHandler<?> handler = Registry.get(HandlersRegistry.class).getById(step.type());
             if (handler != null && handler.canApply(context.event())) {
                 handler.handle(context, step.settings());
@@ -104,10 +108,18 @@ public class PipelineEffectHandler implements EffectHandler.AnyEventEffectHandle
 }
 ```
 
-An `Entry` only ever answers "should this pipeline run?" — it never acts on the item, so
+`PipelineEntry(String type, EntrySettings settings)` is the small, anonymous, id-less
+carrier for the inline `entry:` block — it's `Loadable`, resolved by Structura's usual
+`type` + `@Options(inline = true)` polymorphic mechanism, exactly like `Effect`'s own
+`type`/`settings` shape, just nested one level deeper and without a registry of its own.
+
+An entry only ever answers "should this pipeline run?" — it never acts on the item, so
 `EntryHandler` is a separate, minimal interface (`boolean test(EffectContext, T)`), not a
 variant of `EffectHandler`. This keeps a gate class from having to carry a no-op `handle()`
-just to satisfy a contract it doesn't need.
+just to satisfy a contract it doesn't need. `EntryHandlersRegistry` (mapping `type` →
+`EntryHandler`, and registering the settings class in the polymorphic registry) is
+unaffected by any of this — it's the same registry whether an entry ships inline or, in
+theory, referenced some other way later.
 
 ---
 
@@ -118,7 +130,7 @@ just to satisfy a contract it doesn't need.
 | Entry | Underlying Event | Notes |
 |---|---|---|
 | `ATTACK` | `EntityDamageByEntityEvent` | Item source is the attacker's weapon. |
-| `KILL` | `EntityDeathEvent` | Item source is the killer's weapon. |
+| `KILL` | `EntityDeathEvent` | Item source is the killer's weapon. Optional `entities` whitelist — plain vanilla names (`"PIG"`) or `provider:id` custom mobs (`"mythicmobs:my_boss"`, via `CustomEntityProviderRegistry`). |
 | `DEATH` | `PlayerDeathEvent` | Item source is whatever the *dying* player was holding — a dedicated extractor overrides the inherited `EntityDeathEvent` one (which would otherwise resolve to the killer's weapon). |
 | `DEFEND` | synthetic `PlayerDefendEvent`, from real `EntityDamageEvent` | Dispatched once per equipped item (helmet/chestplate/leggings/boots/main hand/off hand) by `DefendTransitionListener`. Wrapped instead of reusing the raw damage event so an `ATTACK`-gated pipeline on armor can't fire when its wearer gets hit. |
 | `PROJECTILE_SHOOT` | `EntityShootBowEvent` | Item source is the bow/crossbow. |
@@ -126,11 +138,12 @@ just to satisfy a contract it doesn't need.
 
 ### Mining & Blocks
 
-| Entry | Underlying Event |
-|---|---|
-| `BLOCK_BREAK` | `BlockBreakEvent` |
-| `BLOCK_PLACE` | `BlockPlaceEvent` |
-| `BLOCK_DROP` | `BlockDropItemEvent` |
+| Entry | Underlying Event | Notes |
+|---|---|---|
+| `MINING` | `BlockBreakEvent` | Optional `materials` whitelist — plain vanilla names (`"STONE"`) or `provider:id` custom blocks (`"itemsadder:ruby_ore"`, via `CustomBlockProviderRegistry`). Empty/absent matches any block — there is deliberately no separate unfiltered "BLOCK_BREAK" entry alongside it, one covers both. |
+| `CROPS` | `BlockBreakEvent` | Matches only a *mature* crop (`Ageable` at max age — same check as `FarmingHoe`). Optional `materials` whitelist of crop types. |
+| `BLOCK_PLACE` | `BlockPlaceEvent` | |
+| `BLOCK_DROP` | `BlockDropItemEvent` | |
 
 ### Interaction
 
@@ -183,6 +196,36 @@ register under the same entry ids, since only one is ever active at a time.
 
 ---
 
+## Custom Block/Mob Matching
+
+`MINING`/`CROPS` (materials) and `KILL` (entities) all accept the same match pattern
+convention already used by `IngredientWrapper` (`"tag:planks"`, `"zitems:custom_item_id"`):
+a plain name (`"STONE"`, `"PIG"`) matches vanilla `Material`/`EntityType`; a `provider:id`
+string matches a custom block/mob through `CustomBlockProviderRegistry`/
+`CustomEntityProviderRegistry`. `fr.traqueur.items.effects.entries.CustomMatch` implements
+both checks in one place so entries don't duplicate the parsing.
+
+Custom *blocks* reuse the provider system already backing Hammer/VeinMiner/etc.
+(ItemsAdder, Nexo, Oraxen — registered by their respective hooks under keys like
+`"itemsadder"`). Custom *entities* are new: `CustomEntityProviderRegistry` mirrors
+`CustomBlockProviderRegistry`, and ships with a `MythicMobsProvider` registered
+unconditionally under `"mythicmobs"` — it detects MythicMobs mobs via Bukkit's standard
+`Metadatable` API (`hasMetadata("MythicMobs")` / `getMetadata("type")`), which is
+MythicMobs' own documented soft-integration convention. This needs **no compile
+dependency** on MythicMobs at all, unlike the block providers, and simply never matches
+if MythicMobs isn't installed.
+
+```yaml
+entry:
+  type: "KILL"
+  entities: ["mythicmobs:dragon_boss"]
+```
+
+A future custom-mob plugin can register its own `CustomEntityProvider` the same way hooks
+already register `CustomBlockProvider`s — through `Registry.get(CustomEntityProviderRegistry.class).register("pluginkey", provider)`.
+
+---
+
 ## Writing a Custom Entry
 
 An entry is a class implementing `EntryHandler<T>`, annotated `@AutoEntry("ID")`:
@@ -193,6 +236,22 @@ public class AttackEntry implements EntryHandler<EmptyEntrySettings> {
     @Override
     public boolean test(EffectContext context, EmptyEntrySettings settings) {
         return context.event() instanceof EntityDamageByEntityEvent;
+    }
+}
+```
+
+For an entry with real settings, the record just needs to implement `EntrySettings`:
+
+```java
+public record KillEntrySettings(@Options(optional = true) List<String> entities) implements EntrySettings { }
+
+@AutoEntry("KILL")
+public class KillEntry implements EntryHandler<KillEntrySettings> {
+    @Override
+    public boolean test(EffectContext context, KillEntrySettings settings) {
+        if (!(context.event() instanceof EntityDeathEvent event)) return false;
+        if (settings.entities() == null || settings.entities().isEmpty()) return true;
+        return settings.entities().stream().anyMatch(p -> CustomMatch.entity(p, event.getEntity()));
     }
 }
 ```
@@ -236,12 +295,15 @@ row above for why that would cross-fire.
 
 ## Known Limitations
 
-- **Effect load order.** A pipeline's `steps` reference other effects by id, resolved at
-  parse time — the referenced effect file must already be loaded. Files are read in
-  directory order, not dependency order.
 - **One item per dispatch.** Events that carry two items in one firing (`PlayerItemHeldEvent`,
   `PlayerArmorChangeEvent`) need the synthetic-event workaround above for their second
   direction. `DEFEND` sidesteps this differently — by dispatching once per equipped slot.
+- **A broken step reference surfaces at startup, not at parse time.** Since `steps` resolves
+  lazily (`Reference<Effect>`, not eager `Effect` resolution), a typo'd step id is no longer
+  caught while Structura parses the pipeline's yml. `ZItems#validatePipelineReferences` runs
+  once, right after every registry finishes loading, and forces every step reference to
+  resolve — so a broken one is still a loud `Logger.severe` at plugin startup, just a bit
+  later in the boot sequence than before.
 - **Not covered**: `JOIN`/`QUIT`, `TOGGLE_SPRINT`, `RIPTIDE`, `CRAFT`, `ENCHANT` — same
   mechanical pattern as everything above, just not built yet.
 

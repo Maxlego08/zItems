@@ -1,4 +1,0 @@
-# Kill Entry Example
-# Matches when a player kills an entity while holding the item, gating a PIPELINE effect's steps.
-id: "kill"
-type: "KILL"

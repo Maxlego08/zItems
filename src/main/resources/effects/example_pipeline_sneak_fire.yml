@@ -4,6 +4,7 @@
 id: "sneak_fire_ring"
 type: "PIPELINE"
 display-name: "<gradient:#FF4500:#FFD700><bold>🔥 SNEAK FIRE PIPELINE</bold></gradient>"
-entry: "sneaking"
+entry:
+  type: "SNEAKING"
 steps:
   - "fire_ring"

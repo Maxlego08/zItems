@@ -737,7 +737,7 @@ display-name: "<gray>Empty Effect"
 **Type**: `PIPELINE`
 **Event**: Any (AnyEventEffectHandler — see [Pipelines & Entries Reference](pipelines.md))
 **Priority**: 0
-**Settings**: `entry` (id), `steps` (list of effect ids)
+**Settings**: `entry` (declared inline), `steps` (list of effect ids, resolved lazily)
 
 Groups existing effects behind a shared, reusable trigger condition (an **entry**) instead
 of letting them react to every event their handler declares. Only actually runs its steps
@@ -749,7 +749,8 @@ for the full entry catalog and how to write custom ones.
 ```yaml
 id: "sword_combat"
 type: "PIPELINE"
-entry: "kill"              # references an entries/*.yml file
+entry:
+  type: "KILL"             # declared inline, no separate file/id
 steps:
   - "combat_xp_boost"      # existing effect ids, run in this order
   - "auto_sell_pickaxe"
