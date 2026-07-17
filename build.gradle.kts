@@ -71,6 +71,10 @@ allprojects {
 
     }
 
+    tasks.test {
+        useJUnitPlatform()
+    }
+
 }
 
 dependencies {
@@ -83,6 +87,17 @@ dependencies {
     rootProject.subprojects.filter { it.path.startsWith(":versions:") }.forEach { subproject ->
         implementation(project(subproject.path))
     }
+
+    testImplementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    testImplementation("net.kyori:adventure-api:4.18.0")
+    testImplementation("net.kyori:adventure-text-minimessage:4.18.0")
+    testImplementation("net.kyori:adventure-text-serializer-plain:4.18.0")
+    testImplementation("net.kyori:adventure-text-serializer-legacy:4.18.0")
+    testImplementation("net.kyori:adventure-text-serializer-gson:4.18.0")
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.108.0")
 }
 
 tasks {

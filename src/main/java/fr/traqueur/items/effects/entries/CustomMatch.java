@@ -9,17 +9,17 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 /**
- * Parses a single match pattern as either a plain vanilla name ({@code "STONE"},
- * {@code "PIG"}) or a {@code provider:id} custom reference ({@code "itemsadder:ruby_ore"},
- * {@code "mythicmobs:my_boss"}) — the same convention already used by {@code IngredientWrapper}
- * ({@code "tag:planks"}, {@code "zitems:custom_item_id"}).
+ * Internal parsing helper backing {@code BlockMatch}/{@code EntityMatch}: resolves a
+ * single pattern as either a plain vanilla name ({@code "STONE"}, {@code "PIG"}) or a
+ * {@code provider:id} custom reference ({@code "itemsadder:ruby_ore"},
+ * {@code "mythicmobs:my_boss"}).
  */
-public final class CustomMatch {
+final class CustomMatch {
 
     private CustomMatch() {
     }
 
-    public static boolean block(String pattern, Block block) {
+    static boolean block(String pattern, Block block) {
         int separator = pattern.indexOf(':');
         if (separator < 0) {
             Material material = Material.matchMaterial(pattern);
@@ -37,7 +37,7 @@ public final class CustomMatch {
                 .orElse(false);
     }
 
-    public static boolean entity(String pattern, Entity entity) {
+    static boolean entity(String pattern, Entity entity) {
         int separator = pattern.indexOf(':');
         if (separator < 0) {
             try {

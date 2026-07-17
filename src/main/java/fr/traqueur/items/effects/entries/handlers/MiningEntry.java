@@ -3,7 +3,6 @@ package fr.traqueur.items.effects.entries.handlers;
 import fr.traqueur.items.api.annotations.AutoEntry;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.entries.EntryHandler;
-import fr.traqueur.items.effects.entries.CustomMatch;
 import fr.traqueur.items.effects.entries.settings.MiningEntrySettings;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -26,6 +25,6 @@ public class MiningEntry implements EntryHandler<MiningEntrySettings> {
             return true;
         }
 
-        return settings.materials().stream().anyMatch(pattern -> CustomMatch.block(pattern, event.getBlock()));
+        return settings.materials().stream().anyMatch(match -> match.matches(event.getBlock()));
     }
 }

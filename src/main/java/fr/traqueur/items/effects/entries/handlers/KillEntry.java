@@ -3,7 +3,6 @@ package fr.traqueur.items.effects.entries.handlers;
 import fr.traqueur.items.api.annotations.AutoEntry;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.entries.EntryHandler;
-import fr.traqueur.items.effects.entries.CustomMatch;
 import fr.traqueur.items.effects.entries.settings.KillEntrySettings;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -27,6 +26,6 @@ public class KillEntry implements EntryHandler<KillEntrySettings> {
             return true;
         }
 
-        return settings.entities().stream().anyMatch(pattern -> CustomMatch.entity(pattern, event.getEntity()));
+        return settings.entities().stream().anyMatch(match -> match.matches(event.getEntity()));
     }
 }

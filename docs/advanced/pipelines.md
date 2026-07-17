@@ -53,7 +53,8 @@ type: "PIPELINE"
 display-name: "<red>⚔ Combat Pipeline</red>"
 entry:
   type: "KILL"               # declared inline — see below
-  entities: ["PIG"]          # optional, entry-type-specific settings
+  entities:                  # optional, entry-type-specific settings
+    - entity: "PIG"
 steps:
   - "combat_xp_boost"        # existing effect ids, executed in this order
   - "auto_sell_pickaxe"
@@ -130,7 +131,7 @@ theory, referenced some other way later.
 | Entry | Underlying Event | Notes |
 |---|---|---|
 | `ATTACK` | `EntityDamageByEntityEvent` | Item source is the attacker's weapon. |
-| `KILL` | `EntityDeathEvent` | Item source is the killer's weapon. Optional `entities` whitelist — plain vanilla names (`"PIG"`) or `provider:id` custom mobs (`"mythicmobs:my_boss"`, via `CustomEntityProviderRegistry`). |
+| `KILL` | `EntityDeathEvent` | Item source is the killer's weapon. Optional `entities` whitelist of `EntityMatch` wrappers — plain vanilla names (`"PIG"`) or `provider:id` custom mobs (`"mythicmobs:my_boss"`, via `CustomEntityProviderRegistry`). |
 | `DEATH` | `PlayerDeathEvent` | Item source is whatever the *dying* player was holding — a dedicated extractor overrides the inherited `EntityDeathEvent` one (which would otherwise resolve to the killer's weapon). |
 | `DEFEND` | synthetic `PlayerDefendEvent`, from real `EntityDamageEvent` | Dispatched once per equipped item (helmet/chestplate/leggings/boots/main hand/off hand) by `DefendTransitionListener`. Wrapped instead of reusing the raw damage event so an `ATTACK`-gated pipeline on armor can't fire when its wearer gets hit. |
 | `PROJECTILE_SHOOT` | `EntityShootBowEvent` | Item source is the bow/crossbow. |
@@ -140,7 +141,7 @@ theory, referenced some other way later.
 
 | Entry | Underlying Event | Notes |
 |---|---|---|
-| `MINING` | `BlockBreakEvent` | Optional `materials` whitelist — plain vanilla names (`"STONE"`) or `provider:id` custom blocks (`"itemsadder:ruby_ore"`, via `CustomBlockProviderRegistry`). Empty/absent matches any block — there is deliberately no separate unfiltered "BLOCK_BREAK" entry alongside it, one covers both. |
+| `MINING` | `BlockBreakEvent` | Optional `materials` whitelist of `BlockMatch` wrappers — plain vanilla names (`"STONE"`) or `provider:id` custom blocks (`"itemsadder:ruby_ore"`, via `CustomBlockProviderRegistry`). Empty/absent matches any block — there is deliberately no separate unfiltered "BLOCK_BREAK" entry alongside it, one covers both. |
 | `CROPS` | `BlockBreakEvent` | Matches only a *mature* crop (`Ageable` at max age — same check as `FarmingHoe`). Optional `materials` whitelist of crop types. |
 | `BLOCK_PLACE` | `BlockPlaceEvent` | |
 | `BLOCK_DROP` | `BlockDropItemEvent` | |
@@ -198,12 +199,17 @@ register under the same entry ids, since only one is ever active at a time.
 
 ## Custom Block/Mob Matching
 
-`MINING`/`CROPS` (materials) and `KILL` (entities) all accept the same match pattern
-convention already used by `IngredientWrapper` (`"tag:planks"`, `"zitems:custom_item_id"`):
-a plain name (`"STONE"`, `"PIG"`) matches vanilla `Material`/`EntityType`; a `provider:id`
+`MINING`'s `materials` and `KILL`'s `entities` both accept lists of dedicated wrapper
+settings — `BlockMatch`/`EntityMatch` — instead of bare strings, mirroring the shape of
+`IngredientWrapper` (a named field holding the reference, not a raw list element).
+Each wrapper's single field follows the same reference convention already used
+elsewhere (`IngredientWrapper`'s `"tag:planks"`, `"zitems:custom_item_id"`): a plain
+name (`"STONE"`, `"PIG"`) matches vanilla `Material`/`EntityType`; a `provider:id`
 string matches a custom block/mob through `CustomBlockProviderRegistry`/
-`CustomEntityProviderRegistry`. `fr.traqueur.items.effects.entries.CustomMatch` implements
-both checks in one place so entries don't duplicate the parsing.
+`CustomEntityProviderRegistry`. The parsing itself is centralized in a package-private
+`fr.traqueur.items.effects.entries.CustomMatch` helper so `BlockMatch`/`EntityMatch`
+don't duplicate it. (`CROPS`'s `materials` stays a plain `List<Material>` — crops are
+never custom blocks, so there's nothing to resolve through a provider.)
 
 Custom *blocks* reuse the provider system already backing Hammer/VeinMiner/etc.
 (ItemsAdder, Nexo, Oraxen — registered by their respective hooks under keys like
@@ -219,7 +225,8 @@ returns its `ActiveMob#getMobType()`.
 ```yaml
 entry:
   type: "KILL"
-  entities: ["mythicmobs:dragon_boss"]
+  entities:
+    - entity: "mythicmobs:dragon_boss"
 ```
 
 A future custom-mob plugin can register its own `CustomEntityProvider` the same way hooks
@@ -244,7 +251,7 @@ public class AttackEntry implements EntryHandler<EmptyEntrySettings> {
 For an entry with real settings, the record just needs to implement `EntrySettings`:
 
 ```java
-public record KillEntrySettings(@Options(optional = true) List<String> entities) implements EntrySettings { }
+public record KillEntrySettings(@Options(optional = true) List<EntityMatch> entities) implements EntrySettings { }
 
 @AutoEntry("KILL")
 public class KillEntry implements EntryHandler<KillEntrySettings> {
@@ -252,7 +259,7 @@ public class KillEntry implements EntryHandler<KillEntrySettings> {
     public boolean test(EffectContext context, KillEntrySettings settings) {
         if (!(context.event() instanceof EntityDeathEvent event)) return false;
         if (settings.entities() == null || settings.entities().isEmpty()) return true;
-        return settings.entities().stream().anyMatch(p -> CustomMatch.entity(p, event.getEntity()));
+        return settings.entities().stream().anyMatch(match -> match.matches(event.getEntity()));
     }
 }
 ```
