@@ -1,9 +1,9 @@
-package fr.traqueur.items.entries.handlers;
+package fr.traqueur.items.effects.entries.handlers;
 
 import fr.traqueur.items.api.annotations.AutoEntry;
 import fr.traqueur.items.api.effects.EffectContext;
-import fr.traqueur.items.api.entries.EntryHandler;
-import fr.traqueur.items.entries.settings.EmptyEntrySettings;
+import fr.traqueur.items.api.effects.entries.EntryHandler;
+import fr.traqueur.items.effects.entries.settings.EmptyEntrySettings;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 /**

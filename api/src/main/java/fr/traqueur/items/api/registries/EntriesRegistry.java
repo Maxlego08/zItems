@@ -1,6 +1,6 @@
 package fr.traqueur.items.api.registries;
 
-import fr.traqueur.items.api.entries.Entry;
+import fr.traqueur.items.api.effects.entries.Entry;
 import fr.traqueur.items.api.models.Folder;
 
 /**

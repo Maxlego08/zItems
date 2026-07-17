@@ -1,7 +1,7 @@
-package fr.traqueur.items.exit;
+package fr.traqueur.items.effects.exit;
 
-import fr.traqueur.items.api.exit.ExitSettings;
-import fr.traqueur.items.api.exit.PipelineExit;
+import fr.traqueur.items.api.effects.exit.ExitSettings;
+import fr.traqueur.items.api.effects.exit.PipelineExit;
 import fr.traqueur.structura.annotations.Options;
 import fr.traqueur.structura.api.Loadable;
 

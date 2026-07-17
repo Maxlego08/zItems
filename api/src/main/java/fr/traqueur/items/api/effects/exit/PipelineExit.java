@@ -1,10 +1,10 @@
-package fr.traqueur.items.api.exit;
+package fr.traqueur.items.api.effects.exit;
 
 /**
  * Represents a named, reusable "what happens to the pipeline's drops" step
  * (e.g. sell them, drop them, do nothing).
  * <p>
- * Mirrors {@link fr.traqueur.items.api.effects.Effect}/{@link fr.traqueur.items.api.entries.Entry}:
+ * Mirrors {@link fr.traqueur.items.api.effects.Effect}/{@link fr.traqueur.items.api.effects.entries.Entry}:
  * loaded from its own folder, referenced by id from a pipeline's settings, resolved to a
  * concrete {@link ExitHandler} via its {@link #type()}.
  */

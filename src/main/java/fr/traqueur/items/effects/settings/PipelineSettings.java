@@ -1,8 +1,8 @@
 package fr.traqueur.items.effects.settings;
 
 import fr.traqueur.items.api.effects.EffectSettings;
-import fr.traqueur.items.api.entries.Entry;
-import fr.traqueur.items.api.exit.PipelineExit;
+import fr.traqueur.items.api.effects.entries.Entry;
+import fr.traqueur.items.api.effects.exit.PipelineExit;
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.structura.annotations.Options;
 import fr.traqueur.structura.annotations.defaults.DefaultBool;

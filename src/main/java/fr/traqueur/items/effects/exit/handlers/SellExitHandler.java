@@ -1,11 +1,11 @@
-package fr.traqueur.items.exit.handlers;
+package fr.traqueur.items.effects.exit.handlers;
 
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.annotations.AutoExit;
 import fr.traqueur.items.api.effects.EffectContext;
-import fr.traqueur.items.api.exit.ExitHandler;
+import fr.traqueur.items.api.effects.exit.ExitHandler;
 import fr.traqueur.items.api.shop.ShopProvider;
-import fr.traqueur.items.exit.settings.SellExitSettings;
+import fr.traqueur.items.effects.exit.settings.SellExitSettings;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;

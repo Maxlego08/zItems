@@ -1,4 +1,4 @@
-package fr.traqueur.items.api.exit;
+package fr.traqueur.items.api.effects.exit;
 
 import fr.traqueur.items.api.effects.EffectContext;
 
@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
 /**
  * Resolves what happens to a pipeline's collected drops once its steps are done.
  * <p>
- * Kept separate from {@link fr.traqueur.items.api.effects.EffectHandler}/{@link fr.traqueur.items.api.entries.EntryHandler}:
+ * Kept separate from {@link fr.traqueur.items.api.effects.EffectHandler}/{@link fr.traqueur.items.api.effects.entries.EntryHandler}:
  * an exit only ever acts on the shared {@link EffectContext} at the end of a pipeline run.
  *
  * @param <T> the type of exit settings

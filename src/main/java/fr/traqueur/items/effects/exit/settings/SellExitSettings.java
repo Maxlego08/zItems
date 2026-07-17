@@ -1,6 +1,6 @@
-package fr.traqueur.items.exit.settings;
+package fr.traqueur.items.effects.exit.settings;
 
-import fr.traqueur.items.api.exit.ExitSettings;
+import fr.traqueur.items.api.effects.exit.ExitSettings;
 import fr.traqueur.structura.annotations.Options;
 import fr.traqueur.structura.annotations.defaults.DefaultDouble;
 import org.bukkit.Material;

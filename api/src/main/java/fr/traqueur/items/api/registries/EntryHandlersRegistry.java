@@ -1,6 +1,6 @@
 package fr.traqueur.items.api.registries;
 
-import fr.traqueur.items.api.entries.EntryHandler;
+import fr.traqueur.items.api.effects.entries.EntryHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Set;

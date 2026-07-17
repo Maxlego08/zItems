@@ -1,7 +1,7 @@
-package fr.traqueur.items.entries;
+package fr.traqueur.items.effects.entries;
 
-import fr.traqueur.items.api.entries.Entry;
-import fr.traqueur.items.api.entries.EntrySettings;
+import fr.traqueur.items.api.effects.entries.Entry;
+import fr.traqueur.items.api.effects.entries.EntrySettings;
 import fr.traqueur.structura.annotations.Options;
 import fr.traqueur.structura.api.Loadable;
 

@@ -1,4 +1,4 @@
-package fr.traqueur.items.api.entries;
+package fr.traqueur.items.api.effects.entries;
 
 /**
  * Represents a named, reusable trigger condition that gates a {@code PIPELINE} effect.

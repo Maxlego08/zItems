@@ -3,9 +3,9 @@ package fr.traqueur.items.registries;
 import fr.traqueur.items.ZItems;
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.Logger;
-import fr.traqueur.items.api.exit.PipelineExit;
+import fr.traqueur.items.api.effects.exit.PipelineExit;
 import fr.traqueur.items.api.registries.ExitsRegistry;
-import fr.traqueur.items.exit.ZExit;
+import fr.traqueur.items.effects.exit.ZExit;
 import fr.traqueur.structura.api.Structura;
 import fr.traqueur.structura.exceptions.StructuraException;
 

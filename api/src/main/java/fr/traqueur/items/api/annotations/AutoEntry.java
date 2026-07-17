@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used to mark an {@link fr.traqueur.items.api.entries.EntryHandler} for automatic registration.
+ * Annotation used to mark an {@link fr.traqueur.items.api.effects.entries.EntryHandler} for automatic registration.
  * The value is used as the discriminator key for polymorphic deserialization.
  *
  * <p>Mirrors {@link AutoEffect} — see that annotation for the equivalent mechanism on effects.</p>

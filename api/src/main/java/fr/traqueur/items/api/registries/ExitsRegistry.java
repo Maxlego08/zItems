@@ -1,6 +1,6 @@
 package fr.traqueur.items.api.registries;
 
-import fr.traqueur.items.api.exit.PipelineExit;
+import fr.traqueur.items.api.effects.exit.PipelineExit;
 import fr.traqueur.items.api.models.Folder;
 
 /**

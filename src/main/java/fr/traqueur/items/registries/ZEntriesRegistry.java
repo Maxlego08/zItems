@@ -3,9 +3,9 @@ package fr.traqueur.items.registries;
 import fr.traqueur.items.ZItems;
 import fr.traqueur.items.api.ItemsPlugin;
 import fr.traqueur.items.api.Logger;
-import fr.traqueur.items.api.entries.Entry;
+import fr.traqueur.items.api.effects.entries.Entry;
 import fr.traqueur.items.api.registries.EntriesRegistry;
-import fr.traqueur.items.entries.ZEntry;
+import fr.traqueur.items.effects.entries.ZEntry;
 import fr.traqueur.structura.api.Structura;
 import fr.traqueur.structura.exceptions.StructuraException;
 

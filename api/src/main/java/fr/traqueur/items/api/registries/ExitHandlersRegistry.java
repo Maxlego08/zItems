@@ -1,6 +1,6 @@
 package fr.traqueur.items.api.registries;
 
-import fr.traqueur.items.api.exit.ExitHandler;
+import fr.traqueur.items.api.effects.exit.ExitHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Set;

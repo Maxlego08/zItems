@@ -1,6 +1,6 @@
 package fr.traqueur.items.settings.readers;
 
-import fr.traqueur.items.api.exit.PipelineExit;
+import fr.traqueur.items.api.effects.exit.PipelineExit;
 import fr.traqueur.items.api.registries.ExitsRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.structura.exceptions.StructuraException;

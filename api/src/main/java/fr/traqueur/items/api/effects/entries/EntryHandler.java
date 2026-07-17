@@ -1,4 +1,4 @@
-package fr.traqueur.items.api.entries;
+package fr.traqueur.items.api.effects.entries;
 
 import fr.traqueur.items.api.effects.EffectContext;
 
