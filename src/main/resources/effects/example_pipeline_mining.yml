@@ -1,17 +1,18 @@
 # Pipeline Effect Example
 # MINING replaces the old unfiltered BLOCK_BREAK entry entirely — an empty/absent
 # `materials` list already matches any block, so there's never a need for both.
-# Each entry is a BlockMatch wrapper (mirrors IngredientWrapper's shape) whose
-# `block` field is a plain vanilla name or a "provider:id" custom block reference
-# (ItemsAdder, Nexo, Oraxen).
+# Each entry is a BlockMatch wrapper (mirrors CopyFrom's plugin-name/item-id shape):
+# omit plugin-name for a vanilla Material, or set it to route block-id through a
+# hook's CustomBlockProvider (ItemsAdder, Nexo, Oraxen).
 id: "ore_mining"
 type: "PIPELINE"
 display-name: "<gradient:#8e44ad:#3498db><bold>⛏ ORE MINING PIPELINE</bold></gradient>"
 entry:
   type: "MINING"
   materials:
-    - block: "DIAMOND_ORE"
-    - block: "DEEPSLATE_DIAMOND_ORE"
-    - block: "itemsadder:ruby_ore"
+    - block-id: "DIAMOND_ORE"
+    - block-id: "DEEPSLATE_DIAMOND_ORE"
+    - plugin-name: "itemsadder"
+      block-id: "ruby_ore"
 steps:
   - "xp_boost_pickaxe"

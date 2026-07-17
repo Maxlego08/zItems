@@ -12,15 +12,18 @@ class KillEntrySettingsParsingTest {
     void parsesVanillaAndCustomEntityReferences() {
         String yaml = """
                 entities:
-                  - entity: "PIG"
-                  - entity: "mythicmobs:my_boss"
+                  - entity-id: "PIG"
+                  - plugin-name: "mythicmobs"
+                    entity-id: "my_boss"
                 """;
 
         KillEntrySettings settings = Structura.parse(yaml, KillEntrySettings.class);
 
         assertEquals(2, settings.entities().size());
-        assertEquals("PIG", settings.entities().get(0).entity());
-        assertEquals("mythicmobs:my_boss", settings.entities().get(1).entity());
+        assertNull(settings.entities().get(0).pluginName());
+        assertEquals("PIG", settings.entities().get(0).entityId());
+        assertEquals("mythicmobs", settings.entities().get(1).pluginName());
+        assertEquals("my_boss", settings.entities().get(1).entityId());
     }
 
     @Test

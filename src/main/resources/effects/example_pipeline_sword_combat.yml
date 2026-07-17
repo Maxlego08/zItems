@@ -19,7 +19,8 @@ display-name: "<gradient:#c0392b:#e74c3c><bold>⚔ COMBAT PIPELINE</bold></gradi
 entry:
   type: "KILL"
   entities:                        # optional — omit to match any kill
-    - entity: "PIG"
-    - entity: "mythicmobs:my_boss"
+    - entity-id: "PIG"
+    - plugin-name: "mythicmobs"
+      entity-id: "my_boss"
 steps:
   - "auto_sell_pickaxe"

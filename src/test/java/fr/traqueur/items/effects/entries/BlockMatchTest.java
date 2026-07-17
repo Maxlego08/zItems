@@ -47,8 +47,8 @@ class BlockMatchTest {
         Block block = world.getBlockAt(0, 0, 0);
         block.setType(Material.DIAMOND_ORE);
 
-        assertTrue(new BlockMatch("diamond_ore").matches(block));
-        assertTrue(new BlockMatch("DIAMOND_ORE").matches(block));
+        assertTrue(new BlockMatch(null, "diamond_ore").matches(block));
+        assertTrue(new BlockMatch(null, "DIAMOND_ORE").matches(block));
     }
 
     @Test
@@ -56,7 +56,7 @@ class BlockMatchTest {
         Block block = world.getBlockAt(0, 0, 0);
         block.setType(Material.STONE);
 
-        assertFalse(new BlockMatch("DIAMOND_ORE").matches(block));
+        assertFalse(new BlockMatch(null, "DIAMOND_ORE").matches(block));
     }
 
     @Test
@@ -64,7 +64,7 @@ class BlockMatchTest {
         Block block = world.getBlockAt(0, 0, 0);
         block.setType(Material.STONE);
 
-        assertFalse(new BlockMatch("NOT_A_REAL_MATERIAL").matches(block));
+        assertFalse(new BlockMatch(null, "NOT_A_REAL_MATERIAL").matches(block));
     }
 
     @Test
@@ -86,13 +86,13 @@ class BlockMatchTest {
             }
         });
 
-        assertTrue(new BlockMatch("itemsadder:ruby_ore").matches(block));
-        assertFalse(new BlockMatch("itemsadder:other_block").matches(block));
+        assertTrue(new BlockMatch("itemsadder", "ruby_ore").matches(block));
+        assertFalse(new BlockMatch("itemsadder", "other_block").matches(block));
     }
 
     @Test
     void unknownProviderNeverMatches() {
         Block block = world.getBlockAt(0, 0, 0);
-        assertFalse(new BlockMatch("nexo:some_block").matches(block));
+        assertFalse(new BlockMatch("nexo", "some_block").matches(block));
     }
 }

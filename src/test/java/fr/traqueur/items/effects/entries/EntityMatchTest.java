@@ -44,22 +44,22 @@ class EntityMatchTest {
     void matchesVanillaEntityTypeCaseInsensitive() {
         Pig pig = world.spawn(new Location(world, 0, 0, 0), Pig.class);
 
-        assertTrue(new EntityMatch("pig").matches(pig));
-        assertTrue(new EntityMatch("PIG").matches(pig));
+        assertTrue(new EntityMatch(null, "pig").matches(pig));
+        assertTrue(new EntityMatch(null, "PIG").matches(pig));
     }
 
     @Test
     void doesNotMatchDifferentVanillaEntityType() {
         Zombie zombie = world.spawn(new Location(world, 0, 0, 0), Zombie.class);
 
-        assertFalse(new EntityMatch("PIG").matches(zombie));
+        assertFalse(new EntityMatch(null, "PIG").matches(zombie));
     }
 
     @Test
     void unknownVanillaNameNeverMatches() {
         Pig pig = world.spawn(new Location(world, 0, 0, 0), Pig.class);
 
-        assertFalse(new EntityMatch("NOT_A_REAL_ENTITY_TYPE").matches(pig));
+        assertFalse(new EntityMatch(null, "NOT_A_REAL_ENTITY_TYPE").matches(pig));
     }
 
     @Test
@@ -68,13 +68,13 @@ class EntityMatchTest {
         Registry.get(CustomEntityProviderRegistry.class).register("mythicmobs", (CustomEntityProvider) entity ->
                 entity.equals(zombie) ? Optional.of("my_boss") : Optional.empty());
 
-        assertTrue(new EntityMatch("mythicmobs:my_boss").matches(zombie));
-        assertFalse(new EntityMatch("mythicmobs:other_boss").matches(zombie));
+        assertTrue(new EntityMatch("mythicmobs", "my_boss").matches(zombie));
+        assertFalse(new EntityMatch("mythicmobs", "other_boss").matches(zombie));
     }
 
     @Test
     void unknownProviderNeverMatches() {
         Pig pig = world.spawn(new Location(world, 0, 0, 0), Pig.class);
-        assertFalse(new EntityMatch("mythicmobs:my_boss").matches(pig));
+        assertFalse(new EntityMatch("mythicmobs", "my_boss").matches(pig));
     }
 }

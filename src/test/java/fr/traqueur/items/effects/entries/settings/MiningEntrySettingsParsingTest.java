@@ -12,15 +12,18 @@ class MiningEntrySettingsParsingTest {
     void parsesVanillaAndCustomBlockReferences() {
         String yaml = """
                 materials:
-                  - block: "DIAMOND_ORE"
-                  - block: "itemsadder:ruby_ore"
+                  - block-id: "DIAMOND_ORE"
+                  - plugin-name: "itemsadder"
+                    block-id: "ruby_ore"
                 """;
 
         MiningEntrySettings settings = Structura.parse(yaml, MiningEntrySettings.class);
 
         assertEquals(2, settings.materials().size());
-        assertEquals("DIAMOND_ORE", settings.materials().get(0).block());
-        assertEquals("itemsadder:ruby_ore", settings.materials().get(1).block());
+        assertNull(settings.materials().get(0).pluginName());
+        assertEquals("DIAMOND_ORE", settings.materials().get(0).blockId());
+        assertEquals("itemsadder", settings.materials().get(1).pluginName());
+        assertEquals("ruby_ore", settings.materials().get(1).blockId());
     }
 
     @Test
