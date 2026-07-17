@@ -34,7 +34,6 @@ import fr.traqueur.items.effects.ZEffectsDispatcher;
 import fr.traqueur.items.effects.ZEffectsManager;
 import fr.traqueur.items.effects.ZEventsListener;
 import fr.traqueur.items.effects.settings.PipelineSettings;
-import fr.traqueur.items.entities.MythicMobsProvider;
 import fr.traqueur.items.hooks.recipes.RecipesHook;
 import fr.traqueur.items.inventories.ApplicatorMenu;
 import fr.traqueur.items.items.ZItemsManager;
@@ -210,7 +209,6 @@ public class ZItems extends ItemsPlugin {
         Registry.get(ItemsRegistry.class).loadFromFolder();
         Registry.get(CustomBlockProviderRegistry.class).register(this.getName().toLowerCase(), new ZItemsProvider());
         Registry.get(ItemProviderRegistry.class).register(this.getName().toLowerCase(), new ZItemsItemProvider());
-        Registry.get(CustomEntityProviderRegistry.class).register("mythicmobs", new MythicMobsProvider());
         validatePipelineReferences();
     }
 

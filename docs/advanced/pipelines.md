@@ -208,12 +208,13 @@ both checks in one place so entries don't duplicate the parsing.
 Custom *blocks* reuse the provider system already backing Hammer/VeinMiner/etc.
 (ItemsAdder, Nexo, Oraxen — registered by their respective hooks under keys like
 `"itemsadder"`). Custom *entities* are new: `CustomEntityProviderRegistry` mirrors
-`CustomBlockProviderRegistry`, and ships with a `MythicMobsProvider` registered
-unconditionally under `"mythicmobs"` — it detects MythicMobs mobs via Bukkit's standard
-`Metadatable` API (`hasMetadata("MythicMobs")` / `getMetadata("type")`), which is
-MythicMobs' own documented soft-integration convention. This needs **no compile
-dependency** on MythicMobs at all, unlike the block providers, and simply never matches
-if MythicMobs isn't installed.
+`CustomBlockProviderRegistry`, and MythicMobs support is a proper hook module —
+`hooks/MythicMobs`, exactly like the block-provider hooks — with a `compileOnly`
+dependency on the real MythicMobs API (`io.lumine:Mythic-Dist`). `MythicMobsHook`
+(`@AutoHook("MythicMobs")`) registers `MythicMobsProvider` under `"mythicmobs"` in
+`onEnable()`, which is only invoked when MythicMobs is actually installed. The provider
+looks up the entity through `MythicBukkit.inst().getMobManager().getActiveMob(uuid)` and
+returns its `ActiveMob#getMobType()`.
 
 ```yaml
 entry:
