@@ -10,7 +10,6 @@ import fr.traqueur.items.api.annotations.AutoListener;
 import fr.traqueur.items.api.effects.Effect;
 import fr.traqueur.items.api.effects.EffectsDispatcher;
 import fr.traqueur.items.api.effects.entries.Entry;
-import fr.traqueur.items.api.effects.exit.PipelineExit;
 import fr.traqueur.items.api.items.Item;
 import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.managers.EffectsManager;
@@ -82,7 +81,6 @@ public class ZItems extends ItemsPlugin {
     public static final String ITEMS_FOLDER = "items";
     public static final String EFFECTS_FOLDER = "effects";
     public static final String ENTRIES_FOLDER = "entries";
-    public static final String EXITS_FOLDER = "exits";
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger("zItems");
 
@@ -199,13 +197,11 @@ public class ZItems extends ItemsPlugin {
     private void populateRegistries() {
         Registry.get(HandlersRegistry.class).scanPackage(this, "fr.traqueur.items");
         Registry.get(EntryHandlersRegistry.class).scanPackage(this, "fr.traqueur.items");
-        Registry.get(ExitHandlersRegistry.class).scanPackage(this, "fr.traqueur.items");
         Registry.get(ExtractorsRegistry.class).scanPackage(this, "fr.traqueur.items");
         Registry.get(HooksRegistry.class).enableAll();
-        // Entries/exits are loaded before effects: a PIPELINE effect resolves its
-        // entry/exit by id at parse time, so both registries must already be populated.
+        // Entries are loaded before effects: a PIPELINE effect resolves its entry
+        // by id at parse time, so the registry must already be populated.
         Registry.get(EntriesRegistry.class).loadFromFolder();
-        Registry.get(ExitsRegistry.class).loadFromFolder();
         Registry.get(EffectsRegistry.class).loadFromFolder();
         Registry.get(ItemsRegistry.class).loadFromFolder();
         Registry.get(CustomBlockProviderRegistry.class).register(this.getName().toLowerCase(), new ZItemsProvider());
@@ -224,10 +220,6 @@ public class ZItems extends ItemsPlugin {
         Registry.register(EntryHandlersRegistry.class, new ZEntryHandlersRegistry(this));
         // Register and load entries from files
         Registry.register(EntriesRegistry.class, new ZEntriesRegistry(this));
-        // Register and scan exit handlers (pipeline drop resolution)
-        Registry.register(ExitHandlersRegistry.class, new ZExitHandlersRegistry(this));
-        // Register and load exits from files
-        Registry.register(ExitsRegistry.class, new ZExitsRegistry(this));
         // Register and load effects from files
         Registry.register(EffectsRegistry.class, new ZEffectsRegistry(this));
         // Register and load items from files
@@ -312,7 +304,6 @@ public class ZItems extends ItemsPlugin {
         CustomReaderRegistry.getInstance().register(Component.class, new ComponentReader());
         CustomReaderRegistry.getInstance().register(Effect.class, new EffectReader());
         CustomReaderRegistry.getInstance().register(Entry.class, new EntryReader());
-        CustomReaderRegistry.getInstance().register(PipelineExit.class, new ExitReader());
         CustomReaderRegistry.getInstance().register(PotionEffectType.class, new PotionEffectTypeReader());
         CustomReaderRegistry.getInstance().register(PotionType.class, new PotionTypeReader());
         CustomReaderRegistry.getInstance().register(Color.class, new ColorReader());

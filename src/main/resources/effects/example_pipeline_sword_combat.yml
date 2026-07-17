@@ -1,6 +1,9 @@
 # Pipeline Effect Example
-# Groups existing effects behind a shared trigger condition (the "entry"), with an
-# optional final action on the collected drops (the "exit").
+# Groups existing effects behind a shared trigger condition (the "entry").
+#
+# There is no dedicated "exit" concept: steps run in declaration order, so the
+# final action on the drops (sell, or nothing) is just whichever effect is
+# placed last in `steps`.
 #
 # Here, "auto_sell_pickaxe" (AUTO_SELL) is normally a multi-event effect that would
 # fire on both BlockBreakEvent and EntityDeathEvent. Wrapped in this pipeline with
@@ -15,4 +18,3 @@ display-name: "<gradient:#c0392b:#e74c3c><bold>⚔ COMBAT PIPELINE</bold></gradi
 entry: "kill"
 steps:
   - "auto_sell_pickaxe"
-exit: "none"

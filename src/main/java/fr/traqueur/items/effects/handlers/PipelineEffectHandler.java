@@ -8,19 +8,19 @@ import fr.traqueur.items.api.effects.EffectSettings;
 import fr.traqueur.items.api.effects.entries.Entry;
 import fr.traqueur.items.api.effects.entries.EntryHandler;
 import fr.traqueur.items.api.effects.entries.EntrySettings;
-import fr.traqueur.items.api.effects.exit.ExitHandler;
-import fr.traqueur.items.api.effects.exit.ExitSettings;
-import fr.traqueur.items.api.effects.exit.PipelineExit;
 import fr.traqueur.items.api.registries.EntryHandlersRegistry;
-import fr.traqueur.items.api.registries.ExitHandlersRegistry;
 import fr.traqueur.items.api.registries.HandlersRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.items.effects.settings.PipelineSettings;
 
 /**
  * Groups a set of already-existing effects ({@code steps}) behind a shared trigger
- * condition ({@code entry}), with an optional final action on the collected drops
- * ({@code exit}).
+ * condition ({@code entry}).
+ * <p>
+ * There is no dedicated "exit" step: steps run in declaration order against the
+ * same {@link EffectContext}, so the final action on the collected drops (sell,
+ * or nothing) is just whichever effect is placed last in {@code steps} — e.g. an
+ * existing AUTO_SELL effect.
  * <p>
  * Registered as an {@link EffectHandler.AnyEventEffectHandler} because the entry —
  * not this handler — decides whether the pipeline actually runs for a given event;
@@ -46,14 +46,6 @@ public class PipelineEffectHandler implements EffectHandler.AnyEventEffectHandle
             }
             executeStep(handler, context, step.settings());
         }
-
-        PipelineExit exit = settings.exit();
-        if (exit != null) {
-            ExitHandler<?> exitHandler = Registry.get(ExitHandlersRegistry.class).getById(exit.type());
-            if (exitHandler != null) {
-                resolveExit(exitHandler, context, exit.settings());
-            }
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -64,11 +56,6 @@ public class PipelineEffectHandler implements EffectHandler.AnyEventEffectHandle
     @SuppressWarnings("unchecked")
     private <T extends EffectSettings> void executeStep(EffectHandler<T> handler, EffectContext context, EffectSettings settings) {
         handler.handle(context, (T) settings);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends ExitSettings> void resolveExit(ExitHandler<T> handler, EffectContext context, ExitSettings settings) {
-        handler.resolve(context, (T) settings);
     }
 
     @Override
