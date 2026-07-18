@@ -5,7 +5,7 @@ import com.google.common.collect.Table;
 import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.blocks.TrackedBlock;
 import fr.traqueur.items.serialization.Keys;
-import fr.traqueur.items.utils.ChunkUtil;
+import fr.traqueur.items.infrastructure.support.ChunkUtil;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

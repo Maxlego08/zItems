@@ -17,7 +17,7 @@ import fr.traqueur.items.api.settings.Settings;
 import fr.traqueur.items.api.utils.ItemUtil;
 import fr.traqueur.items.api.utils.MessageUtil;
 import fr.traqueur.items.serialization.Keys;
-import fr.traqueur.items.settings.PluginSettings;
+import fr.traqueur.items.infrastructure.settings.PluginSettings;
 import fr.traqueur.recipes.api.RecipeType;
 import fr.traqueur.recipes.impl.domains.ItemRecipe;
 import fr.traqueur.recipes.impl.domains.ingredients.StrictItemStackIngredient;

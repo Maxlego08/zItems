@@ -4,7 +4,7 @@ import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.entities.CustomEntityProvider;
 import fr.traqueur.items.api.registries.CustomEntityProviderRegistry;
 import fr.traqueur.items.api.registries.Registry;
-import fr.traqueur.items.registries.ZCustomEntityProviderRegistry;
+import fr.traqueur.items.infrastructure.registry.ZCustomEntityProviderRegistry;
 import org.bukkit.Location;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Zombie;

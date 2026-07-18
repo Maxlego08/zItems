@@ -585,7 +585,7 @@ public void handle(EffectContext context, MySettings settings) {
 ### 4. Respect Permissions
 
 ```java
-import fr.traqueur.items.utils.EventUtil;
+import fr.traqueur.items.infrastructure.support.EventUtil;
 
 // Check if player can break block
 if (!EventUtil.canBreakBlock(player, block.getLocation())) {

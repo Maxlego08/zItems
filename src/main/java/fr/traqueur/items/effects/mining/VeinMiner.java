@@ -9,7 +9,7 @@ import fr.traqueur.items.api.managers.DurabilityManager;
 import fr.traqueur.items.api.registries.CustomBlockProviderRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.items.effects.mining.VeinMinerSettings;
-import fr.traqueur.items.utils.EventUtil;
+import fr.traqueur.items.infrastructure.support.EventUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

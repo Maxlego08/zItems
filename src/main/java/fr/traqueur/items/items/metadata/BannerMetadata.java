@@ -4,7 +4,7 @@ import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.annotations.AutoMetadata;
 import fr.traqueur.items.api.items.ItemMetadata;
 import fr.traqueur.items.api.utils.ItemUtil;
-import fr.traqueur.items.settings.models.PatternWrapper;
+import fr.traqueur.items.infrastructure.settings.models.PatternWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;

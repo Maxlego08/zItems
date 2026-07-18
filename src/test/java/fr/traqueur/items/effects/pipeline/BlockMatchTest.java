@@ -4,7 +4,7 @@ import fr.traqueur.items.api.Logger;
 import fr.traqueur.items.api.blocks.CustomBlockProvider;
 import fr.traqueur.items.api.registries.CustomBlockProviderRegistry;
 import fr.traqueur.items.api.registries.Registry;
-import fr.traqueur.items.registries.ZCustomBlockProviderRegistry;
+import fr.traqueur.items.infrastructure.registry.ZCustomBlockProviderRegistry;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
