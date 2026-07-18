@@ -390,7 +390,7 @@ package com.example.myaddon.effects;
 import fr.traqueur.items.api.annotations.AutoEffect;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.EffectHandler;
-import fr.traqueur.items.effects.settings.EmptySettings;
+import fr.traqueur.items.effects.engine.EmptySettings;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;

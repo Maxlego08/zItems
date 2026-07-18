@@ -10,7 +10,7 @@ import fr.traqueur.items.api.registries.ApplicatorsRegistry;
 import fr.traqueur.items.api.registries.EffectsRegistry;
 import fr.traqueur.items.api.registries.Registry;
 import fr.traqueur.items.api.settings.models.IngredientWrapper;
-import fr.traqueur.items.effects.ZEffect;
+import fr.traqueur.items.effects.engine.ZEffect;
 import fr.traqueur.recipes.api.domains.Ingredient;
 import fr.traqueur.structura.api.Structura;
 import fr.traqueur.structura.exceptions.StructuraException;
