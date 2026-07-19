@@ -175,7 +175,7 @@ Effects
 
 ## Effect Types
 
-Effects come in three handler types:
+Effects come in four handler types:
 
 ### SingleEventEffectHandler
 
@@ -244,6 +244,27 @@ public class Unbreakable
 - Unbreakable
 - Attributes Applicator
 - Enchants Applicator
+
+### AnyEventEffectHandler
+
+Runs on **every** dispatched event — `canApply()` is unconditionally `true`, because this
+handler doesn't decide event affinity itself. Only ever safe when something else gates its
+behavior; used by the `PIPELINE` effect, which delegates that decision to its configured
+**entry**.
+
+**Example**: The `PIPELINE` effect, which only actually does anything once its entry matches
+
+```java
+@AutoEffect("PIPELINE")
+public class PipelineEffectHandler
+    implements EffectHandler.AnyEventEffectHandler<PipelineSettings> {
+    // ...
+}
+```
+
+See **[Pipelines & Entries Reference](../advanced/pipelines.md)** for the full picture:
+grouping effects behind a reusable trigger condition, and the built-in entry catalog
+(combat, mining, interaction, equipment, ongoing state like `SNEAKING`, and job hooks).
 
 ---
 

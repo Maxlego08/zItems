@@ -1,0 +1,10 @@
+# Pipeline Effect Example
+# While sneaking with this item in hand, spawn a ring of fire particles around you
+# every tick interval (see TickDispatcher — every 10 ticks / 0.5s).
+id: "sneak_fire_ring"
+type: "PIPELINE"
+display-name: "<gradient:#FF4500:#FFD700><bold>🔥 SNEAK FIRE PIPELINE</bold></gradient>"
+entry:
+  type: "SNEAKING"
+steps:
+  - "fire_ring"

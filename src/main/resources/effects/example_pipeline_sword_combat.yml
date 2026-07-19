@@ -1,0 +1,26 @@
+# Pipeline Effect Example
+# Groups existing effects behind a shared trigger condition (the "entry"), declared
+# inline — entries have no separate file/id, unlike the effects referenced in `steps`.
+#
+# There is no dedicated "exit" concept: steps run in declaration order, so the
+# final action on the drops (sell, or nothing) is just whichever effect is
+# placed last in `steps`.
+#
+# Here, "auto_sell_pickaxe" (AUTO_SELL) is normally a multi-event effect that would
+# fire on both BlockBreakEvent and EntityDeathEvent. Wrapped in this pipeline with
+# entry type "KILL", it only ever runs when the item lands a kill — never on mining.
+#
+# `steps` resolves lazily (Reference<Effect>), so load order between effect files no
+# longer matters — a broken step id is still caught at startup by the warm-up pass
+# in ZItems#validatePipelineReferences.
+id: "sword_combat"
+type: "PIPELINE"
+display-name: "<gradient:#c0392b:#e74c3c><bold>⚔ COMBAT PIPELINE</bold></gradient>"
+entry:
+  type: "KILL"
+  entities:                        # optional — omit to match any kill
+    - entity-id: "PIG"
+    - plugin-name: "mythicmobs"
+      entity-id: "my_boss"
+steps:
+  - "auto_sell_pickaxe"

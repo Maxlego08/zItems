@@ -24,6 +24,7 @@ This page provides detailed documentation for all built-in effect handlers in zI
   - [Enchants Applicator](#enchants-applicator)
 - [Special Effects](#special-effects)
   - [Empty](#empty)
+  - [Pipeline](#pipeline)
 
 ---
 
@@ -731,6 +732,32 @@ display-name: "<gray>Empty Effect"
 
 ---
 
+### Pipeline
+
+**Type**: `PIPELINE`
+**Event**: Any (AnyEventEffectHandler — see [Pipelines & Entries Reference](pipelines.md))
+**Priority**: 0
+**Settings**: `entry` (declared inline), `steps` (list of effect ids, resolved lazily)
+
+Groups existing effects behind a shared, reusable trigger condition (an **entry**) instead
+of letting them react to every event their handler declares. Only actually runs its steps
+once the entry matches — see the dedicated [Pipelines & Entries Reference](pipelines.md)
+for the full entry catalog and how to write custom ones.
+
+#### Configuration
+
+```yaml
+id: "sword_combat"
+type: "PIPELINE"
+entry:
+  type: "KILL"             # declared inline, no separate file/id
+steps:
+  - "combat_xp_boost"      # existing effect ids, run in this order
+  - "auto_sell_pickaxe"
+```
+
+---
+
 ## Effect Priorities
 
 Effect priority determines execution order. Lower priority executes first:
@@ -738,7 +765,7 @@ Effect priority determines execution order. Lower priority executes first:
 | Priority | Effects |
 |----------|---------|
 | -1 | Auto Sell, Absorption, Empty |
-| 0 | Most effects (Silk Spawner, XP Boost, Farming Hoe, etc.) |
+| 0 | Most effects (Silk Spawner, XP Boost, Farming Hoe, Pipeline, etc.) |
 | 1 | Hammer, Vein Mining, Attributes Applicator |
 
 **Why Priority Matters**:

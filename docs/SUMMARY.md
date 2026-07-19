@@ -17,6 +17,7 @@
 ## Advanced Features
 
 * [Effect Handlers Reference](advanced/effect-handlers.md)
+* [Pipelines & Entries Reference](advanced/pipelines.md)
 * [Effect Lore Display](advanced/effect-lore.md)
 * [Custom Block Tracking](advanced/block-tracking.md)
 * [Hook System](advanced/hooks.md)

@@ -149,6 +149,36 @@ public class IAHook implements Hook {
 
 ---
 
+### Custom Entity Providers
+
+Detect custom mobs from third-party plugins, for pipeline entries like `KILL`.
+
+#### MythicMobs
+
+**Plugin**: [MythicMobs](https://www.spigotmc.org/resources/mythicmobs.5702/)
+**Hook**: `MythicMobsHook.java`
+**Purpose**: Custom mob type detection
+
+**What it provides**:
+- Detects MythicMobs-spawned entities using `MythicBukkit.inst().getMobManager().getActiveMob(uuid)`
+- Returns the mob's type id via `ActiveMob#getMobType()`
+
+**Integration**:
+```java
+@AutoHook("MythicMobs")
+public class MythicMobsHook implements Hook {
+    @Override
+    public void onEnable() {
+        Registry.get(CustomEntityProviderRegistry.class).register("mythicmobs", new MythicMobsProvider());
+    }
+}
+```
+
+**Entries that use it**:
+- `KILL` (`entities: ["mythicmobs:my_boss"]`)
+
+---
+
 ### Job System Integrations
 
 Boost job experience and money rewards.
@@ -168,6 +198,10 @@ Boost job experience and money rewards.
 **Handlers**:
 - `JobsExperienceMultiplier` - Multiplies job XP gained
 - `JobsMoneyMultiplier` - Multiplies job money gained
+
+**Entries** (for [pipelines](pipelines.md)):
+- `JOBS_EXP_GAIN` - Matches `JobsExpGainEvent`
+- `JOBS_MONEY_GAIN` - Matches `JobsPrePaymentEvent`
 
 **Example effect**:
 ```yaml
@@ -206,6 +240,10 @@ public class JobsExperienceMultiplier extends JobsHandler<JobsExpGainEvent> {
 **Handlers**:
 - `ZJobsExperienceMultiplier` - Multiplies ZJobs XP
 - `ZJobsMoneyMultiplier` - Multiplies ZJobs money
+
+**Entries** (for [pipelines](pipelines.md)):
+- `JOBS_EXP_GAIN` - Matches `JobExpGainEvent` (same entry id as the Jobs Reborn hook — only one hook is ever active)
+- `JOBS_MONEY_GAIN` - Matches `JobMoneyGainEvent`
 
 **Example effect**:
 ```yaml

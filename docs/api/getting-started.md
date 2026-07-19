@@ -390,7 +390,7 @@ package com.example.myaddon.effects;
 import fr.traqueur.items.api.annotations.AutoEffect;
 import fr.traqueur.items.api.effects.EffectContext;
 import fr.traqueur.items.api.effects.EffectHandler;
-import fr.traqueur.items.effects.settings.EmptySettings;
+import fr.traqueur.items.effects.engine.EmptySettings;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -585,7 +585,7 @@ public void handle(EffectContext context, MySettings settings) {
 ### 4. Respect Permissions
 
 ```java
-import fr.traqueur.items.utils.EventUtil;
+import fr.traqueur.items.infrastructure.support.EventUtil;
 
 // Check if player can break block
 if (!EventUtil.canBreakBlock(player, block.getLocation())) {

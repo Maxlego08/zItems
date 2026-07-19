@@ -55,4 +55,15 @@ public interface ExtractorsRegistry extends Registry<Class<? extends Event>, Ite
      * @return true if an extractor can be resolved, false otherwise
      */
     boolean has(Class<? extends Event> eventType);
+
+    /**
+     * Returns every event type an extractor has been explicitly registered for.
+     * <p>
+     * Used by the dynamic listener registration to determine which events must be
+     * listened to on behalf of {@link fr.traqueur.items.api.effects.EffectHandler.AnyEventEffectHandler}s,
+     * which declare no event affinity of their own.
+     *
+     * @return the set of event types with a registered extractor
+     */
+    Set<Class<? extends Event>> registeredEventTypes();
 }

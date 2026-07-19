@@ -1,0 +1,11 @@
+# Pipeline Effect Example
+# Auto-sells harvested crops, but only mature ones (CROPS reuses FarmingHoe's own
+# "mature plant" check) — never fires on an unrelated block break.
+id: "crop_seller"
+type: "PIPELINE"
+display-name: "<gradient:#7CFC00:#32CD32><bold>🌾 CROP SELLER PIPELINE</bold></gradient>"
+entry:
+  type: "CROPS"
+  materials: ["WHEAT", "CARROTS", "POTATOES"]   # optional — omit to match any mature crop
+steps:
+  - "auto_sell_pickaxe"

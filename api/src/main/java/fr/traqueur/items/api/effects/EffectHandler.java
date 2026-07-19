@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * This interface defines the contract for effects that can be registered and executed.
  * @param <T> the type of effect settings
  */
-public sealed interface EffectHandler<T extends EffectSettings> permits EffectHandler.MultiEventEffectHandler, EffectHandler.NoEventEffectHandler, EffectHandler.SingleEventEffectHandler {
+public sealed interface EffectHandler<T extends EffectSettings> permits EffectHandler.MultiEventEffectHandler, EffectHandler.NoEventEffectHandler, EffectHandler.SingleEventEffectHandler, EffectHandler.AnyEventEffectHandler {
 
     /**
      * Handles the effect application logic.
@@ -81,6 +81,7 @@ public sealed interface EffectHandler<T extends EffectSettings> permits EffectHa
             case MultiEventEffectHandler<?> multiEventEffectHandler ->
                     multiEventEffectHandler.eventTypes().stream().anyMatch(type -> type.isInstance(event));
             case NoEventEffectHandler<?> __ -> event == null;
+            case AnyEventEffectHandler<?> __ -> true;
         };
     }
 
@@ -161,6 +162,24 @@ public sealed interface EffectHandler<T extends EffectSettings> permits EffectHa
      * @param <T> the type of effect settings
      */
     non-sealed interface NoEventEffectHandler<T extends EffectSettings> extends EffectHandler<T> {
+    }
+
+    /**
+     * An effect handler that can be applied regardless of the triggering event.
+     * <p>
+     * Unlike {@link SingleEventEffectHandler}/{@link MultiEventEffectHandler}, this handler
+     * does not declare any event affinity of its own — {@link #canApply(Event)} always
+     * returns {@code true}. Filtering responsibility is delegated to whatever this handler
+     * consults internally (e.g. a pipeline effect delegating to its configured entry).
+     * <p>
+     * Because it declares no event type, {@link #canApply(Event)} being unconditionally
+     * true means a handler of this kind must never be registered without something else
+     * (like a pipeline's entry) actually gating its behavior — otherwise it would run on
+     * every single dispatched event.
+     *
+     * @param <T> the type of effect settings
+     */
+    non-sealed interface AnyEventEffectHandler<T extends EffectSettings> extends EffectHandler<T> {
     }
 
 }

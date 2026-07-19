@@ -1,0 +1,7 @@
+# Fire Around Effect Example
+# Purely cosmetic ring of flame particles around the executor.
+id: "fire_ring"
+type: "FIRE_AROUND"
+display-name: "<gradient:#FF4500:#FFD700><bold>🔥 FIRE RING</bold></gradient>"
+radius: 2.0
+points: 16
