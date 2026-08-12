@@ -1,9 +1,9 @@
 package fr.traqueur.items.menu;
 
-import fr.maxlego08.menu.ZInventory;
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.engine.InventoryResult;
+import fr.maxlego08.menu.inventory.zinv.ZInventory;
 import fr.traqueur.items.menu.applicator.ApplicatorButton;
 import fr.traqueur.items.api.utils.ItemUtil;
 import org.bukkit.entity.Player;

@@ -55,8 +55,8 @@ allprojects {
         compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
         /* Depends */
         compileOnly("me.clip:placeholderapi:2.11.6")
-        compileOnly("fr.maxlego08.menu:zmenu-api:1.1.0.4")
-        compileOnly(files(rootProject.files("libs/zMenu-1.1.0.4.jar")))
+        compileOnly("fr.maxlego08.menu:zmenu-api:1.1.1.7")
+        compileOnly(files(rootProject.files("libs/zMenu-1.1.1.7.jar")))
 
         /* Adventure for Spigot compatibility */
         compileOnly("net.kyori:adventure-platform-bukkit:4.3.4")
